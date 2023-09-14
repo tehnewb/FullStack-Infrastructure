@@ -1,0 +1,28 @@
+# Gradle files
+.gradle/
+build/
+
+# IntelliJ IDEA files
+.idea/
+out/
+test/
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# Mac-specific files
+.DS_Store
+
+# Operating System temporary files
+*.swp
+
+# Gradle wrapper
+gradle-wrapper.jar
+gradle-wrapper.properties
+gradlew.bat
+gradlew
+
+# Local configuration file (gradle.properties) - Remove if you don't use it
+gradle.properties
