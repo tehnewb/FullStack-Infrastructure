@@ -13,14 +13,8 @@ import java.util.Map;
  * @author Albert Beaupre
  */
 public class Cache {
-    private Map<Integer, CacheFolder> cache;
+    private final Map<Integer, CacheFolder> cache = new HashMap<>();
 
-    /**
-     * Constructs a new Cache object with an empty cache map.
-     */
-    public Cache() {
-        cache = new HashMap<>();
-    }
 
     /**
      * Decodes the given data and creates a Cache instance based on the folders and files within the decoded data.
@@ -35,13 +29,14 @@ public class Cache {
             for (int i = 0; i < folderCount; i++) {
                 int folderIndex = in.readByte();
                 int folderSize = in.readShort();
-                CacheFolder folder = new CacheFolder(folderIndex);
+                String folderName = in.readString();
+                CacheFolder folder = new CacheFolder(folderIndex, folderName);
                 for (int j = 0; j < folderSize; j++) {
                     int cacheFileIndex = in.readShort();
+                    String fileName = in.readString();
                     int cacheFileSize = in.readInt();
                     byte[] cacheFileData = in.readBytes(cacheFileSize);
-
-                    folder.add(new CacheFile(cacheFileIndex, cacheFileData));
+                    folder.add(new CacheFile(cacheFileIndex, fileName, cacheFileData));
                 }
                 cache.addFolder(folder);
             }
@@ -63,9 +58,11 @@ public class Cache {
                 CacheFolder folder = entry.getValue();
                 out.writeByte(folder.getIndex());
                 out.writeShort(folder.getSize());
+                out.writeString(folder.getName());
                 for (int cacheFileID = 0; cacheFileID < folder.getSize(); cacheFileID++) {
                     CacheFile file = folder.get(cacheFileID);
                     out.writeShort(file.index());
+                    out.writeString(file.name());
                     out.writeInt(file.data().length);
                     out.writeBytes(file.data());
                 }

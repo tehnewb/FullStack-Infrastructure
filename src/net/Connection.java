@@ -1,7 +1,7 @@
 package net;
 
 import account.Account;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
 
 /**
  * The `Connection` class represents a connection within a Netty-based server.
@@ -12,9 +12,9 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class Connection {
     /**
-     * The Netty ChannelHandlerContext associated with this connection.
+     * The Netty Channel associated with this connection.
      */
-    private final ChannelHandlerContext context;
+    private final Channel channel;
     /**
      * The current state of the server connection.
      */
@@ -27,10 +27,10 @@ public class Connection {
     /**
      * Creates a new `Connection` instance.
      *
-     * @param context The Netty ChannelHandlerContext for this connection.
+     * @param context The Netty Channel for this connection.
      */
-    public Connection(ChannelHandlerContext context) {
-        this.context = context;
+    public Connection(Channel channel) {
+        this.channel = channel;
     }
 
     /**
@@ -43,11 +43,20 @@ public class Connection {
     }
 
     /**
-     * Retrieves the Netty ChannelHandlerContext associated with this connection.
+     * Sets the ConnectionState to the given state.
      *
-     * @return The ChannelHandlerContext for this connection.
+     * @param state The state to set to this connection.
      */
-    public ChannelHandlerContext getContext() {
-        return context;
+    public void setCurrentState(ConnectionState state) {
+        this.currentState = state;
+    }
+
+    /**
+     * Retrieves the Netty Channel associated with this connection.
+     *
+     * @return The Channel for this connection.
+     */
+    public Channel getChannel() {
+        return channel;
     }
 }

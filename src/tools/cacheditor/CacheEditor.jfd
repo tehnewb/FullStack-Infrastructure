@@ -1,0 +1,119 @@
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq {space :::p, par l {comp topToolBar::l:::x, comp bottomToolBar::l:::x, comp splitPane1::l::0:x}, space :::p}}"
+			"$verticalGroup": "par l {seq l {space :::p, comp topToolBar:::p::p, space :::p, comp splitPane1:::::x, space :::p, comp bottomToolBar:::p:22:p, space :::p}}"
+		} ) {
+			name: "this"
+			"$locationPolicy": 1
+			add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+				name: "splitPane1"
+				"resizeWeight": 0.3
+				"focusable": false
+				"opaque": false
+				"dividerLocation": 150
+				add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+					name: "cacheFolderScrollPane"
+					"focusable": false
+					"opaque": false
+					add( new FormComponent( "javax.swing.JTree" ) {
+						name: "cacheFolderTree"
+						"border": new javax.swing.border.TitledBorder( null, "Cache Folders", 2, 1 )
+						"minimumSize": new java.awt.Dimension( 100, 0 )
+						"preferredSize": new java.awt.Dimension( 100, 96 )
+						"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+						"opaque": false
+						"focusable": false
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {comp fileEditorTabPane::l::841:x}"
+					"$verticalGroup": "par l {comp fileEditorTabPane::l::527:x}"
+				} ) {
+					name: "fileEditorPane"
+					"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
+					add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+						name: "fileEditorTabPane"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "bottomToolBar"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq t {space ::829:x, comp progressBar:::p:157:p, space :::p}}"
+					"$verticalGroup": "par l {comp progressBar::::18:x}"
+				} ) {
+					name: "bottomToolBarPanel"
+					add( new FormComponent( "javax.swing.JProgressBar" ) {
+						name: "progressBar"
+					} )
+				} )
+			} )
+			add( new FormContainer( "javax.swing.JToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "topToolBar"
+			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar1"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "fileMenu"
+					"text": "File"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "openMenuItem"
+						"text": "Open..."
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "saveMenuItem"
+						"text": "Save"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "saveAsMenuItem"
+						"text": "Save As..."
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "exitMenuItem"
+						"text": "Exit"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "editMenu"
+					"text": "Edit"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "addFolderItem"
+						"text": "Add Folder"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addFolderItem", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "removeFolderItem"
+						"text": "Remove Folder"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "addFileItem"
+						"text": "Add File"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "removeFileItem"
+						"text": "Remove File"
+					} )
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "helpMenu"
+					"text": "Help"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "instructionsItem"
+						"text": "Instructions"
+					} )
+				} )
+			}
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 1010, 655 )
+		} )
+	}
+}

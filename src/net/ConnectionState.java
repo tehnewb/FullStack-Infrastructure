@@ -25,5 +25,10 @@ public enum ConnectionState {
     /**
      * The state when the client is logging into the server.
      */
-    LOGIN
+    LOGIN,
+
+    /**
+     * The state when the client is logged into the server and the server is sending regular packets back and forth.
+     */
+    ONLINE
 }

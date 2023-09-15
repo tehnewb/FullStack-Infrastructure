@@ -2,6 +2,7 @@ package io.buffer;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 /**
  * A dynamic byte array that provides methods to store and retrieve various data types with a growing internal array.
@@ -148,6 +149,29 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
     public void setWritePosition(int index) {
         checkIndexBounds(index, 0);
         writePosition = index;
+    }
+
+    /**
+     * Stores a string value in the dynamic byte array at the current write position.
+     *
+     * @param string The string to store.
+     */
+    public void writeString(String string) {
+        writeBytes(string.getBytes(StandardCharsets.UTF_8));
+        writeByte(0);
+    }
+
+    /**
+     * Retrieves a String value from the dynamic byte array at the current read position and increments the read position.
+     *
+     * @return The string at the current read position.
+     */
+    public String readString() {
+        StringBuilder builder = new StringBuilder();
+        char c;
+        while ((c = (char) readByte()) != 0)
+            builder.append(c);
+        return builder.toString();
     }
 
     /**

@@ -37,7 +37,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("New connection from: " + ctx.channel().remoteAddress());
 
         // Create and associate a Connection instance with this channel context
-        ctx.attr(ConnectionKey).set(new Connection(ctx));
+        ctx.channel().attr(ConnectionKey).set(new Connection(ctx.channel()));
     }
 
     /**
@@ -49,7 +49,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // Retrieve the associated Connection and delegate message handling to it
-        Connection connection = ctx.attr(ConnectionKey).get();
+        Connection connection = ctx.channel().attr(ConnectionKey).get();
         server.getProtocol(connection.getCurrentState()).handle(connection, msg);
     }
 

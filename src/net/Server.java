@@ -24,6 +24,7 @@ public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
     static {
+        // Configure the logger from slf4j
         BasicConfigurator.configure();
     }
 
@@ -51,7 +52,6 @@ public class Server {
      * @throws Exception If an error occurs during server initialization or operation.
      */
     public void start() throws Exception {
-
         // Create separate event loop groups for boss (acceptor) and worker (I/O) threads.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1, new DefaultThreadFactory("boss"));
         EventLoopGroup workerGroup = new NioEventLoopGroup(numWorkerThreads, new DefaultThreadFactory("worker"));

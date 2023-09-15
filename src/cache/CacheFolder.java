@@ -13,6 +13,7 @@ public class CacheFolder {
     private static final int INITIAL_CAPACITY = 10; // Initial capacity of the cacheFiles array
     private static final int GROW_SIZE = 16; // Initial capacity of the cacheFiles array
     private final int index;           // The unique identifier for this CacheFolder.
+    private final String name; // The name of the folder
     private int size;              // Number of Cache Files stored.
     private CacheFile[] cacheFiles; // Array to store Cache Files.
 
@@ -21,8 +22,9 @@ public class CacheFolder {
      *
      * @param index The unique identifier for this CacheFolder.
      */
-    public CacheFolder(int index) {
+    public CacheFolder(int index, String name) {
         this.index = index;
+        this.name = name;
         cacheFiles = new CacheFile[INITIAL_CAPACITY];
         size = 0;
     }
@@ -64,11 +66,35 @@ public class CacheFolder {
         return index < size && cacheFiles[index] != null;
     }
 
+    /**
+     * Retrieves the index at which this CacheFolder is placed within the Cache.
+     *
+     * @return The index.
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Retrieves the count of cache files within this CacheFolder.
+     *
+     * @return The count of cache files.
+     */
     public int getSize() {
         return size;
+    }
+
+    /**
+     * Retrieves the name of this CacheFolder.
+     *
+     * @return The name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
