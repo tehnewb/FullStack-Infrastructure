@@ -22,12 +22,12 @@ public class Connection {
     /**
      * The user account associated with this connection.
      */
-    private Account account;
+    private Account resource;
 
     /**
      * Creates a new `Connection` instance.
      *
-     * @param context The Netty Channel for this connection.
+     * @param channel The Netty Channel for this connection.
      */
     public Connection(Channel channel) {
         this.channel = channel;

@@ -1,8 +1,14 @@
 plugins {
     id 'java'
     id 'idea'
+    id 'java-library'
 }
 
+project.ext.assetsDir = new File("../assets")
+
+ext {
+    gdxVersion = '1.12.0'
+}
 group 'com.example'
 version '1.0-SNAPSHOT'
 
@@ -10,12 +16,21 @@ repositories {
     mavenCentral()
 }
 
+
 dependencies {
     implementation 'io.netty:netty-all:4.1.86.Final'
     implementation 'org.slf4j:slf4j-log4j12:1.7.29'
     implementation 'com.formdev:flatlaf:3.2.1'
 
-    testImplementation 'junit:junit:4.13.1'
+    /**
+     * libGDX
+     */
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
