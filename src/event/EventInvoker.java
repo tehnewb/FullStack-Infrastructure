@@ -16,7 +16,7 @@ record EventInvoker(Object object, Method method) {
      *
      * @param event the event as parameter
      */
-    public void invoke(Event event) {
+    public void invoke(Object event) {
         try {
             method.invoke(object, event);
         } catch (IllegalAccessException | InvocationTargetException e) {

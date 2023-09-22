@@ -7,7 +7,7 @@ package cache;
  *
  * @author Albert Beaupre
  */
-public record CacheFile(int index, String name, byte[] data) {
+public record CacheFile(int index, float version, String name, byte[] data) {
 
     @Override
     public String toString() {

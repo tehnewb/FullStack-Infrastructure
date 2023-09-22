@@ -1,15 +1,18 @@
-package ui;
+package gdx.proto;
+
+import entity.Entity;
 
 /**
  * The Cell class represents a rectangular cell within a grid or layout.
  * It defines various properties and padding for the cell.
  */
-public class UICell {
+public class UICell implements Entity {
 
     // The actor this cell wraps
     protected final UIActor actor;
     // Max dimension values
     protected float maxWidth, maxHeight;
+    protected float minWidth, minHeight;
     // Padding values for the cell
     protected float leftPadding, rightPadding, topPadding, bottomPadding;
     // Flags to determine if the cell should extend in specific directions
@@ -49,12 +52,60 @@ public class UICell {
     }
 
     /**
+     * Sets the minimum width this cell can shrink to.
+     *
+     * @param value The minimum width.
+     * @return This Cell instance to allow method chaining.
+     */
+    public UICell minWidth(float value) {
+        this.minWidth = value;
+        return this;
+    }
+
+    /**
+     * Sets the minimum height this cell can shrink to.
+     *
+     * @param value The minimum height.
+     * @return This Cell instance to allow method chaining.
+     */
+    public UICell minHeight(float value) {
+        this.minHeight = value;
+        return this;
+    }
+
+    /**
+     * Sets the maximum size this cell can grow to.
+     *
+     * @param width  The maximum width.
+     * @param height The maximum height.
+     * @return This Cell instance to allow method chaining.
+     */
+    public UICell maxSize(float width, float height) {
+        this.maxWidth = width;
+        this.maxHeight = height;
+        return this;
+    }
+
+    /**
+     * Sets the minimum size this cell can shrink to.
+     *
+     * @param width  The minimum width.
+     * @param height The minimum height.
+     * @return This Cell instance to allow method chaining.
+     */
+    public UICell minSize(float width, float height) {
+        this.minWidth = width;
+        this.minHeight = height;
+        return this;
+    }
+
+    /**
      * Sets the alignment of this cell to the right.
      *
      * @return This Cell instance to allow method chaining.
      */
     public UICell right() {
-        this.alignment = Alignment.RIGHT;
+        this.alignment = Alignment.Right;
         return this;
     }
 
@@ -64,7 +115,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell left() {
-        this.alignment = Alignment.LEFT;
+        this.alignment = Alignment.Left;
         return this;
     }
 
@@ -74,7 +125,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell center() {
-        this.alignment = Alignment.CENTER;
+        this.alignment = Alignment.Center;
         return this;
     }
 
@@ -84,7 +135,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell top() {
-        this.alignment = Alignment.TOP;
+        this.alignment = Alignment.Top;
         return this;
     }
 
@@ -94,7 +145,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell topCenter() {
-        this.alignment = Alignment.TOP_CENTER;
+        this.alignment = Alignment.TopCenter;
         return this;
     }
 
@@ -104,7 +155,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell topRight() {
-        this.alignment = Alignment.TOP_RIGHT;
+        this.alignment = Alignment.TopRight;
         return this;
     }
 
@@ -114,7 +165,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell topLeft() {
-        this.alignment = Alignment.TOP_LEFT;
+        this.alignment = Alignment.TopLeft;
         return this;
     }
 
@@ -124,7 +175,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell bottom() {
-        this.alignment = Alignment.BOTTOM;
+        this.alignment = Alignment.Bottom;
         return this;
     }
 
@@ -134,7 +185,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell bottomCenter() {
-        this.alignment = Alignment.BOTTOM_CENTER;
+        this.alignment = Alignment.BottomCenter;
         return this;
     }
 
@@ -144,7 +195,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell bottomRight() {
-        this.alignment = Alignment.BOTTOM_RIGHT;
+        this.alignment = Alignment.BottomRight;
         return this;
     }
 
@@ -154,7 +205,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell bottomLeft() {
-        this.alignment = Alignment.BOTTOM_LEFT;
+        this.alignment = Alignment.BottomLeft;
         return this;
     }
 
@@ -164,7 +215,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell rightCenter() {
-        this.alignment = Alignment.RIGHT_CENTER;
+        this.alignment = Alignment.RightCenter;
         return this;
     }
 
@@ -174,7 +225,7 @@ public class UICell {
      * @return This Cell instance to allow method chaining.
      */
     public UICell leftCenter() {
-        this.alignment = Alignment.LEFT_CENTER;
+        this.alignment = Alignment.LeftCenter;
         return this;
     }
 
@@ -340,5 +391,15 @@ public class UICell {
      */
     public UIActor getActor() {
         return actor;
+    }
+
+    @Override
+    public int getIndex() {
+        return actor.getIndex();
+    }
+
+    @Override
+    public void setIndex(int index) {
+        actor.setIndex(index);
     }
 }

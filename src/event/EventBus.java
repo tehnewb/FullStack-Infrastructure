@@ -1,135 +1,126 @@
 package event;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * EventBus handles the observer-event communications.
- * 
- * <p>
- * An EventBus allows objects to register as observers to receive events and
- * dispatch events to registered observers based on the event type.
- * </p>
- * 
- * <p>
- * Usage:
- * </p>
- * 
- * <pre>
- * EventBus eventBus = new EventBus();
- * eventBus.registerObserver(myObserver);
- * eventBus.post(new MyEvent());
- * </pre>
- * 
- * <p>
- * It provides support for event dispatching, registration of event observers,
- * and unregistering observers. Event handling can be asynchronous depending on
- * the observer's implementation.
- * </p>
- * 
- * <p>
- * This EventBus is designed to be thread-safe for concurrent use, allowing
- * events to be posted from multiple threads safely.
- * </p>
- * 
- * <p>
- * Please note that it is essential to unregister observers when they are no
- * longer needed to avoid memory leaks.
- * </p>
- * 
- * <p>
- * This implementation includes memory management using WeakReferences,
- * performance optimization with CopyOnWriteArrayList, and concurrent control
- * for safe multi-threaded access.
- * </p>
- * 
- * <p>
- * Error handling during event invocation is the responsibility of observers.
- * </p>
- * 
+ * An event bus for managing and dispatching events to registered observers.
+ *
  * @author Albert Beaupre
- * 
- * @see event.Event
- * @see event.EventObserver
  */
 public class EventBus {
 
-	private static final List<WeakReference<EventInvoker>> EMPTY_LIST = new CopyOnWriteArrayList<>(); // Used when cannot find a list of invokers
+    // Map to store event class -> List of invokers
+    private final Map<Class<?>, List<EventInvoker>> invokers = new HashMap<>();
 
-	private final Map<Class<?>, List<WeakReference<EventInvoker>>> invokers = new ConcurrentHashMap<>(); // holds all invokers extracted from observers
+    // List of blocked event classes
+    private final List<Class<?>> blockedEventClasses = new ArrayList<>();
 
-	/**
-	 * Posts the given {@code event} so that any observers are notified and the
-	 * methods that handle the given event are called.
-	 * 
-	 * @param event the event to post
-	 */
-	public void post(Event event) {
-		List<WeakReference<EventInvoker>> currentInvokers = invokers.getOrDefault(event.getClass(), EMPTY_LIST);
-		if (currentInvokers.isEmpty())
-			return;
+    /**
+     * Posts an event to all registered observers for that event type.
+     *
+     * @param event The event to be posted.
+     */
+    public void post(Object event) {
+        Class<?> eventClass = event.getClass();
 
-		for (WeakReference<EventInvoker> invokerRef : currentInvokers) {
-			EventInvoker invoker = invokerRef.get();
-			if (invoker != null) {
-				if (event.isConsumed()) return;
-				invoker.invoke(event);
-			}
-		}
-	}
+        List<EventInvoker> currentInvokers = invokers.get(eventClass);
+        if (currentInvokers == null || currentInvokers.isEmpty())
+            return; // No observers for this event
 
-	/**
-	 * Registers an object as an observer to receive events.
-	 * 
-	 * <p>
-	 * This method scans the methods of the provided {@code object} for those
-	 * annotated with {@link EventObserver} and associates them with the
-	 * corresponding event types.
-	 * </p>
-	 * 
-	 * @param object the object to extract invokers from
-	 * @throws IllegalArgumentException if {@code object} is null
-	 */
-	public void registerObserver(Object object) {
-		if (object == null)
-			throw new IllegalArgumentException("Observer object cannot be null.");
+        // Check if the event class is blocked
+        if (isEventClassBlocked(eventClass))
+            return; // Blocked events are not dispatched
 
-		Class<?> clazz = object.getClass();
-		for (Method method : clazz.getMethods()) {
-			method.setAccessible(true);
-			if (method.isAnnotationPresent(EventObserver.class) && method.getParameterCount() == 1) {
-				for (Class<?> type : method.getParameterTypes()) {
-					if (!Event.class.isAssignableFrom(type)) continue;
+        // Invoke event handling methods of registered observers
+        for (EventInvoker invoker : currentInvokers) {
+            if (invoker != null) {
+                invoker.invoke(event);
+            }
+        }
+    }
 
-					List<WeakReference<EventInvoker>> currentInvokers = invokers.computeIfAbsent(type, k -> new CopyOnWriteArrayList<>());
+    /**
+     * Registers an object as an observer and identifies methods with the @EventObserver annotation
+     * for handling specific event types.
+     *
+     * @param object The object to be registered as an observer.
+     */
+    public void registerObserver(Object object) {
+        if (object == null)
+            throw new IllegalArgumentException("Observer object cannot be null.");
 
-					EventInvoker invoker = new EventInvoker(object, method);
+        Class<?> clazz = object.getClass();
+        for (Method method : clazz.getMethods()) {
+            method.setAccessible(true);
+            if (method.isAnnotationPresent(EventObserver.class) && method.getParameterCount() == 1) {
+                for (Class<?> type : method.getParameterTypes()) {
+                    List<EventInvoker> currentInvokers = invokers.getOrDefault(type, new ArrayList<EventInvoker>());
+                    currentInvokers.add(new EventInvoker(object, method));
+                    invokers.put(type, currentInvokers);
+                }
+            }
+        }
+    }
 
-					currentInvokers.add(new WeakReference<>(invoker));
-				}
-			}
-		}
-	}
+    /**
+     * Posts an event to a specific observer object, invoking only the appropriate event handler method.
+     *
+     * @param observer The observer object that should handle the event.
+     * @param event    The event to be posted.
+     */
+    public void postOnly(Object observer, Object event) {
+        Class<?> clazz = observer.getClass();
+        for (Method method : clazz.getMethods()) {
+            method.setAccessible(true);
+            if (method.isAnnotationPresent(EventObserver.class) && method.getParameterCount() == 1) {
+                for (Class<?> type : method.getParameterTypes()) {
+                    if (type.isInstance(event)) {
+                        try {
+                            method.invoke(observer, event);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * Unregisters a specific observer.
-	 * 
-	 * @param object the object to unregister
-	 * @throws IllegalArgumentException if {@code object} is null
-	 */
-	public void unregisterObserver(Object object) {
-		if (object == null)
-			throw new IllegalArgumentException("Observer object cannot be null.");
+    /**
+     * Unregisters an observer object, removing its associated event handlers from the bus.
+     *
+     * @param object The observer object to be unregistered.
+     */
+    public void unregisterObserver(Object object) {
+        if (object == null)
+            throw new IllegalArgumentException("Observer object cannot be null.");
 
-		invokers.values().forEach(invokerList -> {
-			invokerList.removeIf(invokerRef -> {
-				EventInvoker invoker = invokerRef.get();
-				return invoker != null && invoker.object() == object;
-			});
-		});
-	}
+        // Remove invokers associated with the specified object
+        invokers.values().forEach(invokerList -> invokerList.removeIf(invoker -> invoker != null && invoker.object() == object));
+    }
+
+    /**
+     * Blocks events of a specified class from being dispatched by the event bus.
+     *
+     * @param eventClass The class of events to be blocked.
+     */
+    public void blockEvents(Class<?> eventClass) {
+        if (eventClass != null && !blockedEventClasses.contains(eventClass)) {
+            blockedEventClasses.add(eventClass);
+        }
+    }
+
+    /**
+     * Checks if events of a specific class are blocked from being dispatched.
+     *
+     * @param eventClass The class of events to check.
+     * @return True if the class of events is blocked, false otherwise.
+     */
+    private boolean isEventClassBlocked(Class<?> eventClass) {
+        return blockedEventClasses.contains(eventClass);
+    }
 }

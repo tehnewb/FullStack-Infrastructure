@@ -32,7 +32,18 @@ public class Value extends Number {
      * @return A new Value object with the specified initial value.
      */
     public static Value of(double number) {
-        return pool.borrowObject();
+        return pool.borrowObject().set(number);
+    }
+
+    /**
+     * Sets the number of this Value to the specified number.
+     *
+     * @param number The number to set
+     * @return This Value object after the number change.
+     */
+    public Value set(double number) {
+        this.number = number;
+        return this;
     }
 
     /**
