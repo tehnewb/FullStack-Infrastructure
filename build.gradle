@@ -2,15 +2,30 @@ plugins {
     id 'java'
     id 'idea'
     id 'java-library'
+    id 'maven-publish'
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            groupId = 'infrastructure'
+            artifactId = 'gdx'
+            version = "1.0"
+        }
+    }
+}
+
 
 project.ext.assetsDir = new File("../assets")
 
 ext {
     gdxVersion = '1.12.0'
 }
-group 'com.example'
-version '1.0-SNAPSHOT'
+
+group 'infrastructure'
+version '1.0'
 
 repositories {
     mavenCentral()
