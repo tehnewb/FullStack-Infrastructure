@@ -1,5 +1,7 @@
 package infrastructure.gdx.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -8,21 +10,21 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * The `TiledMap` class is designed to parse Tiled Map Editor (TMX) files and extract
  * essential information such as map layers and objects. It uses the LibGDX library for XML
- * parsing and provides an easy-to-use interface for accessing map tileIndices.
+ * parsing and provides an easy-to-use interface for accessing map data.
  *
  * @author Albert Beaupre
  */
 public class TiledMap {
 
     private final Element root;
-    private final List<MapLayer> layers;
-    private final List<MapObject> objects;
+    private final HashMap<String, MapLayer> underlays;
+    private final HashMap<String, MapLayer> overlays;
+    private final HashMap<String, MapObject> objects;
     private final int mapWidth;
     private final int mapHeight;
     private final int tileWidth;
@@ -34,7 +36,7 @@ public class TiledMap {
      * Constructs a `TiledMap` instance to parse the provided TMX file data and tileset.
      *
      * @param tmxData The TMX file data as a byte array.
-     * @param tileSet  The tileset data as a byte array.
+     * @param tileSet The tileset data as a byte array.
      */
     public TiledMap(byte[] tmxData, byte[] tileSet) {
         // Initialize XML reader for parsing.
@@ -42,8 +44,9 @@ public class TiledMap {
 
         // Parse the TMX file data.
         this.root = reader.parse(new ByteArrayInputStream(tmxData));
-        this.layers = new ArrayList<>();
-        this.objects = new ArrayList<>();
+        this.underlays = new HashMap<>();
+        this.overlays = new HashMap<>();
+        this.objects = new HashMap<>();
         this.mapWidth = root.getIntAttribute("width", 0);
         this.mapHeight = root.getIntAttribute("height", 0);
         this.tileWidth = root.getIntAttribute("tilewidth", 0);
@@ -55,17 +58,21 @@ public class TiledMap {
     }
 
     /**
-     * Renders the parsed map using the specified batch.
+     * Renders the underlays using the specified batch.
      *
      * @param batch The batch used for rendering.
      */
-    public void render(Batch batch) {
-        for (MapLayer layer : layers) {
+    public void renderUnderlays(Batch batch, int centerX, int centerY, int tileRadius) {
+        for (MapLayer layer : underlays.values()) {
             if (layer == null)
                 continue;
-            for (int mx = 0; mx < mapWidth; mx++) {
-                for (int my = 0; my < mapHeight; my++) {
-                    int tileIndex = layer.tileIndices()[mx][my];
+            for (int my = centerY - tileRadius; my < centerY + tileRadius; my++) {
+                for (int mx = centerX - tileRadius; mx < centerX + tileRadius; mx++) {
+                    if (mx < 0 || my < 0 || mx >= mapWidth || my >= mapHeight)
+                        continue;
+                    int tileIndex = layer.tileIndices()[my][mx] - 1;
+                    if (tileIndex <= 0)
+                        continue;
                     Texture texture = this.tiles[tileIndex];
 
                     // Render the tile at the specified position.
@@ -75,7 +82,30 @@ public class TiledMap {
         }
     }
 
-    // Private methods for internal parsing and processing:
+    /**
+     * Renders the overlays using the specified batch.
+     *
+     * @param batch The batch used for rendering.
+     */
+    public void renderOverlays(Batch batch, int centerX, int centerY, int tileRadius) {
+        for (MapLayer layer : overlays.values()) {
+            if (layer == null)
+                continue;
+            for (int my = centerY - tileRadius; my < centerY + tileRadius; my++) {
+                for (int mx = centerX - tileRadius; mx < centerX + tileRadius; mx++) {
+                    if (mx < 0 || my < 0 || mx >= mapWidth || my >= mapHeight)
+                        continue;
+                    int tileIndex = layer.tileIndices()[my][mx] - 1;
+                    if (tileIndex <= 0)
+                        continue;
+                    Texture texture = this.tiles[tileIndex];
+
+                    // Render the tile at the specified position.
+                    batch.draw(texture, mx * tileWidth, my * tileHeight, tileWidth, tileHeight);
+                }
+            }
+        }
+    }
 
     /**
      * Splits the provided tileset data into individual textures for each tile.
@@ -84,17 +114,17 @@ public class TiledMap {
      */
     private void splitIntoTiles(byte[] tileSet) {
         Pixmap pixmap = new Pixmap(tileSet, 0, tileSet.length);
-        int cellWidth = pixmap.getWidth() / this.getTileWidth();
-        int cellHeight = pixmap.getHeight() / this.getTileHeight();
-        this.tiles = new Texture[cellWidth * cellHeight];
+        int rows = pixmap.getWidth() / this.getTileWidth();
+        int columns = pixmap.getHeight() / this.getTileHeight();
+        this.tiles = new Texture[rows * columns];
 
         int index = 0;
-        for (int y = 0; y < cellWidth; y++) {
-            for (int x = 0; x < cellHeight; x++) {
-                int startX = x * cellWidth;
-                int startY = y * cellHeight;
-                Pixmap subPixmap = new Pixmap(cellWidth, cellHeight, pixmap.getFormat());
-                subPixmap.drawPixmap(pixmap, 0, 0, startX, startY, cellWidth, cellHeight);
+        for (int y = 0; y < columns; y++) {
+            for (int x = 0; x < rows; x++) {
+                int startX = x * tileWidth;
+                int startY = y * tileHeight;
+                Pixmap subPixmap = new Pixmap(tileWidth, tileHeight, pixmap.getFormat());
+                subPixmap.drawPixmap(pixmap, 0, 0, startX, startY, tileWidth, tileHeight);
                 this.tiles[index++] = new Texture(subPixmap);
                 subPixmap.dispose(); // Dispose of the temporary Pixmap
             }
@@ -110,12 +140,33 @@ public class TiledMap {
         Array<Element> mapLayers = root.getChildrenByName("layer");
         if (mapLayers != null) {
             for (Element layerElement : mapLayers) {
+                HashMap<String, Object> layerProperties = new HashMap<>();
                 String layerName = layerElement.getAttribute("name", "");
-                String layerData = layerElement.getChildByName("tileIndices").getText();
-
+                String layerData = layerElement.getChildByName("data").getText();
+                Element properties = layerElement.getChildByName("properties");
+                boolean overlay = false;
+                if (properties != null) {
+                    for (Element property : properties.getChildrenByName("property")) {
+                        String name = property.getAttribute("name");
+                        String valueName = property.getAttribute("value").trim();
+                        Object value = switch (property.getAttribute("type")) {
+                            case "bool" -> Boolean.parseBoolean(valueName);
+                            case "file" -> Gdx.files.internal(valueName);
+                            case "color" -> Color.valueOf(valueName);
+                            case "int" -> Integer.parseInt(valueName);
+                            case "float" -> Float.parseFloat(valueName);
+                            default -> property.getAttribute("value");
+                        };
+                        layerProperties.put(name, value);
+                    }
+                }
                 int[][] tileData = parseLayerIndices(layerData);
-                MapLayer mapLayer = new MapLayer(layerName, tileData);
-                layers.add(mapLayer);
+                MapLayer mapLayer = new MapLayer(layerName, tileData, layerProperties);
+                if (layerProperties.containsKey("overlay")) {
+                    overlays.put(layerName, mapLayer);
+                } else {
+                    underlays.put(layerName, mapLayer);
+                }
             }
         }
     }
@@ -151,7 +202,7 @@ public class TiledMap {
                 } else if ("rectangle".equalsIgnoreCase(objectType)) {
                     mapObject = new MapObject(objectName, x, y, width, height, MapObjectType.RECTANGLE);
                 }
-                objects.add(mapObject);
+                objects.put(objectName, mapObject);
             }
         }
     }
@@ -164,16 +215,15 @@ public class TiledMap {
      */
     private int[][] parseLayerIndices(String layerData) {
         String[] tileStrings = layerData.trim().split(",");
-        int[][] tileIndices = new int[mapWidth][mapHeight];
-
+        int[][] data = new int[mapHeight][mapWidth];
         int index = 0;
-        for (int y = 0; y < mapHeight; y++) {
+        for (int y = mapHeight - 1; y >= 0; y--) {
             for (int x = 0; x < mapWidth; x++) {
-                tileIndices[x][y] = Integer.parseInt(tileStrings[index].trim());
+                data[y][x] = Integer.parseInt(tileStrings[index].trim());
                 index++;
             }
         }
-        return tileIndices;
+        return data;
     }
 
     /**
@@ -199,20 +249,29 @@ public class TiledMap {
     }
 
     /**
-     * Gets the list of map layers parsed from the TMX file.
+     * Gets the map of map layers parsed from the TMX file that are rendered over the player.
      *
-     * @return A list of `MapLayer` objects.
+     * @return A map of overlay layers.
      */
-    public List<MapLayer> getLayers() {
-        return layers;
+    public HashMap<String, MapLayer> getOverlays() {
+        return overlays;
     }
 
     /**
-     * Gets the list of map objects parsed from the TMX file.
+     * Gets the map of map layers parsed from the TMX file that are rendered under the player.
      *
-     * @return A list of `MapObject` objects.
+     * @return A map of underlay layers.
      */
-    public List<MapObject> getObjects() {
+    public HashMap<String, MapLayer> getUnderlays() {
+        return underlays;
+    }
+
+    /**
+     * Gets the map of map objects parsed from the TMX file.
+     *
+     * @return A map of `MapObject` objects.
+     */
+    public HashMap<String, MapObject> getObjects() {
         return objects;
     }
 

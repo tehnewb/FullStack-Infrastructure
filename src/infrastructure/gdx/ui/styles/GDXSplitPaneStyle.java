@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXSplitPaneStyle extends SplitPane.SplitPaneStyle {
-    private static GDXSplitPaneStyle defaults;
+    private static GDXSplitPaneStyle defaults = new GDXSplitPaneStyle();
 
     /**
      * Returns the current GDXSplitPaneStyle instance with default settings.

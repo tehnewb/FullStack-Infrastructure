@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXTextTooltipStyle extends TextTooltip.TextTooltipStyle {
-    private static GDXTextTooltipStyle defaults;
+    private static GDXTextTooltipStyle defaults = new GDXTextTooltipStyle();
 
     /**
      * Returns the current GDXTextTooltipStyle instance with default settings.

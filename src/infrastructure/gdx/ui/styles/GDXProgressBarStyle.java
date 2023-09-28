@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXProgressBarStyle extends ProgressBar.ProgressBarStyle {
-    private static GDXProgressBarStyle defaults;
+    private static GDXProgressBarStyle defaults = new GDXProgressBarStyle();
 
     /**
      * Returns the current GDXProgressBarStyle instance with default settings.

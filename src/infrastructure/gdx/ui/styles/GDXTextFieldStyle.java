@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXTextFieldStyle extends TextField.TextFieldStyle {
-    private static GDXTextFieldStyle defaults;
+    private static GDXTextFieldStyle defaults = new GDXTextFieldStyle();
 
     /**
      * Returns the current GDXTextFieldStyle instance with default settings.

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  */
 public class GDXImageButtonStyle extends ImageButton.ImageButtonStyle {
 
-    private static GDXImageButtonStyle defaults;
+    private static GDXImageButtonStyle defaults = new GDXImageButtonStyle();
 
 
     /**

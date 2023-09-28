@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  */
 public class GDXButtonStyle extends Button.ButtonStyle {
 
-    private static GDXButtonStyle defaults;
+    private static GDXButtonStyle defaults = new GDXButtonStyle();
 
     /**
      * Returns the current GDXButtonStyle instance with default settings.

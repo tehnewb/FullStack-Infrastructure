@@ -13,11 +13,11 @@ import java.util.zip.Inflater;
 /**
  * The `CompressionStrategy` interface defines the contract for classes that implement various compression
  * and decompression algorithms. Classes implementing this interface should provide methods to encode (compress)
- * and decode (decompress) tileIndices, typically represented as byte arrays.
+ * and decode (decompress) data, typically represented as byte arrays.
  * <p>
- * Implementations of this interface can be used to compress and decompress tileIndices in a consistent manner,
+ * Implementations of this interface can be used to compress and decompress data in a consistent manner,
  * allowing for flexibility in choosing different compression algorithms while maintaining a common interface.
- * This is particularly useful when dealing with various tileIndices storage or transmission scenarios where different
+ * This is particularly useful when dealing with various data storage or transmission scenarios where different
  * compression techniques may be more suitable.
  *
  * @author Albert Beaupre
@@ -26,7 +26,7 @@ public interface CompressionStrategy {
 
     /**
      * The Gzip class implements the CompressionStrategy interface and provides methods
-     * for compressing and decompressing tileIndices using the GZIP (GNU ZIP) compression algorithm.
+     * for compressing and decompressing data using the GZIP (GNU ZIP) compression algorithm.
      * <p>
      * GZIP is a widely used file compression format that is commonly found in various
      * file formats and protocols, including HTTP compression and compressed archive formats
@@ -38,8 +38,8 @@ public interface CompressionStrategy {
         /**
          * Compresses the given byte array using the GZIP compression algorithm.
          *
-         * @param data The input tileIndices to be compressed.
-         * @return The compressed tileIndices as a byte array.
+         * @param data The input data to be compressed.
+         * @return The compressed data as a byte array.
          * @throws CompressionException If an error occurs during compression.
          */
         @Override
@@ -58,8 +58,8 @@ public interface CompressionStrategy {
         /**
          * Decompresses the given byte array using the GZIP decompression algorithm.
          *
-         * @param data The compressed tileIndices to be decompressed.
-         * @return The decompressed tileIndices as a byte array.
+         * @param data The compressed data to be decompressed.
+         * @return The decompressed data as a byte array.
          * @throws CompressionException If an error occurs during decompression.
          */
         @Override
@@ -82,9 +82,9 @@ public interface CompressionStrategy {
 
     /**
      * The Deflate class implements the CompressionStrategy interface and provides methods
-     * for compressing and decompressing tileIndices using the Deflate compression algorithm.
+     * for compressing and decompressing data using the Deflate compression algorithm.
      * <p>
-     * Deflate is a widely used lossless tileIndices compression algorithm that is supported by
+     * Deflate is a widely used lossless data compression algorithm that is supported by
      * various file formats and protocols, including ZIP files and HTTP compression. This class
      * uses the java.util.zip.Deflater and java.util.zip.Inflater classes to perform compression
      * and decompression, respectively.
@@ -96,8 +96,8 @@ public interface CompressionStrategy {
         /**
          * Compresses the given byte array using the Deflate compression algorithm.
          *
-         * @param data The input tileIndices to be compressed.
-         * @return The compressed tileIndices as a byte array.
+         * @param data The input data to be compressed.
+         * @return The compressed data as a byte array.
          * @throws CompressionException If an error occurs during compression.
          */
         @Override
@@ -121,8 +121,8 @@ public interface CompressionStrategy {
         /**
          * Decompresses the given byte array using the Deflate decompression algorithm.
          *
-         * @param data The compressed tileIndices to be decompressed.
-         * @return The decompressed tileIndices as a byte array.
+         * @param data The compressed data to be decompressed.
+         * @return The decompressed data as a byte array.
          * @throws CompressionException If an error occurs during decompression.
          */
         @Override
@@ -145,18 +145,18 @@ public interface CompressionStrategy {
     };
 
     /**
-     * Compresses the input tileIndices represented as a byte array.
+     * Compresses the input data represented as a byte array.
      *
-     * @param data The input tileIndices to be compressed.
-     * @return A byte array containing the compressed tileIndices.
+     * @param data The input data to be compressed.
+     * @return A byte array containing the compressed data.
      */
     byte[] compress(byte[] data);
 
     /**
-     * Decompresses the input tileIndices represented as a byte array.
+     * Decompresses the input data represented as a byte array.
      *
-     * @param data The input tileIndices to be decompressed.
-     * @return A byte array containing the decompressed tileIndices.
+     * @param data The input data to be decompressed.
+     * @return A byte array containing the decompressed data.
      */
     byte[] decompress(byte[] data);
 

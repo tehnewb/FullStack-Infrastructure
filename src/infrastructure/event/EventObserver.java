@@ -10,7 +10,6 @@ import java.lang.annotation.Target;
  * observe an event. The method must have 1 parameter, that being the event observed.
  *
  * @author Albert Beaupre
- * @see event.Event
  * @see EventBus
  */
 @Target(ElementType.METHOD)

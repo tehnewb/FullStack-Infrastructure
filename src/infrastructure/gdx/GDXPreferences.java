@@ -12,12 +12,12 @@ public final class GDXPreferences {
     }
 
     /**
-     * Retrieves the user-specific application tileIndices directory based on the current operating system.
+     * Retrieves the user-specific application data directory based on the current operating system.
      * On Windows, it uses the APPDATA environment variable. On macOS, it returns "Library/Preferences",
      * and on Linux, it uses the XDG_CONFIG_HOME environment variable. If none of these are available,
      * it falls back to the ".prefs" directory.
      *
-     * @return The path to the user's application tileIndices directory.
+     * @return The path to the user's application data directory.
      */
     public static String getUserAppDataDirectory() {
         if (UIUtils.isWindows) {

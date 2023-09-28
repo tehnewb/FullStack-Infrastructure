@@ -47,7 +47,7 @@ public class GDXGame implements ApplicationListener {
     /**
      * Loads the game's cache from a specified location.
      *
-     * @param cacheLocation The location of the cache tileIndices to load.
+     * @param cacheLocation The location of the cache data to load.
      */
     public static void loadCache(String cacheLocation) {
         FileHandle handle = Gdx.files.internal(cacheLocation);
@@ -106,7 +106,9 @@ public class GDXGame implements ApplicationListener {
         screen.update(delta);
 
         // Render the current screen using the SpriteBatch
+        batch.begin();
         screen.render(batch);
+        batch.end();
 
         // Update any tick-based game components
         Tick.updateTicks(delta);

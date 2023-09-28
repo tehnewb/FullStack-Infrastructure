@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXListStyle extends List.ListStyle {
-    private static GDXListStyle defaults;
+    private static GDXListStyle defaults = new GDXListStyle();
 
     /**
      * Returns the current GDXListStyle instance with default settings.

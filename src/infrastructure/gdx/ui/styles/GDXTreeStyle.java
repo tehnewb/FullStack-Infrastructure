@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXTreeStyle extends Tree.TreeStyle {
-    private static GDXTreeStyle defaults;
+    private static GDXTreeStyle defaults = new GDXTreeStyle();
 
     /**
      * Returns the current GDXTreeStyle instance with default settings.

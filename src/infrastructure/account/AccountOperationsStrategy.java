@@ -1,24 +1,24 @@
 package infrastructure.account;
 
 /**
- * The AccountOperations interface defines methods for loading and saving user account tileIndices.
+ * The AccountOperations interface defines methods for loading and saving user account data.
  *
  * @author Albert Beaupre
  */
 public interface AccountOperationsStrategy {
 
     /**
-     * Load account tileIndices based on the provided identifier.
+     * Load account data based on the provided identifier.
      *
      * @param identifier The identifier of the account that needs to be loaded.
-     * @return A byte array containing the loaded account tileIndices, or null if the tileIndices is not found.
+     * @return A byte array containing the loaded account data, or null if the data is not found.
      */
     byte[] load(String identifier);
 
     /**
-     * Save user account tileIndices.
+     * Save user account data.
      *
-     * @param data The byte array representing the account tileIndices to be saved.
+     * @param data The byte array representing the account data to be saved.
      */
     void save(byte[] data);
 }

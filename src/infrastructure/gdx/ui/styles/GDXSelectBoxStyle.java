@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXSelectBoxStyle extends SelectBox.SelectBoxStyle {
-    private static GDXSelectBoxStyle defaults;
+    private static GDXSelectBoxStyle defaults = new GDXSelectBoxStyle();
 
     /**
      * Returns the current GDXSelectBoxStyle instance with default settings.

@@ -3,8 +3,8 @@ package infrastructure.net;
 import infrastructure.io.buffer.DynamicByteBuffer;
 
 /**
- * The Packet class represents a network packet that contains tileIndices to be sent or received over a network connection.
- * It extends the DynamicByteBuffer class, which is a buffer used for efficiently managing binary tileIndices.
+ * The Packet class represents a network packet that contains data to be sent or received over a network connection.
+ * It extends the DynamicByteBuffer class, which is a buffer used for efficiently managing binary data.
  *
  * @author Albert Beaupre
  */

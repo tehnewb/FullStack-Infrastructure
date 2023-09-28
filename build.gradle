@@ -5,9 +5,13 @@ plugins {
     id 'maven-publish'
 }
 
+java {
+    withSourcesJar()
+}
+
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
 
             groupId = 'infrastructure'
@@ -16,7 +20,6 @@ publishing {
         }
     }
 }
-
 
 project.ext.assetsDir = new File("../assets")
 

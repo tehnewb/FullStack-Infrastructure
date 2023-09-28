@@ -6,15 +6,15 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * The `Account` class represents a user account and provides methods to manage its tileIndices.
- * It uses a HashMap to store tileIndices associated with variable names and employs a ReadWriteLock
- * to control concurrent access to the account tileIndices.
+ * The `Account` class represents a user account and provides methods to manage its data.
+ * It uses a HashMap to store data associated with variable names and employs a ReadWriteLock
+ * to control concurrent access to the account data.
  *
  * @author Albert Beaupre
  * @see AccountDatabase
  */
 public class Account {
-    // A HashMap to store the account's tileIndices, where variable names are keys and values are associated tileIndices.
+    // A HashMap to store the account's data, where variable names are keys and values are associated data.
     private final Map<String, Object> data = new HashMap<>();
 
     // A ReadWriteLock to ensure safe concurrent access to the accountData map.

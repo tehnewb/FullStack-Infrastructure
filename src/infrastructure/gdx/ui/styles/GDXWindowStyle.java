@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXWindowStyle extends Window.WindowStyle {
-    private static GDXWindowStyle defaults;
+    private static GDXWindowStyle defaults = new GDXWindowStyle();
 
     /**
      * Returns the current GDXWindowStyle instance with default settings.

@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  */
 public class GDXLabelStyle extends Label.LabelStyle {
 
-    private static GDXLabelStyle defaults;
+    private static GDXLabelStyle defaults = new GDXLabelStyle();
 
 
     /**

@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
 /**
- * A dynamic byte array that provides methods to store and retrieve various tileIndices types with a growing internal array.
+ * A dynamic byte array that provides methods to store and retrieve various data types with a growing internal array.
  *
  * @author Albert Beaupre
  */
@@ -80,7 +80,7 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
     }
 
     /**
-     * Constructs a DynamicByteArray with the specified tileIndices byte array.
+     * Constructs a DynamicByteArray with the specified data byte array.
      *
      * @param data The byte array to fill as the internal array.
      */
@@ -337,7 +337,7 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
      * Retrieves a byte array value from the dynamic byte array at the current read position.
      *
      * @param length The length of the byte array to retrieve.
-     * @return A byte array containing the tileIndices from the dynamic byte array.
+     * @return A byte array containing the data from the dynamic byte array.
      * @throws IndexOutOfBoundsException if the read position is out of bounds.
      */
     public byte[] readBytes(int length) {
@@ -467,7 +467,7 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
      *
      * @param index  The index from which to retrieve the byte array value.
      * @param length The length of the byte array to retrieve.
-     * @return A byte array containing the tileIndices from the dynamic byte array.
+     * @return A byte array containing the data from the dynamic byte array.
      * @throws IndexOutOfBoundsException if the index is out of bounds.
      */
     public byte[] readBytes(int index, int length) {
@@ -512,7 +512,7 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
     /**
      * Converts the dynamic byte array to a regular byte array of the current size.
      *
-     * @return A byte array containing the tileIndices stored in the dynamic byte array.
+     * @return A byte array containing the data stored in the dynamic byte array.
      */
     public byte[] toArray() {
         byte[] result = new byte[size];
@@ -560,7 +560,7 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("DynamicByteArray [size=").append(size).append(", tileIndices=");
+        sb.append("DynamicByteArray [size=").append(size).append(", data=");
         for (int i = 0; i < size; i++) {
             sb.append(data[i]).append(" ");
         }

@@ -33,8 +33,8 @@ import java.util.Arrays;
  * Differences from version 2.0:
  * <p>
  * - Generation of ISO/IEC 10118-3 test vectors. - Bug fix: nonzero
- * carry was ignored when tallying the tileIndices length (this bug apparently
- * only manifested itself when feeding tileIndices in pieces rather than in a
+ * carry was ignored when tallying the data length (this bug apparently
+ * only manifested itself when feeding data in pieces rather than in a
  * single chunk at once).
  * <p>
  * Differences from version 1.0:
@@ -116,7 +116,7 @@ public class Whirlpool {
      */
     protected byte[] bitLength = new byte[32];
     /**
-     * Buffer of tileIndices to hash.
+     * Buffer of data to hash.
      */
     protected byte[] buffer = new byte[64];
     /**
@@ -221,9 +221,9 @@ public class Whirlpool {
     }
 
     /**
-     * Delivers input tileIndices to the hashing algorithm.
+     * Delivers input data to the hashing algorithm.
      *
-     * @param source     plaintext tileIndices to hash.
+     * @param source     plaintext data to hash.
      * @param sourceBits how many bits of plaintext to process.
      *                   <p>
      *                   This method maintains the invariant: bufferBits < 512
@@ -235,11 +235,11 @@ public class Whirlpool {
          * |||||||||||||||||||||| buffer
          * +-------+-------+-------+-------+-------+------- | bufferPos
          */
-        int sourcePos = 0; // index of leftmost source byte containing tileIndices (1 to 8 bits).
+        int sourcePos = 0; // index of leftmost source byte containing data (1 to 8 bits).
         int sourceGap = (8 - ((int) sourceBits & 7)) & 7; // space on source[sourcePos].
         int bufferRem = bufferBits & 7; // occupied bits on buffer[bufferPos].
         int b;
-        // tally the length of the added tileIndices:
+        // tally the length of the added data:
         long value = sourceBits;
         for (int i = 31, carry = 0; i >= 0; i--) {
             carry += (bitLength[i] & 0xff) + ((int) value & 0xff);
@@ -247,8 +247,8 @@ public class Whirlpool {
             carry >>>= 8;
             value >>>= 8;
         }
-        // process tileIndices in chunks of 8 bits:
-        while (sourceBits > 8) { // at least source[sourcePos] and source[sourcePos+1] contain tileIndices.
+        // process data in chunks of 8 bits:
+        while (sourceBits > 8) { // at least source[sourcePos] and source[sourcePos+1] contain data.
             // take a byte from the source:
             b = ((source[sourcePos] << sourceGap) & 0xff) | ((source[sourcePos + 1] & 0xff) >>> (8 - sourceGap));
             if (b < 0 || b >= 256) {
@@ -258,19 +258,19 @@ public class Whirlpool {
             buffer[bufferPos++] |= b >>> bufferRem;
             bufferBits += 8 - bufferRem; // bufferBits = 8*bufferPos;
             if (bufferBits == 512) {
-                // process tileIndices block:
+                // process data block:
                 processBuffer();
                 // reset buffer:
                 bufferBits = bufferPos = 0;
             }
             buffer[bufferPos] = (byte) ((b << (8 - bufferRem)) & 0xff);
             bufferBits += bufferRem;
-            // proceed to remaining tileIndices:
+            // proceed to remaining data:
             sourceBits -= 8;
             sourcePos++;
         }
         // now 0 <= sourceBits <= 8;
-        // furthermore, all tileIndices (if any is left) is in source[sourcePos].
+        // furthermore, all data (if any is left) is in source[sourcePos].
         if (sourceBits > 0) {
             b = (source[sourcePos] << sourceGap) & 0xff; // bits are left-justified on b.
             // process the remaining bits:
@@ -279,16 +279,16 @@ public class Whirlpool {
             b = 0;
         }
         if (bufferRem + sourceBits < 8) {
-            // all remaining tileIndices fits on buffer[bufferPos], and there still remains some space.
+            // all remaining data fits on buffer[bufferPos], and there still remains some space.
             bufferBits += sourceBits;
         } else {
             // buffer[bufferPos] is full:
             bufferPos++;
             bufferBits += 8 - bufferRem; // bufferBits = 8*bufferPos;
             sourceBits -= 8 - bufferRem;
-            // now 0 <= sourceBits < 8; furthermore, all tileIndices is in source[sourcePos].
+            // now 0 <= sourceBits < 8; furthermore, all data is in source[sourcePos].
             if (bufferBits == 512) {
-                // process tileIndices block:
+                // process data block:
                 processBuffer();
                 // reset buffer:
                 bufferBits = bufferPos = 0;
@@ -312,7 +312,7 @@ public class Whirlpool {
             while (bufferPos < 64) {
                 buffer[bufferPos++] = 0;
             }
-            // process tileIndices block:
+            // process data block:
             processBuffer();
             // reset buffer:
             bufferPos = 0;
@@ -320,9 +320,9 @@ public class Whirlpool {
         while (bufferPos < 32) {
             buffer[bufferPos++] = 0;
         }
-        // append bit length of hashed tileIndices:
+        // append bit length of hashed data:
         System.arraycopy(bitLength, 0, buffer, 32, 32);
-        // process tileIndices block:
+        // process data block:
         processBuffer();
         // return the completed message digest:
         for (int i = 0, j = 0; i < 8; i++, j += 8) {
@@ -339,9 +339,9 @@ public class Whirlpool {
     }
 
     /**
-     * Delivers string input tileIndices to the hashing algorithm.
+     * Delivers string input data to the hashing algorithm.
      *
-     * @param source plaintext tileIndices to hash (ASCII text string).
+     * @param source plaintext data to hash (ASCII text string).
      *               <p>
      *               This method maintains the invariant: bufferBits < 512
      */

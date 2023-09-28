@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class represents an asynchronous account database that provides methods to load and save
- * account tileIndices. It includes in-memory caching for faster access to frequently accessed accounts.
+ * account data. It includes in-memory caching for faster access to frequently accessed accounts.
  * The database operations are performed asynchronously using a thread pool.
  *
  * @author Albert Beaupre
@@ -22,9 +22,9 @@ public class AccountDatabase {
     private static final Logger logger = LoggerFactory.getLogger(AccountDatabase.class);
 
     private ExecutorService executor = Executors.newFixedThreadPool(10); // Thread pool for asynchronous tasks
-    private Map<String, byte[]> cache = new ConcurrentHashMap<>(); // In-memory cache for account tileIndices
-    private AccountSerializationStrategy serializer; // Responsible for serializing/deserializing account tileIndices
-    private AccountOperationsStrategy operations; // Provides methods for loading and saving account tileIndices
+    private Map<String, byte[]> cache = new ConcurrentHashMap<>(); // In-memory cache for account data
+    private AccountSerializationStrategy serializer; // Responsible for serializing/deserializing account data
+    private AccountOperationsStrategy operations; // Provides methods for loading and saving account data
     private int maxCacheSize = 1000; // Maximum size of the cache
     private Queue<String> cacheEvictionQueue = new ConcurrentLinkedQueue<>(); // Queue for cache eviction
     private ReentrantLock cacheLock = new ReentrantLock(); // Lock for ensuring thread safety during cache updates
@@ -33,7 +33,7 @@ public class AccountDatabase {
      * Constructs an `AccountWorker` object with given operations and serialization strategies used for saving and loading and serializing and deserializing.
      *
      * @param operationsStrategy    The operations strategy used for loading and saving accounts
-     * @param serializationStrategy The serialization strategy used for serializing and deserializing account tileIndices
+     * @param serializationStrategy The serialization strategy used for serializing and deserializing account data
      */
     public AccountDatabase(AccountOperationsStrategy operationsStrategy, AccountSerializationStrategy serializationStrategy) {
         this.operations = operationsStrategy;
@@ -62,11 +62,11 @@ public class AccountDatabase {
                 // Account not found in cache, load it from storage
                 byte[] loadedData = operations.load(identifier);
 
-                if (loadedData == null) throw new IllegalStateException("Account tileIndices not found in storage");
+                if (loadedData == null) throw new IllegalStateException("Account data not found in storage");
 
                 Account account = serializer.deserialize(loadedData);
 
-                // Store the loaded tileIndices in cache for future use
+                // Store the loaded data in cache for future use
                 setCachedAccountData(identifier, loadedData);
 
                 logger.debug("Account Loaded: " + identifier);
@@ -94,7 +94,7 @@ public class AccountDatabase {
 
             operations.save(serializedData);
 
-            // Update the cache with the latest tileIndices
+            // Update the cache with the latest data
             setCachedAccountData(account.getIdentifier(), serializedData);
 
             logger.debug("Account Saved: " + account.getIdentifier());
@@ -109,20 +109,20 @@ public class AccountDatabase {
     }
 
     /**
-     * Retrieve cached account tileIndices by account ID.
+     * Retrieve cached account data by account ID.
      *
      * @param identifier The ID of the account to retrieve from cache.
-     * @return The cached account tileIndices as a byte array, or null if not found in cache.
+     * @return The cached account data as a byte array, or null if not found in cache.
      */
     private byte[] getCachedAccountData(String identifier) {
         return cache.get(identifier);
     }
 
     /**
-     * Store account tileIndices in the cache.
+     * Store account data in the cache.
      *
      * @param identifier The ID of the account to store in cache.
-     * @param data       The account tileIndices to store as a byte array.
+     * @param data       The account data to store as a byte array.
      */
     private void setCachedAccountData(String identifier, byte[] data) {
         cacheLock.lock();

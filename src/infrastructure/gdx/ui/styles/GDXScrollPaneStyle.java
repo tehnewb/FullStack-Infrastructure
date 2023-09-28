@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXScrollPaneStyle extends ScrollPane.ScrollPaneStyle {
-    private static GDXScrollPaneStyle defaults;
+    private static GDXScrollPaneStyle defaults = new GDXScrollPaneStyle();
 
     /**
      * Returns the current GDXScrollPaneStyle instance with default settings.

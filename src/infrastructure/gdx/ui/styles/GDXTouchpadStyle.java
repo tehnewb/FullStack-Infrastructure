@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXTouchpadStyle extends Touchpad.TouchpadStyle {
-    private static GDXTouchpadStyle defaults;
+    private static GDXTouchpadStyle defaults = new GDXTouchpadStyle();
 
     /**
      * Returns the current GDXTouchpadStyle instance with default settings.

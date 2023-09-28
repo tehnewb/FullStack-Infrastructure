@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXCheckboxStyle extends CheckBox.CheckBoxStyle {
-    private static GDXCheckboxStyle defaults;
+    private static GDXCheckboxStyle defaults = new GDXCheckboxStyle();
 
     /**
      * Returns the current GDXCheckboxStyle instance with default settings.

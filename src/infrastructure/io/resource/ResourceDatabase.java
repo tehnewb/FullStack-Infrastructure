@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 /**
  * This class represents an asynchronous resource database that provides methods to load and save
- * resource tileIndices. It includes in-memory caching for faster access to frequently accessed resources.
+ * resource data. It includes in-memory caching for faster access to frequently accessed resources.
  * The database operations are performed asynchronously using a thread pool.
  * <p>
  * The database supports different types of resources, and you can register operations strategies
@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 public class ResourceDatabase {
     private static final Logger logger = LoggerFactory.getLogger(ResourceDatabase.class);
     private final ExecutorService executor = Executors.newFixedThreadPool(10); // Thread pool for asynchronous tasks
-    private final ConcurrentHashMap<String, Object> cache = new ConcurrentHashMap<>(); // In-memory cache for resource tileIndices
+    private final ConcurrentHashMap<String, Object> cache = new ConcurrentHashMap<>(); // In-memory cache for resource data
     private final ConcurrentHashMap<Class<?>, ResourceOperationsStrategy<?>> operators = new ConcurrentHashMap<>();
 
     /**
@@ -99,17 +99,17 @@ public class ResourceDatabase {
     }
 
     /**
-     * Retrieve cached resource tileIndices by its identifier.
+     * Retrieve cached resource data by its identifier.
      *
      * @param identifier The ID of the resource to retrieve from cache.
-     * @return The cached resource tileIndices, or null if not found in cache.
+     * @return The cached resource data, or null if not found in cache.
      */
     public <T> T getCachedResourceData(String identifier, Class<T> type) {
         return type.cast(cache.get(identifier));
     }
 
     /**
-     * Store resource tileIndices in the cache.
+     * Store resource data in the cache.
      *
      * @param identifier The ID of the resource to store in cache.
      * @param resource   The resource object to store in cache.

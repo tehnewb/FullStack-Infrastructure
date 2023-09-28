@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Albert Beaupre
  */
 public class GDXSliderStyle extends Slider.SliderStyle {
-    private static GDXSliderStyle defaults;
+    private static GDXSliderStyle defaults = new GDXSliderStyle();
 
     /**
      * Returns the current GDXSliderStyle instance with default settings.

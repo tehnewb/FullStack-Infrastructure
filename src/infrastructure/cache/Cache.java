@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.zip.CRC32;
 
 /**
- * The Cache class is used to manage a cache of tileIndices in the form of CacheFolder objects. It provides methods to add and remove
- * folders, encode the cache, and decode tileIndices into a cache.
+ * The Cache class is used to manage a cache of data in the form of CacheFolder objects. It provides methods to add and remove
+ * folders, encode the cache, and decode data into a cache.
  *
  * @author Albert Beaupre
  */
@@ -18,10 +18,10 @@ public class Cache {
     private float progress;
 
     /**
-     * Decodes the given tileIndices and creates a Cache instance based on the folders and files within the decoded tileIndices.
+     * Decodes the given data and creates a Cache instance based on the folders and files within the decoded data.
      *
-     * @param data     the encoded cache tileIndices
-     * @param strategy the strategy used to decompress the tileIndices
+     * @param data     the encoded cache data
+     * @param strategy the strategy used to decompress the data
      */
     public void decompress(CompressionStrategy strategy, byte[] data) {
         try (DynamicByteBuffer in = new DynamicByteBuffer(strategy.decompress(data))) {
@@ -52,7 +52,7 @@ public class Cache {
     }
 
     /**
-     * Encodes this Cache by storing the tileIndices from the folders and files into a byte array.
+     * Encodes this Cache by storing the data from the folders and files into a byte array.
      *
      * @return the byte array with the folders and files within
      */

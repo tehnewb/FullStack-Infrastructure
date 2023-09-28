@@ -19,7 +19,7 @@ public abstract class GDXScreen {
      *
      * @param batch The Batch used for rendering 2D graphics.
      */
-    abstract void render(Batch batch);
+    public abstract void render(Batch batch);
 
     /**
      * Called to update the logic of the screen. This method typically handles game logic,
@@ -27,7 +27,7 @@ public abstract class GDXScreen {
      *
      * @param delta The time elapsed since the last frame, in seconds.
      */
-    abstract void update(float delta);
+    public abstract void update(float delta);
 
     /**
      * Called when the screen's size has changed, such as when the game window is resized.
@@ -35,19 +35,19 @@ public abstract class GDXScreen {
      * @param width  The new width of the screen.
      * @param height The new height of the screen.
      */
-    abstract void resize(int width, int height);
+    public abstract void resize(int width, int height);
 
     /**
      * Called when the screen is first created. This method is used for initializing resources,
      * setting up the initial state, and preparing the screen for rendering and updates.
      */
-    abstract void create();
+    public abstract void create();
 
     /**
      * Called when the screen is being destroyed or switched to another screen. Implementations
      * should release any resources, clean up, and perform necessary cleanup operations.
      */
-    abstract void destroy();
+    public abstract void destroy();
 
     public boolean isPaused() {
         return paused;
