@@ -97,7 +97,7 @@ public class CacheFolder {
      * @return The count of cache files.
      */
     public int getSize() {
-        return files.size();
+        return files.capacity();
     }
 
     /**

@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * The GDXSliderStyle class extends LibGDX's Slider.SliderStyle, providing customization options
  * for the appearance of sliders. It allows you to specify properties such as background drawables,
  * knob drawables, and drawables for different states (over, down) of the slider components.
+ *
+ * @author Albert Beaupre
  */
 public class GDXSliderStyle extends Slider.SliderStyle {
     private static GDXSliderStyle defaults;

@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 /**
  * The GDXTouchpadStyle class extends LibGDX's Touchpad.TouchpadStyle, providing customization options
  * for the appearance of touchpads. It allows you to specify properties such as background and knob drawables.
+ *
+ * @author Albert Beaupre
  */
 public class GDXTouchpadStyle extends Touchpad.TouchpadStyle {
     private static GDXTouchpadStyle defaults;

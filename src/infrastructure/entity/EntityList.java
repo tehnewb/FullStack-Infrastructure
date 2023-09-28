@@ -217,6 +217,16 @@ public class EntityList<T extends Entity> implements Collection<T> {
         return size;
     }
 
+
+    /**
+     * Returns the maximum number of entities there can be in this list.
+     *
+     * @return the maximum number of entities there can be in this list.
+     */
+    public int capacity() {
+        return entities.length;
+    }
+
     /**
      * Checks if the list is empty.
      *

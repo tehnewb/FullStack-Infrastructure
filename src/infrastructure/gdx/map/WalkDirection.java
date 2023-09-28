@@ -1,4 +1,4 @@
-package infrastructure.map;
+package infrastructure.gdx.map;
 
 /**
  * This enum represents the cardinal directions used for navigation: NORTH, SOUTH, EAST, and WEST.

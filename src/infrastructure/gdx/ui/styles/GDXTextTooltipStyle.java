@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 /**
  * The GDXTextTooltipStyle class extends LibGDX's Tooltip.TooltipStyle, providing customization options
  * for the appearance of text tooltips. It allows you to specify properties such as label style and background.
+ *
+ * @author Albert Beaupre
  */
 public class GDXTextTooltipStyle extends TextTooltip.TextTooltipStyle {
     private static GDXTextTooltipStyle defaults;

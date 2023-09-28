@@ -2,15 +2,15 @@ package infrastructure.gdx.ui.styles;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import infrastructure.gdx.assets.GDXFontFolder;
 
 /**
  * The GDXFontStyle class extends FreeTypeFontParameter and provides dedicated methods for customization
  * of font rendering using FreeTypeFontGenerator.
+ *
+ * @author Albert Beaupre
  */
 public class GDXFontStyle extends FreeTypeFontParameter {
 
@@ -23,8 +23,6 @@ public class GDXFontStyle extends FreeTypeFontParameter {
      */
     public GDXFontStyle(String fontName) {
         this.fontName = fontName;
-
-        GDXFontFolder.get(fontName);
     }
 
     /**
@@ -37,15 +35,6 @@ public class GDXFontStyle extends FreeTypeFontParameter {
         return new GDXFontStyle(fontName);
     }
 
-
-    /**
-     * Generates a BitmapFont using the specified font style.
-     *
-     * @return The generated BitmapFont.
-     */
-    public BitmapFont generate() {
-        return GDXFontFolder.get(fontName).generateFont(this);
-    }
 
     /**
      * Sets the font size.

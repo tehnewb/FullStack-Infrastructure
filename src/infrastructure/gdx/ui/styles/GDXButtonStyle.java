@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 /**
  * The GDXButtonStyle class extends LibGDX's Button.ButtonStyle, providing customization options for button appearance.
  * It allows you to specify various drawables for different button states and set offsets for pressed, unpressed, and checked states.
+ *
+ * @author Albert Beaupre
  */
 public class GDXButtonStyle extends Button.ButtonStyle {
 

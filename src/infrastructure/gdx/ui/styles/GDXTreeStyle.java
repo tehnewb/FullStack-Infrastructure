@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * The GDXTreeStyle class extends LibGDX's Tree.TreeStyle, providing customization options
  * for the appearance of trees. It allows you to specify properties such as expand/collapse icons,
  * over icons, selection drawables, and background drawables.
+ *
+ * @author Albert Beaupre
  */
 public class GDXTreeStyle extends Tree.TreeStyle {
     private static GDXTreeStyle defaults;

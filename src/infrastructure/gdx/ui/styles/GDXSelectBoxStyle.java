@@ -6,12 +6,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import infrastructure.gdx.assets.GDXTextureFolder;
 
 /**
  * The GDXSelectBoxStyle class extends LibGDX's SelectBox.SelectBoxStyle, providing customization options
  * for the appearance of select boxes. It allows you to specify properties such as fonts, font colors,
  * backgrounds, scroll styles, list styles, and various states' backgrounds.
+ *
+ * @author Albert Beaupre
  */
 public class GDXSelectBoxStyle extends SelectBox.SelectBoxStyle {
     private static GDXSelectBoxStyle defaults;

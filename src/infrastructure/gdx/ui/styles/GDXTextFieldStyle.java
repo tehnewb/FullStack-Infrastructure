@@ -4,12 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import infrastructure.gdx.assets.GDXTextureFolder;
 
 /**
  * The GDXTextFieldStyle class extends LibGDX's TextField.TextFieldStyle, providing customization options
  * for the appearance of text fields. It allows you to specify properties such as fonts, font colors,
  * backgrounds, cursor drawables, selection drawables, and message fonts for text fields.
+ *
+ * @author Albert Beaupre
  */
 public class GDXTextFieldStyle extends TextField.TextFieldStyle {
     private static GDXTextFieldStyle defaults;

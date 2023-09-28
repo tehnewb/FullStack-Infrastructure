@@ -4,12 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import infrastructure.gdx.assets.GDXTextureFolder;
 
 /**
  * The GDXCheckboxStyle class extends LibGDX's CheckBox.CheckBoxStyle, providing customization options
  * for the appearance of checkbox widgets. It allows you to specify different drawables for various
  * states of the checkbox, such as checked (on), unchecked (off), hover, and disabled states.
+ *
+ * @author Albert Beaupre
  */
 public class GDXCheckboxStyle extends CheckBox.CheckBoxStyle {
     private static GDXCheckboxStyle defaults;

@@ -47,7 +47,7 @@ public class GDXGame implements ApplicationListener {
     /**
      * Loads the game's cache from a specified location.
      *
-     * @param cacheLocation The location of the cache data to load.
+     * @param cacheLocation The location of the cache tileIndices to load.
      */
     public static void loadCache(String cacheLocation) {
         FileHandle handle = Gdx.files.internal(cacheLocation);

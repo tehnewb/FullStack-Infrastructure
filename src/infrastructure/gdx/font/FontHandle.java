@@ -6,28 +6,28 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
- * The FontHandle class extends the LibGDX FileHandle class and is used for handling font data as a byte array.
- * It provides methods to read the font data as an input stream and get its length.
+ * The FontHandle class extends the LibGDX FileHandle class and is used for handling font tileIndices as a byte array.
+ * It provides methods to read the font tileIndices as an input stream and get its length.
  *
  * @author Albert Beaupre
  */
 public class FontHandle extends FileHandle {
 
-    private final byte[] data; // The byte array containing the font data.
+    private final byte[] data; // The byte array containing the font tileIndices.
 
     /**
-     * Constructs a FontHandle object with the given font data.
+     * Constructs a FontHandle object with the given font tileIndices.
      *
-     * @param data The byte array containing the font data.
+     * @param data The byte array containing the font tileIndices.
      */
     public FontHandle(byte[] data) {
         this.data = data;
     }
 
     /**
-     * Returns an input stream for reading the font data.
+     * Returns an input stream for reading the font tileIndices.
      *
-     * @return An input stream containing the font data.
+     * @return An input stream containing the font tileIndices.
      */
     @Override
     public InputStream read() {
@@ -35,9 +35,9 @@ public class FontHandle extends FileHandle {
     }
 
     /**
-     * Returns the length of the font data in bytes.
+     * Returns the length of the font tileIndices in bytes.
      *
-     * @return The length of the font data.
+     * @return The length of the font tileIndices.
      */
     @Override
     public long length() {

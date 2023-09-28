@@ -9,21 +9,21 @@ import javazoom.jl.decoder.*;
 import java.io.ByteArrayInputStream;
 
 /**
- * The `Mp3` class is a custom extension of LibGDX's `OpenALMusic` class, designed to play MP3 audio data
- * from a byte array. It utilizes the JavaZoom JLayer library to decode the MP3 data and OpenAL for audio playback.
+ * The `Mp3` class is a custom extension of LibGDX's `OpenALMusic` class, designed to play MP3 audio tileIndices
+ * from a byte array. It utilizes the JavaZoom JLayer library to decode the MP3 tileIndices and OpenAL for audio playback.
  * This class provides methods for initializing, reading, and resetting the MP3 audio stream.
  */
 public class Mp3 extends OpenALMusic {
 
-    private final byte[] data;        // The raw MP3 audio data in a byte array.
+    private final byte[] data;        // The raw MP3 audio tileIndices in a byte array.
     private Bitstream bitstream; // Bitstream used for reading the MP3 frames.
     private OutputBuffer outputBuffer; // Output buffer for decoded audio frames.
     private MP3Decoder decoder; // MP3 decoder for decoding MP3 frames.
 
     /**
-     * Constructs an `Mp3` object with the provided MP3 audio data in a byte array.
+     * Constructs an `Mp3` object with the provided MP3 audio tileIndices in a byte array.
      *
-     * @param data The raw MP3 audio data in a byte array.
+     * @param data The raw MP3 audio tileIndices in a byte array.
      */
     public Mp3(byte[] data) {
         super((OpenALLwjgl3Audio) Gdx.audio, null); // Initialize the parent class.
@@ -45,9 +45,9 @@ public class Mp3 extends OpenALMusic {
     }
 
     /**
-     * Reads audio data from the MP3 byte array and fills the provided buffer.
+     * Reads audio tileIndices from the MP3 byte array and fills the provided buffer.
      *
-     * @param buffer The byte array buffer to fill with audio data.
+     * @param buffer The byte array buffer to fill with audio tileIndices.
      * @return The total number of bytes read into the buffer.
      */
     @Override
@@ -88,7 +88,7 @@ public class Mp3 extends OpenALMusic {
             return totalLength;
         } catch (Throwable ex) {
             reset();
-            throw new GdxRuntimeException("Error reading audio data.", ex);
+            throw new GdxRuntimeException("Error reading audio tileIndices.", ex);
         }
     }
 

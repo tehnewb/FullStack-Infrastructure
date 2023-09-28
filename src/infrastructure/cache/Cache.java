@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.zip.CRC32;
 
 /**
- * The Cache class is used to manage a cache of data in the form of CacheFolder objects. It provides methods to add and remove
- * folders, encode the cache, and decode data into a cache.
+ * The Cache class is used to manage a cache of tileIndices in the form of CacheFolder objects. It provides methods to add and remove
+ * folders, encode the cache, and decode tileIndices into a cache.
  *
  * @author Albert Beaupre
  */
@@ -18,10 +18,10 @@ public class Cache {
     private float progress;
 
     /**
-     * Decodes the given data and creates a Cache instance based on the folders and files within the decoded data.
+     * Decodes the given tileIndices and creates a Cache instance based on the folders and files within the decoded tileIndices.
      *
-     * @param data     the encoded cache data
-     * @param strategy the strategy used to decompress the data
+     * @param data     the encoded cache tileIndices
+     * @param strategy the strategy used to decompress the tileIndices
      */
     public void decompress(CompressionStrategy strategy, byte[] data) {
         try (DynamicByteBuffer in = new DynamicByteBuffer(strategy.decompress(data))) {
@@ -33,6 +33,8 @@ public class Cache {
                 CacheFolder folder = new CacheFolder(folderIndex, folderName);
                 for (int j = 0; j < folderSize; j++) {
                     short cacheFileIndex = in.readShort();
+                    if (cacheFileIndex == -1) // unused index
+                        continue;
                     byte version = in.readByte();
                     byte type = in.readByte();
                     String fileName = in.readString();
@@ -50,7 +52,7 @@ public class Cache {
     }
 
     /**
-     * Encodes this Cache by storing the data from the folders and files into a byte array.
+     * Encodes this Cache by storing the tileIndices from the folders and files into a byte array.
      *
      * @return the byte array with the folders and files within
      */
@@ -64,6 +66,10 @@ public class Cache {
                 out.writeString(folder.getName());
                 for (int cacheFileID = 0; cacheFileID < folder.getSize(); cacheFileID++) {
                     CacheFile file = folder.get(cacheFileID);
+                    if (file == null) {
+                        out.writeShort(-1);
+                        continue;
+                    }
                     out.writeShort(file.getIndex());
                     out.writeByte(file.getVersion());
                     out.writeByte(file.getType());
@@ -93,7 +99,10 @@ public class Cache {
 
             for (int i = 0; i < folder.getSize(); i++) {
                 CacheFile file = folder.get(i);
-                if (file == null) continue;
+                if (file == null) { // unused index
+                    crc32.update(0);
+                    continue;
+                }
                 crc32.update(file.getIndex());
                 crc32.update(file.getVersion());
                 crc32.update(file.getType());

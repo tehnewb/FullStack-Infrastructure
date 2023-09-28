@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 /**
  * The PixmapDrawable class is a versatile drawable in the LibGDX framework that
  * combines the capabilities of a Pixmap and a Drawable. It allows you to create
- * a drawable object from image data stored in a Pixmap, which can be easily used
+ * a drawable object from image tileIndices stored in a Pixmap, which can be easily used
  * within LibGDX's Scene2D framework or other graphical components.
  * <p>
  * A PixmapDrawable wraps a Pixmap and generates a Texture internally for rendering
@@ -34,6 +34,7 @@ import java.nio.ByteBuffer;
  * stage.addActor(imageActor);
  * ```
  *
+ * @author Albert Beaupre
  * @see com.badlogic.gdx.graphics.Pixmap
  * @see com.badlogic.gdx.graphics.Texture
  * @see com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -55,11 +56,11 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     }
 
     /**
-     * Creates a new PixmapDrawable from encoded image data.
+     * Creates a new PixmapDrawable from encoded image tileIndices.
      *
-     * @param encodedData An array of encoded image data.
-     * @param offset      The offset within the data array.
-     * @param len         The length of the data to use.
+     * @param encodedData An array of encoded image tileIndices.
+     * @param offset      The offset within the tileIndices array.
+     * @param len         The length of the tileIndices to use.
      */
     public PixmapDrawable(byte[] encodedData, int offset, int len) {
         super(encodedData, offset, len);
@@ -67,11 +68,11 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     }
 
     /**
-     * Creates a new PixmapDrawable from a ByteBuffer containing encoded image data.
+     * Creates a new PixmapDrawable from a ByteBuffer containing encoded image tileIndices.
      *
-     * @param encodedData A ByteBuffer containing encoded image data.
+     * @param encodedData A ByteBuffer containing encoded image tileIndices.
      * @param offset      The offset within the ByteBuffer.
-     * @param len         The length of the data to use.
+     * @param len         The length of the tileIndices to use.
      */
     public PixmapDrawable(ByteBuffer encodedData, int offset, int len) {
         super(encodedData, offset, len);
@@ -79,9 +80,9 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     }
 
     /**
-     * Creates a new PixmapDrawable from a ByteBuffer containing encoded image data.
+     * Creates a new PixmapDrawable from a ByteBuffer containing encoded image tileIndices.
      *
-     * @param encodedData A ByteBuffer containing encoded image data.
+     * @param encodedData A ByteBuffer containing encoded image tileIndices.
      */
     public PixmapDrawable(ByteBuffer encodedData) {
         super(encodedData);
@@ -112,6 +113,10 @@ public class PixmapDrawable extends Pixmap implements Drawable {
         if (texture != null) {
             batch.draw(texture, x, y, width, height);
         }
+    }
+
+    public NinePatchDrawable toNinePatch(int left, int right, int top, int bottom) {
+        return new NinePatchDrawable(new NinePatch(texture, left, right, top, bottom));
     }
 
     /**
@@ -263,10 +268,6 @@ public class PixmapDrawable extends Pixmap implements Drawable {
             texture.dispose();
             texture = null;
         }
-    }
-
-    public NinePatchDrawable toNinePatch(int left, int right, int top, int bottom) {
-        return new NinePatchDrawable(new NinePatch(texture, left, right, top, bottom));
     }
 
 }

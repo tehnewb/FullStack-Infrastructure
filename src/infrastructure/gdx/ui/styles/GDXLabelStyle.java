@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 /**
  * The GDXLabelStyle class extends LibGDX's Label.LabelStyle, providing customization options for the appearance of labels.
  * It allows you to specify the font, text color, and background drawable of a label.
+ *
+ * @author Albert Beaupre
  */
 public class GDXLabelStyle extends Label.LabelStyle {
 

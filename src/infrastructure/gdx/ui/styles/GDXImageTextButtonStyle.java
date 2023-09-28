@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * The GDXImageTextButtonStyle class extends LibGDX's ImageTextButton.ImageTextButtonStyle, providing customization options
  * for the appearance of image text buttons. It allows you to specify different drawables for various
  * states of the image text button, such as up, down, over, and disabled states.
+ *
+ * @author Albert Beaupre
  */
 public class GDXImageTextButtonStyle extends ImageTextButton.ImageTextButtonStyle {
 

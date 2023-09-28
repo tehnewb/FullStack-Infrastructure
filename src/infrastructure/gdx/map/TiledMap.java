@@ -1,0 +1,263 @@
+package infrastructure.gdx.map;
+
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.XmlReader;
+import com.badlogic.gdx.utils.XmlReader.Element;
+
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * The `TiledMap` class is designed to parse Tiled Map Editor (TMX) files and extract
+ * essential information such as map layers and objects. It uses the LibGDX library for XML
+ * parsing and provides an easy-to-use interface for accessing map tileIndices.
+ *
+ * @author Albert Beaupre
+ */
+public class TiledMap {
+
+    private final Element root;
+    private final List<MapLayer> layers;
+    private final List<MapObject> objects;
+    private final int mapWidth;
+    private final int mapHeight;
+    private final int tileWidth;
+    private final int tileHeight;
+    private final String mapOrientation;
+    private Texture[] tiles;
+
+    /**
+     * Constructs a `TiledMap` instance to parse the provided TMX file data and tileset.
+     *
+     * @param tmxData The TMX file data as a byte array.
+     * @param tileSet  The tileset data as a byte array.
+     */
+    public TiledMap(byte[] tmxData, byte[] tileSet) {
+        // Initialize XML reader for parsing.
+        XmlReader reader = new XmlReader();
+
+        // Parse the TMX file data.
+        this.root = reader.parse(new ByteArrayInputStream(tmxData));
+        this.layers = new ArrayList<>();
+        this.objects = new ArrayList<>();
+        this.mapWidth = root.getIntAttribute("width", 0);
+        this.mapHeight = root.getIntAttribute("height", 0);
+        this.tileWidth = root.getIntAttribute("tilewidth", 0);
+        this.tileHeight = root.getIntAttribute("tileheight", 0);
+        this.mapOrientation = root.getAttribute("orientation", "");
+        this.parseMapLayers();
+        this.parseObjectLayers();
+        this.splitIntoTiles(tileSet);
+    }
+
+    /**
+     * Renders the parsed map using the specified batch.
+     *
+     * @param batch The batch used for rendering.
+     */
+    public void render(Batch batch) {
+        for (MapLayer layer : layers) {
+            if (layer == null)
+                continue;
+            for (int mx = 0; mx < mapWidth; mx++) {
+                for (int my = 0; my < mapHeight; my++) {
+                    int tileIndex = layer.tileIndices()[mx][my];
+                    Texture texture = this.tiles[tileIndex];
+
+                    // Render the tile at the specified position.
+                    batch.draw(texture, mx * tileWidth, my * tileHeight, tileWidth, tileHeight);
+                }
+            }
+        }
+    }
+
+    // Private methods for internal parsing and processing:
+
+    /**
+     * Splits the provided tileset data into individual textures for each tile.
+     *
+     * @param tileSet The tileset data as a byte array.
+     */
+    private void splitIntoTiles(byte[] tileSet) {
+        Pixmap pixmap = new Pixmap(tileSet, 0, tileSet.length);
+        int cellWidth = pixmap.getWidth() / this.getTileWidth();
+        int cellHeight = pixmap.getHeight() / this.getTileHeight();
+        this.tiles = new Texture[cellWidth * cellHeight];
+
+        int index = 0;
+        for (int y = 0; y < cellWidth; y++) {
+            for (int x = 0; x < cellHeight; x++) {
+                int startX = x * cellWidth;
+                int startY = y * cellHeight;
+                Pixmap subPixmap = new Pixmap(cellWidth, cellHeight, pixmap.getFormat());
+                subPixmap.drawPixmap(pixmap, 0, 0, startX, startY, cellWidth, cellHeight);
+                this.tiles[index++] = new Texture(subPixmap);
+                subPixmap.dispose(); // Dispose of the temporary Pixmap
+            }
+        }
+
+        pixmap.dispose();
+    }
+
+    /**
+     * Parses the map layers from the TMX file and adds them to the `layers` list.
+     */
+    private void parseMapLayers() {
+        Array<Element> mapLayers = root.getChildrenByName("layer");
+        if (mapLayers != null) {
+            for (Element layerElement : mapLayers) {
+                String layerName = layerElement.getAttribute("name", "");
+                String layerData = layerElement.getChildByName("tileIndices").getText();
+
+                int[][] tileData = parseLayerIndices(layerData);
+                MapLayer mapLayer = new MapLayer(layerName, tileData);
+                layers.add(mapLayer);
+            }
+        }
+    }
+
+    /**
+     * Parses object layers from the TMX file and adds them to the `objects` list.
+     */
+    private void parseObjectLayers() {
+        Element objectLayers = root.getChildByName("objectgroup");
+        if (objectLayers != null) {
+            for (Element objectGroup : objectLayers.getChildrenByName("object")) {
+                String objectName = objectGroup.getAttribute("name", "");
+                float x = objectGroup.getFloatAttribute("x", 0);
+                float y = objectGroup.getFloatAttribute("y", 0);
+                float width = objectGroup.getFloatAttribute("width", 0);
+                float height = objectGroup.getFloatAttribute("height", 0);
+
+                MapObject mapObject = new MapObject(objectName, x, y, width, height);
+
+                // Check object type and parse accordingly
+                String objectType = objectGroup.getAttribute("type", "");
+                if ("ellipse".equalsIgnoreCase(objectType)) {
+                    mapObject = new MapObject(objectName, x, y, width, height, MapObjectType.ELLIPSE);
+                } else if ("polygon".equalsIgnoreCase(objectType) || "polyline".equalsIgnoreCase(objectType)) {
+                    // Polygon or Polyline object
+                    Element objectPolygon = objectGroup.getChildByName("polygon");
+                    Element objectPolyline = objectGroup.getChildByName("polyline");
+
+                    if (objectPolygon != null || objectPolyline != null) {
+                        String points = objectPolygon.getAttribute("points", "");
+                        mapObject = new MapObject(objectName, x, y, width, height, MapObjectType.POLYGON, parsePolygonOrPolylinePoints(points));
+                    }
+                } else if ("rectangle".equalsIgnoreCase(objectType)) {
+                    mapObject = new MapObject(objectName, x, y, width, height, MapObjectType.RECTANGLE);
+                }
+                objects.add(mapObject);
+            }
+        }
+    }
+
+    /**
+     * Parses the tile indices for a map layer from a comma-separated string.
+     *
+     * @param layerData The comma-separated tile indices data.
+     * @return A 2D array of tile indices for the layer.
+     */
+    private int[][] parseLayerIndices(String layerData) {
+        String[] tileStrings = layerData.trim().split(",");
+        int[][] tileIndices = new int[mapWidth][mapHeight];
+
+        int index = 0;
+        for (int y = 0; y < mapHeight; y++) {
+            for (int x = 0; x < mapWidth; x++) {
+                tileIndices[x][y] = Integer.parseInt(tileStrings[index].trim());
+                index++;
+            }
+        }
+        return tileIndices;
+    }
+
+    /**
+     * Parses the points data for polygon or polyline objects.
+     *
+     * @param points The points data as a string.
+     * @return An array of vertex coordinates for the object.
+     */
+    private float[] parsePolygonOrPolylinePoints(String points) {
+        String[] pointPairs = points.trim().split(" ");
+        int numVertices = pointPairs.length;
+        float[] vertices = new float[numVertices * 2]; // Each vertex has x and y, so 2 values per vertex.
+
+        for (int i = 0; i < numVertices; i++) {
+            String pair = pointPairs[i];
+            String[] xy = pair.split(",");
+            if (xy.length == 2) {
+                vertices[i * 2] = Float.parseFloat(xy[0].trim()); // x-coordinate
+                vertices[i * 2 + 1] = Float.parseFloat(xy[1].trim()); // y-coordinate
+            }
+        }
+        return vertices;
+    }
+
+    /**
+     * Gets the list of map layers parsed from the TMX file.
+     *
+     * @return A list of `MapLayer` objects.
+     */
+    public List<MapLayer> getLayers() {
+        return layers;
+    }
+
+    /**
+     * Gets the list of map objects parsed from the TMX file.
+     *
+     * @return A list of `MapObject` objects.
+     */
+    public List<MapObject> getObjects() {
+        return objects;
+    }
+
+    /**
+     * Gets the width of the parsed map in tiles.
+     *
+     * @return The map width in tiles.
+     */
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    /**
+     * Gets the height of the parsed map in tiles.
+     *
+     * @return The map height in tiles.
+     */
+    public int getMapHeight() {
+        return mapHeight;
+    }
+
+    /**
+     * Gets the width of a tile in pixels.
+     *
+     * @return The tile width in pixels.
+     */
+    public int getTileWidth() {
+        return tileWidth;
+    }
+
+    /**
+     * Gets the height of a tile in pixels.
+     *
+     * @return The tile height in pixels.
+     */
+    public int getTileHeight() {
+        return tileHeight;
+    }
+
+    /**
+     * Gets the orientation of the parsed map (e.g., "orthogonal" or "isometric").
+     *
+     * @return The map orientation as a string.
+     */
+    public String getMapOrientation() {
+        return mapOrientation;
+    }
+}

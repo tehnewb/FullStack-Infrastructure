@@ -4,15 +4,15 @@ import infrastructure.entity.Entity;
 
 /**
  * The CacheFile class represents a game file stored within a Cache Index. It is
- * designed to efficiently store and manage binary data associated with the game.
+ * designed to efficiently store and manage binary tileIndices associated with the game.
  * <p>
  * Each CacheFile is identified by an index, contains a version number, a name,
- * and the actual binary data of the file. The class provides methods to access
+ * and the actual binary tileIndices of the file. The class provides methods to access
  * and manipulate these properties.
  * <p>
  * This class is used in game development and caching systems to store and retrieve
  * game assets efficiently. It is intended for use in scenarios where quick access
- * to binary data files is required.
+ * to binary tileIndices files is required.
  *
  * @author Albert Beaupre
  */
@@ -40,7 +40,7 @@ public class CacheFile implements Entity {
     private String name;
 
     /**
-     * The binary data of the CacheFile, which contains the actual contents of
+     * The binary tileIndices of the CacheFile, which contains the actual contents of
      * the game asset.
      */
     private byte[] data;
@@ -61,7 +61,7 @@ public class CacheFile implements Entity {
      * @param version The version number of the CacheFile.
      * @param type    The type of CacheFile.
      * @param name    The name of the CacheFile.
-     * @param data    The binary data of the CacheFile.
+     * @param data    The binary tileIndices of the CacheFile.
      */
     public CacheFile(int index, int version, int type, String name, byte[] data) {
         this.index = index;
@@ -144,18 +144,18 @@ public class CacheFile implements Entity {
     }
 
     /**
-     * Gets the binary data of the CacheFile.
+     * Gets the binary tileIndices of the CacheFile.
      *
-     * @return The binary data of this CacheFile.
+     * @return The binary tileIndices of this CacheFile.
      */
     public byte[] getData() {
         return data;
     }
 
     /**
-     * Sets the binary data of the CacheFile.
+     * Sets the binary tileIndices of the CacheFile.
      *
-     * @param data The binary data to set.
+     * @param data The binary tileIndices to set.
      */
     public void setData(byte[] data) {
         this.data = data;

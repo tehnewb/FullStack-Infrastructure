@@ -2,12 +2,13 @@ package infrastructure.gdx.ui.styles;
 
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import infrastructure.gdx.assets.GDXTextureFolder;
 
 /**
  * The GDXScrollPaneStyle class extends LibGDX's ScrollPane.ScrollPaneStyle, providing customization options
  * for the appearance of scroll panes. It allows you to specify properties such as background drawables,
  * corner drawables, horizontal scroll drawables, and vertical scroll drawables for scroll panes.
+ *
+ * @author Albert Beaupre
  */
 public class GDXScrollPaneStyle extends ScrollPane.ScrollPaneStyle {
     private static GDXScrollPaneStyle defaults;

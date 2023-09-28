@@ -6,6 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 /**
  * The GDXSplitPaneStyle class extends LibGDX's SplitPane.SplitPaneStyle, providing customization options
  * for the appearance of split panes. It allows you to specify the handle drawable used for split panes.
+ *
+ * @author Albert Beaupre
  */
 public class GDXSplitPaneStyle extends SplitPane.SplitPaneStyle {
     private static GDXSplitPaneStyle defaults;

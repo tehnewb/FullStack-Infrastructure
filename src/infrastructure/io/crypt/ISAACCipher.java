@@ -5,8 +5,8 @@ package infrastructure.io.crypt;
  * which is a cryptographically secure pseudorandom number generator (PRNG) and can be used for encryption purposes.
  * <p>
  * The ISAAC algorithm is designed to produce a stream of pseudorandom integers. This class allows you to initialize
- * the cipher with a byte array key and then use it to encrypt data. It uses a combination of bitwise operations and
- * mixing functions to generate random numbers and perform data encryption.
+ * the cipher with a byte array key and then use it to encrypt tileIndices. It uses a combination of bitwise operations and
+ * mixing functions to generate random numbers and perform tileIndices encryption.
  * <p>
  * Usage:
  *
@@ -15,9 +15,9 @@ package infrastructure.io.crypt;
  * byte[] key = new byte[16];
  * ISAACCipher cipher = new ISAACCipher(key);
  * <p>
- * // Encrypt data using the cipher
- * byte[] data = ...; // Data to be encrypted
- * cipher.encrypt(data);
+ * // Encrypt tileIndices using the cipher
+ * byte[] tileIndices = ...; // Data to be encrypted
+ * cipher.encrypt(tileIndices);
  * </pre>
  *
  * @author Albert Beaupre
@@ -142,9 +142,9 @@ public class ISAACCipher {
     }
 
     /**
-     * Encrypts the given data using the ISAAC cipher.
+     * Encrypts the given tileIndices using the ISAAC cipher.
      *
-     * @param data The data to be encrypted in place.
+     * @param data The tileIndices to be encrypted in place.
      */
     public void encrypt(byte[] data) {
         for (int i = 0; i < data.length; i++) {

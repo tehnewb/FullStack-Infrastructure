@@ -4,12 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import infrastructure.gdx.assets.GDXTextureFolder;
 
 /**
  * The GDXTextButtonStyle class extends LibGDX's TextButton.TextButtonStyle, providing customization options
  * for the appearance of text buttons. It allows you to specify different properties such as font, font color,
  * and font color for various states of the text button, such as up, down, over, and disabled states.
+ *
+ * @author Albert Beaupre
  */
 public class GDXTextButtonStyle extends TextButton.TextButtonStyle {
     private static GDXTextButtonStyle defaults;

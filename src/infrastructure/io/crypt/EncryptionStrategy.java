@@ -11,18 +11,18 @@ import java.security.*;
 public interface EncryptionStrategy {
 
     /**
-     * Encrypts the given data.
+     * Encrypts the given tileIndices.
      *
-     * @param data The data to be encrypted.
-     * @return The encrypted data as a byte array.
+     * @param data The tileIndices to be encrypted.
+     * @return The encrypted tileIndices as a byte array.
      */
     byte[] encrypt(byte[] data);
 
     /**
-     * Decrypts the given data.
+     * Decrypts the given tileIndices.
      *
-     * @param data The data to be decrypted.
-     * @return The decrypted data as a byte array.
+     * @param data The tileIndices to be decrypted.
+     * @return The decrypted tileIndices as a byte array.
      */
     byte[] decrypt(byte[] data);
 
@@ -49,10 +49,10 @@ public interface EncryptionStrategy {
         }
 
         /**
-         * Encrypts data using the RSA algorithm with the provided public key.
+         * Encrypts tileIndices using the RSA algorithm with the provided public key.
          *
-         * @param data The data to be encrypted.
-         * @return The encrypted data as a byte array.
+         * @param data The tileIndices to be encrypted.
+         * @return The encrypted tileIndices as a byte array.
          * @throws RuntimeException if encryption fails.
          */
         @Override
@@ -67,10 +67,10 @@ public interface EncryptionStrategy {
         }
 
         /**
-         * Decrypts data using the RSA algorithm with the provided private key.
+         * Decrypts tileIndices using the RSA algorithm with the provided private key.
          *
-         * @param data The data to be decrypted.
-         * @return The decrypted data as a byte array.
+         * @param data The tileIndices to be decrypted.
+         * @return The decrypted tileIndices as a byte array.
          * @throws RuntimeException if decryption fails.
          */
         @Override

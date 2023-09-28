@@ -4,12 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import infrastructure.gdx.assets.GDXTextureFolder;
 
 /**
  * The GDXListStyle class extends LibGDX's List.ListStyle, providing customization options
  * for the appearance of lists. It allows you to specify properties such as font, font colors,
  * drawables for selection, down, over, and background states of the list.
+ *
+ * @author Albert Beaupre
  */
 public class GDXListStyle extends List.ListStyle {
     private static GDXListStyle defaults;

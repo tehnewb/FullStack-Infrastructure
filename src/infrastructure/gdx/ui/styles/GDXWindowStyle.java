@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * The GDXWindowStyle class extends LibGDX's Window.WindowStyle, providing customization options
  * for the appearance of windows. It allows you to specify properties such as background drawable,
  * title font, title font color, and stage background drawable for windows.
+ *
+ * @author Albert Beaupre
  */
 public class GDXWindowStyle extends Window.WindowStyle {
     private static GDXWindowStyle defaults;
