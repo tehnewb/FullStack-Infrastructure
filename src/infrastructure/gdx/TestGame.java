@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import infrastructure.gdx.map.TiledMap;
@@ -45,7 +46,6 @@ public class TestGame extends GDXScreen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.zoom = 0.2f;
         stage = new Stage(new ScreenViewport(camera));
-        player.setSize(16, 16);
 
         GDXLabelStyle.defaults(new GDXLabelStyle().color(Color.BLACK).font(new BitmapFont()));
         GDXLabel label = GDXLabel.of("Player");
@@ -53,11 +53,13 @@ public class TestGame extends GDXScreen {
 
         label.align(Align.center);
         label.setPosition(0, 20);
-        player.addActor(label);
+        stage.addActor(label);
+
+        label.addAction(Actions.forever(Actions.run(() -> label.setText("FPS: " + Gdx.graphics.getFramesPerSecond()))));
     }
 
     @Override
-    public void render(Batch batch) {
+    public void render() {
         stage.draw();
     }
 
@@ -78,6 +80,7 @@ public class TestGame extends GDXScreen {
 
         camera.position.set(player.getX(), player.getY(), 0);
         camera.update();
+        stage.act(delta);
     }
 
     @Override

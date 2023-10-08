@@ -120,4 +120,29 @@ public class GDXCheckboxStyle extends CheckBox.CheckBoxStyle {
         this.fontColor = color;
         return this;
     }
+
+    /**
+     * Clones this GDXImageButtonStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXImageButtonStyle.
+     */
+    public GDXCheckboxStyle copy() {
+        GDXCheckboxStyle style = new GDXCheckboxStyle();
+        style.up = up;
+        style.down = down;
+        style.over = over;
+        style.focused = focused;
+        style.disabled = disabled;
+        style.checked = checked;
+        style.checkedOver = checkedOver;
+        style.checkedDown = checkedDown;
+        style.checkedFocused = checkedFocused;
+        style.pressedOffsetX = pressedOffsetX;
+        style.pressedOffsetY = pressedOffsetY;
+        style.unpressedOffsetX = unpressedOffsetX;
+        style.unpressedOffsetY = unpressedOffsetY;
+        style.checkedOffsetX = checkedOffsetX;
+        style.checkedOffsetY = checkedOffsetY;
+        return style;
+    }
 }

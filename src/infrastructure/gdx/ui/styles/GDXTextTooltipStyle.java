@@ -52,4 +52,16 @@ public class GDXTextTooltipStyle extends TextTooltip.TextTooltipStyle {
         this.background = background;
         return this;
     }
+
+    /**
+     * Clones this GDXTextTooltipStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXTextTooltipStyle.
+     */
+    public GDXTextTooltipStyle copy() {
+        GDXTextTooltipStyle style = new GDXTextTooltipStyle();
+        style.background = background;
+        style.label = label;
+        return style;
+    }
 }

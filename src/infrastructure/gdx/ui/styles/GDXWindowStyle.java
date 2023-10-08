@@ -76,4 +76,18 @@ public class GDXWindowStyle extends Window.WindowStyle {
         this.stageBackground = stageBackground;
         return this;
     }
+
+    /**
+     * Clones this GDXWindowStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXWindowStyle.
+     */
+    public GDXWindowStyle copy() {
+        GDXWindowStyle style = new GDXWindowStyle();
+        style.background = background;
+        style.titleFont = titleFont;
+        style.titleFontColor = titleFontColor;
+        style.stageBackground = stageBackground;
+        return style;
+    }
 }

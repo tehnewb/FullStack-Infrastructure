@@ -109,4 +109,36 @@ public class GDXImageButtonStyle extends ImageButton.ImageButtonStyle {
         this.imageCheckedOver = imageCheckedOver;
         return this;
     }
+
+    /**
+     * Clones this GDXImageButtonStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXImageButtonStyle.
+     */
+    public GDXImageButtonStyle copy() {
+        GDXImageButtonStyle style = new GDXImageButtonStyle();
+        style.imageChecked = imageChecked;
+        style.imageCheckedDown = imageCheckedDown;
+        style.imageCheckedOver = imageCheckedOver;
+        style.imageUp = imageUp;
+        style.imageDown = imageDown;
+        style.imageOver = imageOver;
+        style.imageDisabled = imageDisabled;
+        style.up = up;
+        style.down = down;
+        style.over = over;
+        style.focused = focused;
+        style.disabled = disabled;
+        style.checked = checked;
+        style.checkedOver = checkedOver;
+        style.checkedDown = checkedDown;
+        style.checkedFocused = checkedFocused;
+        style.pressedOffsetX = pressedOffsetX;
+        style.pressedOffsetY = pressedOffsetY;
+        style.unpressedOffsetX = unpressedOffsetX;
+        style.unpressedOffsetY = unpressedOffsetY;
+        style.checkedOffsetX = checkedOffsetX;
+        style.checkedOffsetY = checkedOffsetY;
+        return style;
+    }
 }

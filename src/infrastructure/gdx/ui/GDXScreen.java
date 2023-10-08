@@ -1,7 +1,5 @@
 package infrastructure.gdx.ui;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-
 /**
  * The `GDXScreen` class defines a contract that must be implemented by all screen classes
  * in a LibGDX-based game. A screen represents a distinct state or view within the game, such as
@@ -12,14 +10,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
  */
 public abstract class GDXScreen {
 
+    private GDXGame game;
     private boolean paused;
 
     /**
-     * Called to render the contents of the screen using the provided Batch.
-     *
-     * @param batch The Batch used for rendering 2D graphics.
+     * Called to render the contents of the screen.
      */
-    public abstract void render(Batch batch);
+    public abstract void render();
 
     /**
      * Called to update the logic of the screen. This method typically handles game logic,
@@ -49,11 +46,41 @@ public abstract class GDXScreen {
      */
     public abstract void destroy();
 
+    /**
+     * Check if the screen is currently paused.
+     *
+     * @return True if the screen is paused, false otherwise.
+     */
     public boolean isPaused() {
         return paused;
     }
 
+    /**
+     * Set the paused state of the screen. When a screen is paused, its update method will not
+     * be called until it is resumed.
+     *
+     * @param paused True to pause the screen, false to resume it.
+     */
     public void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    /**
+     * Get the game instance associated with this screen.
+     *
+     * @return The game instance.
+     */
+    public GDXGame getGame() {
+        return game;
+    }
+
+    /**
+     * Set the game instance associated with this screen. This allows screens to access and
+     * interact with the broader game context.
+     *
+     * @param game The game instance.
+     */
+    public void setGame(GDXGame game) {
+        this.game = game;
     }
 }

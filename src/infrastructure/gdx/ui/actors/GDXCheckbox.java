@@ -21,6 +21,18 @@ public class GDXCheckbox extends CheckBox {
     }
 
     /**
+     * Constructs a `GDXCheckbox` with the given text and uses the given checkbox style.
+     *
+     * @param text  The text displayed next to the checkbox.
+     * @param style The style of the checkbox.
+     */
+    public GDXCheckbox(String text, GDXCheckboxStyle style) {
+        super(text, style);
+
+        this.getLabelCell().center().padLeft(10);
+    }
+
+    /**
      * Creates a new `GDXCheckbox` instance with the specified text.
      *
      * @param text The text content to be displayed next to the checkbox.
@@ -28,6 +40,17 @@ public class GDXCheckbox extends CheckBox {
      */
     public static GDXCheckbox of(String text) {
         return new GDXCheckbox(text);
+    }
+
+    /**
+     * Creates a new `GDXCheckbox` instance with the specified text.
+     *
+     * @param text  The text content to be displayed next to the checkbox.
+     * @param style The style of the checkbox.
+     * @return A new `GDXCheckbox` instance initialized with the provided text.
+     */
+    public static GDXCheckbox of(String text, GDXCheckboxStyle style) {
+        return new GDXCheckbox(text, style);
     }
 
     /**

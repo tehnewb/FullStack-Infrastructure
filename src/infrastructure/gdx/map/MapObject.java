@@ -39,11 +39,20 @@ public class MapObject implements Shape2D {
         this.height = height;
         this.type = type;
 
-        this.shape = switch (type) {
-            case ELLIPSE -> new Ellipse(x, y, width, height);
-            case RECTANGLE -> new Rectangle(x, y, width, height);
-            case POLYGON -> new Polygon(vertices);
-        };
+        switch (type) {
+            case ELLIPSE:
+                this.shape = new Ellipse(x, y, width, height);
+                break;
+            case RECTANGLE:
+                this.shape = new Rectangle(x, y, width, height);
+                break;
+            case POLYGON:
+                this.shape = new Polygon(vertices);
+                break;
+            default:
+                this.shape = null;
+                break;
+        }
     }
 
     /**

@@ -107,4 +107,20 @@ public class GDXTreeStyle extends Tree.TreeStyle {
         this.background = background;
         return this;
     }
+
+    /**
+     * Clones this GDXTreeStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXTreeStyle.
+     */
+    public GDXTreeStyle copy() {
+        GDXTreeStyle style = new GDXTreeStyle();
+        style.background = background;
+        style.over = over;
+        style.minus = minus;
+        style.minusOver = minusOver;
+        style.plus = plus;
+        style.plusOver = plusOver;
+        return style;
+    }
 }

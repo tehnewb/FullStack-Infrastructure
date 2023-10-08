@@ -70,7 +70,7 @@ public class TiledMap {
                 for (int mx = centerX - tileRadius; mx < centerX + tileRadius; mx++) {
                     if (mx < 0 || my < 0 || mx >= mapWidth || my >= mapHeight)
                         continue;
-                    int tileIndex = layer.tileIndices()[my][mx] - 1;
+                    int tileIndex = layer.getTileIndices()[my][mx] - 1;
                     if (tileIndex <= 0)
                         continue;
                     Texture texture = this.tiles[tileIndex];
@@ -95,7 +95,7 @@ public class TiledMap {
                 for (int mx = centerX - tileRadius; mx < centerX + tileRadius; mx++) {
                     if (mx < 0 || my < 0 || mx >= mapWidth || my >= mapHeight)
                         continue;
-                    int tileIndex = layer.tileIndices()[my][mx] - 1;
+                    int tileIndex = layer.getTileIndices()[my][mx] - 1;
                     if (tileIndex <= 0)
                         continue;
                     Texture texture = this.tiles[tileIndex];
@@ -149,14 +149,27 @@ public class TiledMap {
                     for (Element property : properties.getChildrenByName("property")) {
                         String name = property.getAttribute("name");
                         String valueName = property.getAttribute("value").trim();
-                        Object value = switch (property.getAttribute("type")) {
-                            case "bool" -> Boolean.parseBoolean(valueName);
-                            case "file" -> Gdx.files.internal(valueName);
-                            case "color" -> Color.valueOf(valueName);
-                            case "int" -> Integer.parseInt(valueName);
-                            case "float" -> Float.parseFloat(valueName);
-                            default -> property.getAttribute("value");
-                        };
+                        Object value;
+                        switch (property.getAttribute("type")) {
+                            case "bool":
+                                value = Boolean.parseBoolean(valueName);
+                                break;
+                            case "file":
+                                value = Gdx.files.internal(valueName);
+                                break;
+                            case "color":
+                                value = Color.valueOf(valueName);
+                                break;
+                            case "int":
+                                value = Integer.parseInt(valueName);
+                                break;
+                            case "float":
+                                value = Float.parseFloat(valueName);
+                                break;
+                            default:
+                                value = property.getAttribute("value");
+                                break;
+                        }
                         layerProperties.put(name, value);
                     }
                 }

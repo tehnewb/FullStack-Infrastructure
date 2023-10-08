@@ -1,6 +1,5 @@
 package infrastructure.io.buffer;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
@@ -11,7 +10,6 @@ import java.nio.charset.StandardCharsets;
  */
 public class DynamicByteBuffer implements Serializable, AutoCloseable {
     private static final int DEFAULT_CAPACITY = 128; // Default capacity of DynamicByteArray
-    @Serial
     private static final long serialVersionUID = 1L;
     private boolean growing;
     private byte[] data;
@@ -477,6 +475,23 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
         return byteArray;
     }
 
+    /**
+     * Skips the number of read bytes from the given value.
+     *
+     * @param value the number to skip read bytes.
+     */
+    public void skipRead(int value) {
+        this.readPosition += value;
+    }
+
+    /**
+     * Returns the remaining bytes available to read.
+     *
+     * @return available bytes to read.
+     */
+    public int getRemainingToRead() {
+        return size() - readPosition;
+    }
 
     /**
      * Returns the current size of the dynamic byte array.
@@ -594,5 +609,4 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
             data = null;
         }
     }
-
 }

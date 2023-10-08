@@ -109,4 +109,21 @@ public class GDXListStyle extends List.ListStyle {
         this.background = background;
         return this;
     }
+
+    /**
+     * Clones this GDXListStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXListStyle.
+     */
+    public GDXListStyle copy() {
+        GDXListStyle style = new GDXListStyle();
+        style.font = font;
+        style.fontColorSelected = fontColorSelected;
+        style.fontColorUnselected = fontColorUnselected;
+        style.down = down;
+        style.over = over;
+        style.selection = selection;
+        style.background = background;
+        return style;
+    }
 }

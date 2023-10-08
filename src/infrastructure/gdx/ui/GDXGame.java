@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import infrastructure.cache.Cache;
 import infrastructure.entity.Tick;
@@ -20,7 +19,7 @@ import infrastructure.io.compress.CompressionStrategy;
  */
 public class GDXGame implements ApplicationListener {
     private static final Cache cache = new Cache(); // Cached assets
-    private SpriteBatch batch;    // SpriteBatch for rendering 2D graphics
+    private static GDXGame game;
     private GDXScreen screen;     // Current game screen
 
     /**
@@ -33,6 +32,7 @@ public class GDXGame implements ApplicationListener {
         if (initialScreen == null)
             throw new NullPointerException("GDXGame initial screen cannot be NULL");
         this.screen = initialScreen;
+        this.screen.setGame(this);
     }
 
     /**
@@ -72,6 +72,7 @@ public class GDXGame implements ApplicationListener {
 
         // Set the new screen and initialize it
         this.screen = screen;
+        this.screen.setGame(this);
         this.screen.create();
         this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
@@ -81,7 +82,6 @@ public class GDXGame implements ApplicationListener {
      */
     @Override
     public void create() {
-        this.batch = new SpriteBatch(); // Initialize the SpriteBatch for rendering
 
         this.screen.create();
     }
@@ -96,19 +96,17 @@ public class GDXGame implements ApplicationListener {
         if (screen == null)
             return;
 
-        if (screen.isPaused())
+        if (screen.isPaused()) {
+            screen.render();
             return;
+        }
 
         // Calculate the time elapsed since the last frame
         float delta = Gdx.graphics.getDeltaTime();
 
         // Update the game logic with the time delta
         screen.update(delta);
-
-        // Render the current screen using the SpriteBatch
-        batch.begin();
-        screen.render(batch);
-        batch.end();
+        screen.render();
 
         // Update any tick-based game components
         Tick.updateTicks(delta);

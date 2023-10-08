@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
  */
 public class GDXFontStyle extends FreeTypeFontParameter {
 
-    private final String fontName; // The name of the font style
+    public final String fontName; // The name of the font style
 
     /**
      * Constructs a new GDXFontStyle with the specified font name.

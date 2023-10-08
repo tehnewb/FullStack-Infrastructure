@@ -5,6 +5,7 @@ import infrastructure.io.compress.CompressionStrategy;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.CRC32;
 
 /**
@@ -13,15 +14,19 @@ import java.util.zip.CRC32;
  *
  * @author Albert Beaupre
  */
+@SuppressWarnings("rawtypes")
 public class Cache {
-    private final Map<Integer, CacheFolder> cache = new HashMap<>();
-    private float progress;
+    private final Map<Integer, CacheFolder> cache = new HashMap<>(); // used for folders without a loader
+    private final Map<Integer, CacheLoadStrategy> loaders = new HashMap<>(); // used for folders with a loader
+    private final Map<String, Object> loadedFiles = new HashMap<>(); // used for files loaded with a loader
+    private final AtomicInteger decompressionProgress = new AtomicInteger(); // tracks the progress of bytes written while decompressing the cache
+    private final AtomicInteger compressionProgress = new AtomicInteger(); // tracks the progress of bytes written while compressing the cache
 
     /**
      * Decodes the given data and creates a Cache instance based on the folders and files within the decoded data.
      *
-     * @param data     the encoded cache data
-     * @param strategy the strategy used to decompress the data
+     * @param data     The encoded cache data.
+     * @param strategy The strategy used to decompress the data.
      */
     public void decompress(CompressionStrategy strategy, byte[] data) {
         try (DynamicByteBuffer in = new DynamicByteBuffer(strategy.decompress(data))) {
@@ -30,7 +35,8 @@ public class Cache {
                 int folderIndex = in.readByte();
                 int folderSize = in.readShort();
                 String folderName = in.readString();
-                CacheFolder folder = new CacheFolder(folderIndex, folderName);
+                CacheLoadStrategy loader = loaders.get(folderIndex);
+                CacheFolder folder = loader != null ? null : new CacheFolder(folderIndex, folderName);
                 for (int j = 0; j < folderSize; j++) {
                     short cacheFileIndex = in.readShort();
                     if (cacheFileIndex == -1) // unused index
@@ -40,12 +46,17 @@ public class Cache {
                     String fileName = in.readString();
                     int cacheFileSize = in.readInt();
                     byte[] cacheFileData = in.readBytes(cacheFileSize);
-                    folder.add(new CacheFile(cacheFileIndex, version, type, fileName, cacheFileData));
-
-                    progress = (in.getReadPosition() / (float) in.size());
+                    if (loader != null) {
+                        loadedFiles.put(fileName, loader.load(cacheFileData));
+                    } else {
+                        CacheFile file = new CacheFile(cacheFileIndex, version, type, fileName, cacheFileData);
+                        folder.add(file);
+                    }
+                    decompressionProgress.set((int) ((in.getReadPosition() / (float) in.size()) * 100));
                 }
                 addFolder(folder);
             }
+            decompressionProgress.set(100);
         } catch (Exception e) {
             throw new RuntimeException("Could not decode cache", e);
         }
@@ -54,10 +65,12 @@ public class Cache {
     /**
      * Encodes this Cache by storing the data from the folders and files into a byte array.
      *
+     * @param strategy The strategy used to compress the data.
      * @return the byte array with the folders and files within
      */
     public byte[] compress(CompressionStrategy strategy) {
-        try (DynamicByteBuffer out = new DynamicByteBuffer(1024, true)) {
+        int bufferSize = calculateCacheBufferSize();
+        try (DynamicByteBuffer out = new DynamicByteBuffer(bufferSize, false)) {
             out.writeByte(cache.size());
             for (Map.Entry<Integer, CacheFolder> entry : cache.entrySet()) {
                 CacheFolder folder = entry.getValue();
@@ -77,12 +90,42 @@ public class Cache {
                     out.writeInt(file.getData().length);
                     out.writeBytes(file.getData());
                 }
+                compressionProgress.set((int) ((out.getWritePosition() / (float) bufferSize) * 100));
             }
+            compressionProgress.set(100);
             return strategy.compress(out.toArray());
         } catch (Exception e) {
             throw new RuntimeException("Could not encode cache", e);
         }
     }
+
+    /**
+     * Calculates an estimated buffer size for compressing the cache.
+     *
+     * @return Estimated buffer size based on the size of the cache.
+     */
+    private int calculateCacheBufferSize() {
+        int bufferSize = 1; // Initial size for the number of folders
+        for (CacheFolder folder : cache.values()) {
+            bufferSize += 3; // 1 byte for folder index and 2 bytes for folder size
+            bufferSize += folder.getName().length(); // Size of folder name
+            bufferSize++; // 1 byte for name identifier
+            for (int cacheFileID = 0; cacheFileID < folder.getSize(); cacheFileID++) {
+                CacheFile file = folder.get(cacheFileID);
+                if (file == null) {
+                    bufferSize += 2; // 2 bytes for unused index
+                    continue;
+                }
+                bufferSize += 7; // 2 bytes for file index, 1 byte for version, 1 byte for type, and 3 bytes for name length
+                bufferSize += file.getName().length(); // Size of file name
+                bufferSize++; // 1 byte for name identifier
+                bufferSize += 4; // 4 bytes for cache file data length
+                bufferSize += file.getData().length; // Size of cache file data
+            }
+        }
+        return bufferSize;
+    }
+
 
     /**
      * Calculates a CRC32 checksum for the entire Cache instance.
@@ -143,6 +186,29 @@ public class Cache {
     }
 
     /**
+     * Retrieves a file loaded from a CacheLoadStrategy which corresponds to a specific CacheFolder.
+     *
+     * @param name  The name corresponding to the file.
+     * @param clazz The class to cast the file type as.
+     * @param <T>   The type of file it has been loaded as/
+     * @return The file loaded.
+     */
+    public <T> T getLoadedFile(String name, Class<T> clazz) {
+        return clazz.cast(loadedFiles.get(name));
+    }
+
+    /**
+     * Sets the loader for a specific CacheFolder.
+     *
+     * @param folderIndex The index of the CacheFolder.
+     * @param loader      The loader to set for the specified CacheFolder.
+     * @param <T>         The type of data loaded by the loader.
+     */
+    public <T> void setLoader(int folderIndex, CacheLoadStrategy<T> loader) {
+        this.loaders.put(folderIndex, loader);
+    }
+
+    /**
      * Returns the size of the cache, which is the number of CacheFolder objects stored in it.
      *
      * @return The size of the cache.
@@ -159,12 +225,21 @@ public class Cache {
     }
 
     /**
-     * Retrieves the current progress of the cache loading is at between starting the load and ending.
+     * Get the progress of cache decompression.
      *
-     * @return The current progress of the cache loading is at.
+     * @return An integer representing the progress percentage of cache decompression.
      */
-    public float getProgress() {
-        return progress;
+    public int getDecompressionProgress() {
+        return decompressionProgress.get();
+    }
+
+    /**
+     * Get the progress of cache compression.
+     *
+     * @return An integer representing the progress percentage of cache compression.
+     */
+    public int getCompressionProgress() {
+        return compressionProgress.get();
     }
 
 }

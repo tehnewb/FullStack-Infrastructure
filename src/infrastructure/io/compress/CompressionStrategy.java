@@ -44,8 +44,8 @@ public interface CompressionStrategy {
          */
         @Override
         public byte[] compress(byte[] data) {
-            try (var compressed = new ByteArrayOutputStream()) {
-                try (var gzipOutputStream = new GZIPOutputStream(compressed)) {
+            try (ByteArrayOutputStream compressed = new ByteArrayOutputStream()) {
+                try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(compressed)) {
                     gzipOutputStream.write(data);
                 }
 
@@ -64,8 +64,8 @@ public interface CompressionStrategy {
          */
         @Override
         public byte[] decompress(byte[] data) {
-            try (var decompressed = new ByteArrayOutputStream()) {
-                try (var gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(data))) {
+            try (ByteArrayOutputStream decompressed = new ByteArrayOutputStream()) {
+                try (GZIPInputStream gzipInputStream = new GZIPInputStream(new ByteArrayInputStream(data))) {
                     byte[] buffer = new byte[1024];
                     int bytesRead;
                     while ((bytesRead = gzipInputStream.read(buffer)) != -1) {
@@ -104,7 +104,7 @@ public interface CompressionStrategy {
         public byte[] compress(byte[] data) {
             deflater.setInput(data);
 
-            try (var compressed = new DynamicByteBuffer(data.length / 2)) { // we will assume compression to be 50%
+            try (DynamicByteBuffer compressed = new DynamicByteBuffer(data.length / 2)) { // we will assume compression to be 50%
                 byte[] buffer = new byte[1024];
                 while (!deflater.finished()) {
                     int compressedBytes = deflater.deflate(buffer);
@@ -129,7 +129,7 @@ public interface CompressionStrategy {
         public byte[] decompress(byte[] data) {
             inflater.setInput(data);
 
-            try (var decompressed = new DynamicByteBuffer(data.length * 2)) { // we will assume decompression to be 200%
+            try (DynamicByteBuffer decompressed = new DynamicByteBuffer(data.length * 2)) { // we will assume decompression to be 200%
                 byte[] buffer = new byte[1024];
                 while (!inflater.finished()) {
                     int decompressedBytes = inflater.inflate(buffer);

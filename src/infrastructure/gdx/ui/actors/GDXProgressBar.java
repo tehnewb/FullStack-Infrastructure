@@ -44,4 +44,15 @@ public class GDXProgressBar extends ProgressBar {
         this.setStyle(style);
         return this;
     }
+
+    /**
+     * Sets the value of the progress bar.
+     *
+     * @param value The value to set the progress bar at.
+     * @return The `GDXProgressBar` instance, enabling method chaining.
+     */
+    public GDXProgressBar value(float value) {
+        this.setValue(value);
+        return this;
+    }
 }

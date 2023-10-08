@@ -66,4 +66,17 @@ public class GDXLabelStyle extends Label.LabelStyle {
         this.fontColor = color;
         return this;
     }
+
+    /**
+     * Clones this GDXLabelStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXLabelStyle.
+     */
+    public GDXLabelStyle copy() {
+        GDXLabelStyle style = new GDXLabelStyle();
+        style.font = font;
+        style.fontColor = fontColor;
+        style.background = background;
+        return style;
+    }
 }

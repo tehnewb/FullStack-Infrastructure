@@ -145,4 +145,19 @@ public class GDXSelectBoxStyle extends SelectBox.SelectBoxStyle {
         this.backgroundDisabled = backgroundDisabled;
         return this;
     }
+
+    /**
+     * Clones this GDXSelectBoxStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXSelectBoxStyle.
+     */
+    public GDXSelectBoxStyle copy() {
+        GDXSelectBoxStyle style = new GDXSelectBoxStyle();
+        style.font = font;
+        style.fontColor = fontColor;
+        style.disabledFontColor = disabledFontColor;
+        style.overFontColor = overFontColor;
+        style.background = background;
+        return style;
+    }
 }

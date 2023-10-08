@@ -100,7 +100,7 @@ public class EventBus {
             throw new IllegalArgumentException("Observer object cannot be null.");
 
         // Remove invokers associated with the specified object
-        invokers.values().forEach(invokerList -> invokerList.removeIf(invoker -> invoker != null && invoker.object() == object));
+        invokers.values().forEach(invokerList -> invokerList.removeIf(invoker -> invoker != null && invoker.getObject() == object));
     }
 
     /**

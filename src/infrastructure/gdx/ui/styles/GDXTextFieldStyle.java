@@ -153,4 +153,25 @@ public class GDXTextFieldStyle extends TextField.TextFieldStyle {
         this.messageFontColor = messageFontColor;
         return this;
     }
+
+    /**
+     * Clones this GDXTextFieldStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXTextFieldStyle.
+     */
+    public GDXTextFieldStyle copy() {
+        GDXTextFieldStyle style = new GDXTextFieldStyle();
+        style.font = font;
+        style.fontColor = fontColor;
+        style.background = background;
+        style.cursor = cursor;
+        style.messageFont = messageFont;
+        style.messageFontColor = messageFontColor;
+        style.focusedFontColor = focusedFontColor;
+        style.disabledFontColor = disabledFontColor;
+        style.selection = selection;
+        style.disabledBackground = disabledBackground;
+        style.focusedBackground = focusedBackground;
+        return style;
+    }
 }

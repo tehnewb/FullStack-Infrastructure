@@ -118,4 +118,22 @@ public class GDXProgressBarStyle extends ProgressBar.ProgressBarStyle {
         this.disabledKnobAfter = disabledKnobAfter;
         return this;
     }
+
+    /**
+     * Clones this GDXProgressBarStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXProgressBarStyle.
+     */
+    public GDXProgressBarStyle copy() {
+        GDXProgressBarStyle style = new GDXProgressBarStyle();
+        style.disabledBackground = disabledBackground;
+        style.disabledKnobAfter = disabledKnobAfter;
+        style.disabledKnobBefore = disabledKnobBefore;
+        style.disabledKnob = disabledKnob;
+        style.knob = knob;
+        style.knobAfter = knobAfter;
+        style.knobBefore = knobBefore;
+        style.background = background;
+        return style;
+    }
 }

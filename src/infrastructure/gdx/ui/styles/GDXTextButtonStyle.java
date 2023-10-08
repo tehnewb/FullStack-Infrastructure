@@ -269,4 +269,39 @@ public class GDXTextButtonStyle extends TextButton.TextButtonStyle {
         this.checkedOffsetY = checkedOffsetY;
         return this;
     }
+
+    /**
+     * Clones this GDXTextButtonStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXTextButtonStyle.
+     */
+    public GDXTextButtonStyle copy() {
+        GDXTextButtonStyle style = new GDXTextButtonStyle();
+        style.font = font;
+        style.fontColor = fontColor;
+        style.checkedDownFontColor = checkedDownFontColor;
+        style.checkedFocusedFontColor = checkedFocusedFontColor;
+        style.downFontColor = downFontColor;
+        style.overFontColor = overFontColor;
+        style.focusedFontColor = focusedFontColor;
+        style.disabledFontColor = disabledFontColor;
+        style.checkedFontColor = checkedFontColor;
+        style.checkedOverFontColor = checkedOverFontColor;
+        style.up = up;
+        style.down = down;
+        style.over = over;
+        style.focused = focused;
+        style.disabled = disabled;
+        style.checked = checked;
+        style.checkedOver = checkedOver;
+        style.checkedDown = checkedDown;
+        style.checkedFocused = checkedFocused;
+        style.pressedOffsetX = pressedOffsetX;
+        style.pressedOffsetY = pressedOffsetY;
+        style.unpressedOffsetX = unpressedOffsetX;
+        style.unpressedOffsetY = unpressedOffsetY;
+        style.checkedOffsetX = checkedOffsetX;
+        style.checkedOffsetY = checkedOffsetY;
+        return style;
+    }
 }

@@ -96,4 +96,20 @@ public class GDXScrollPaneStyle extends ScrollPane.ScrollPaneStyle {
         this.vScrollKnob = vScrollKnob;
         return this;
     }
+
+    /**
+     * Clones this GDXScrollPaneStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXScrollPaneStyle.
+     */
+    public GDXScrollPaneStyle copy() {
+        GDXScrollPaneStyle style = new GDXScrollPaneStyle();
+        style.hScroll = hScroll;
+        style.vScroll = vScroll;
+        style.hScrollKnob = hScrollKnob;
+        style.vScrollKnob = vScrollKnob;
+        style.corner = corner;
+        style.background = background;
+        return style;
+    }
 }

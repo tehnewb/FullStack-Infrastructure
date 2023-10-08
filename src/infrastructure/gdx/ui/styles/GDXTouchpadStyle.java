@@ -51,4 +51,16 @@ public class GDXTouchpadStyle extends Touchpad.TouchpadStyle {
         this.knob = knob;
         return this;
     }
+
+    /**
+     * Clones this GDXTouchpadStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXTouchpadStyle.
+     */
+    public GDXTouchpadStyle copy() {
+        GDXTouchpadStyle style = new GDXTouchpadStyle();
+        style.background = background;
+        style.knob = knob;
+        return style;
+    }
 }

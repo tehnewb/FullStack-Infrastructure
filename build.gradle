@@ -38,7 +38,6 @@ repositories {
 dependencies {
     implementation 'io.netty:netty-all:4.1.86.Final'
     implementation 'org.slf4j:slf4j-log4j12:1.7.29'
-    implementation 'com.formdev:flatlaf:3.2.1'
 
     /**
      * libGDX
@@ -56,8 +55,8 @@ dependencies {
 
 // Java version compatibility
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 // IntelliJ IDEA specific configurations

@@ -31,6 +31,18 @@ public class GDXSliderStyle extends Slider.SliderStyle {
         defaults = style;
     }
 
+
+    /**
+     * Sets the background drawable for the slider.
+     *
+     * @param background The Drawable for the slider's background.
+     * @return The GDXSliderStyle instance, enabling method chaining.
+     */
+    public GDXSliderStyle background(Drawable background) {
+        this.background = background;
+        return this;
+    }
+
     /**
      * Sets the background drawable for the slider when hovered over (over state).
      *
@@ -50,6 +62,17 @@ public class GDXSliderStyle extends Slider.SliderStyle {
      */
     public GDXSliderStyle backgroundDown(Drawable backgroundDown) {
         this.backgroundDown = backgroundDown;
+        return this;
+    }
+
+    /**
+     * Sets the knob drawable for the slider.
+     *
+     * @param knob The Drawable for the slider's knob.
+     * @return The GDXSliderStyle instance, enabling method chaining.
+     */
+    public GDXSliderStyle knob(Drawable knob) {
+        this.knob = knob;
         return this;
     }
 
@@ -117,5 +140,30 @@ public class GDXSliderStyle extends Slider.SliderStyle {
     public GDXSliderStyle knobAfterDown(Drawable knobAfterDown) {
         this.knobAfterDown = knobAfterDown;
         return this;
+    }
+
+    /**
+     * Clones this GDXSliderStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXSliderStyle.
+     */
+    public GDXSliderStyle copy() {
+        GDXSliderStyle style = new GDXSliderStyle();
+        style.disabledBackground = disabledBackground;
+        style.disabledKnobAfter = disabledKnobAfter;
+        style.disabledKnobBefore = disabledKnobBefore;
+        style.disabledKnob = disabledKnob;
+        style.knob = knob;
+        style.knobAfter = knobAfter;
+        style.knobBefore = knobBefore;
+        style.background = background;
+        style.backgroundDown = backgroundDown;
+        style.backgroundOver = backgroundOver;
+        style.knobDown = knobDown;
+        style.knobAfterDown = knobAfterDown;
+        style.knobBeforeDown = knobBeforeDown;
+        style.knobBeforeOver = knobBeforeOver;
+        style.knobAfterOver = knobAfterOver;
+        return style;
     }
 }

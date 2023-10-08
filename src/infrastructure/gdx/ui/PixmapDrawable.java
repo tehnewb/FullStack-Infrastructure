@@ -3,6 +3,7 @@ package infrastructure.gdx.ui;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -34,6 +35,8 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     public PixmapDrawable(int width, int height, Format format) {
         super(width, height, format);
         this.texture = new Texture(this, Format.RGBA8888, true);
+        setMinWidth(texture.getWidth());
+        setMinHeight(texture.getHeight());
     }
 
     /**
@@ -46,6 +49,8 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     public PixmapDrawable(byte[] encodedData, int offset, int len) {
         super(encodedData, offset, len);
         this.texture = new Texture(this, Format.RGBA8888, true);
+        setMinWidth(texture.getWidth());
+        setMinHeight(texture.getHeight());
     }
 
     /**
@@ -58,6 +63,8 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     public PixmapDrawable(ByteBuffer encodedData, int offset, int len) {
         super(encodedData, offset, len);
         this.texture = new Texture(this, Format.RGBA8888, true);
+        setMinWidth(texture.getWidth());
+        setMinHeight(texture.getHeight());
     }
 
     /**
@@ -68,6 +75,8 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     public PixmapDrawable(ByteBuffer encodedData) {
         super(encodedData);
         this.texture = new Texture(this, Format.RGBA8888, true);
+        setMinWidth(texture.getWidth());
+        setMinHeight(texture.getHeight());
     }
 
     /**
@@ -78,6 +87,8 @@ public class PixmapDrawable extends Pixmap implements Drawable {
     public PixmapDrawable(FileHandle file) {
         super(file);
         this.texture = new Texture(this, Format.RGBA8888, true);
+        setMinWidth(texture.getWidth());
+        setMinHeight(texture.getHeight());
     }
 
     /**
@@ -90,14 +101,57 @@ public class PixmapDrawable extends Pixmap implements Drawable {
      * @param height The height of the drawn PixmapDrawable.
      */
     @Override
-    public void draw(com.badlogic.gdx.graphics.g2d.Batch batch, float x, float y, float width, float height) {
+    public void draw(Batch batch, float x, float y, float width, float height) {
         if (texture != null) {
             batch.draw(texture, x, y, width, height);
         }
     }
 
+    /**
+     * Converts this PixmapDrawable into a NinePatchDrawable.
+     *
+     * @param left   Pixels from left edge
+     * @param right  Pixels from right edge
+     * @param top    Pixels from top edge
+     * @param bottom Pixels from bottom edge
+     * @return The NinePatchDrawable.
+     */
     public NinePatchDrawable toNinePatch(int left, int right, int top, int bottom) {
         return new NinePatchDrawable(new NinePatch(texture, left, right, top, bottom));
+    }
+
+    /**
+     * Converts this PixmapDrawable into a NinePatchDrawable.
+     *
+     * @return The NinePatchDrawable.
+     */
+    public NinePatchDrawable toNinePatch() {
+        return new NinePatchDrawable(new NinePatch(texture));
+    }
+
+    /**
+     * Returns a 2D array of PixmapDrawable which has been split into tiles based on the given dimensions.
+     *
+     * @param tileWidth  the width of the sub-pixmaps
+     * @param tileHeight the height of the sub-pixmaps
+     * @return The 2D array of PixmapDrawable after splitting.
+     */
+    public PixmapDrawable[][] split(int tileWidth, int tileHeight) {
+        int rows = texture.getWidth() / tileWidth;
+        int columns = texture.getHeight() / tileHeight;
+        PixmapDrawable[][] tiles = new PixmapDrawable[columns][rows];
+
+        for (int y = 0; y < columns; y++) {
+            for (int x = 0; x < rows; x++) {
+                int startX = x * tileWidth;
+                int startY = y * tileHeight;
+                PixmapDrawable subPixmap = new PixmapDrawable(tileWidth, tileHeight, this.getFormat());
+                subPixmap.drawPixmap(this, 0, 0, startX, startY, tileWidth, tileHeight);
+                tiles[y][x] = subPixmap;
+            }
+        }
+
+        return tiles;
     }
 
     /**
@@ -245,6 +299,8 @@ public class PixmapDrawable extends Pixmap implements Drawable {
      * to release its resources and avoid memory leaks.
      */
     public void dispose() {
+        super.dispose();
+
         if (texture != null) {
             texture.dispose();
             texture = null;

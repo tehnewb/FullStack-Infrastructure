@@ -10,6 +10,13 @@ import infrastructure.gdx.ui.styles.GDXButtonStyle;
 public class GDXButton extends Button {
 
     /**
+     * Constructs a `GDXButton` using the given button style.
+     */
+    public GDXButton(GDXButtonStyle style) {
+        super(style);
+    }
+
+    /**
      * Constructs a `GDXButton` using the default button style defined in `GDXButtonStyle.defaults()`.
      */
     public GDXButton() {
@@ -23,6 +30,15 @@ public class GDXButton extends Button {
      */
     public static GDXButton of() {
         return new GDXButton();
+    }
+
+    /**
+     * Creates a new `GDXButton` instance with the given button style.
+     *
+     * @return A new `GDXButton` instance initialized with the given button style.
+     */
+    public static GDXButton of(GDXButtonStyle style) {
+        return new GDXButton(style);
     }
 
     /**

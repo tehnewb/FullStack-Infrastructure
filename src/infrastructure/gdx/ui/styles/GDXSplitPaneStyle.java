@@ -40,4 +40,15 @@ public class GDXSplitPaneStyle extends SplitPane.SplitPaneStyle {
         this.handle = handle;
         return this;
     }
+
+    /**
+     * Clones this GDXSplitPaneStyle by copying all style variables and returning a new instance.
+     *
+     * @return a cloned instance of this GDXSplitPaneStyle.
+     */
+    public GDXSplitPaneStyle copy() {
+        GDXSplitPaneStyle style = new GDXSplitPaneStyle();
+        style.handle = handle;
+        return style;
+    }
 }
