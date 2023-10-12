@@ -6,7 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
 import infrastructure.cache.Cache;
-import infrastructure.entity.Tick;
+import infrastructure.entity.TickFactory;
 import infrastructure.io.compress.CompressionStrategy;
 
 /**
@@ -109,7 +109,7 @@ public class GDXGame implements ApplicationListener {
         screen.render();
 
         // Update any tick-based game components
-        Tick.updateTicks(delta);
+        TickFactory.updateTicks(delta);
     }
 
     /**

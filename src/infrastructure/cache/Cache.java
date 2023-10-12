@@ -3,6 +3,8 @@ package infrastructure.cache;
 import infrastructure.io.buffer.DynamicByteBuffer;
 import infrastructure.io.compress.CompressionStrategy;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,6 +18,7 @@ import java.util.zip.CRC32;
  */
 @SuppressWarnings("rawtypes")
 public class Cache {
+
     private final Map<Integer, CacheFolder> cache = new HashMap<>(); // used for folders without a loader
     private final Map<Integer, CacheLoadStrategy> loaders = new HashMap<>(); // used for folders with a loader
     private final Map<String, Object> loadedFiles = new HashMap<>(); // used for files loaded with a loader
@@ -48,13 +51,15 @@ public class Cache {
                     byte[] cacheFileData = in.readBytes(cacheFileSize);
                     if (loader != null) {
                         loadedFiles.put(fileName, loader.load(cacheFileData));
+                        System.out.println(loader);
                     } else {
                         CacheFile file = new CacheFile(cacheFileIndex, version, type, fileName, cacheFileData);
                         folder.add(file);
                     }
                     decompressionProgress.set((int) ((in.getReadPosition() / (float) in.size()) * 100));
                 }
-                addFolder(folder);
+                if (folder != null)
+                    addFolder(folder);
             }
             decompressionProgress.set(100);
         } catch (Exception e) {

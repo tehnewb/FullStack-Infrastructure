@@ -1,6 +1,7 @@
 package infrastructure.util;
 
-import infrastructure.io.ObjectPool;
+import infrastructure.io.pool.Pool;
+import infrastructure.io.pool.SupplierPoolFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,8 +14,15 @@ import java.text.DecimalFormat;
  */
 public class Value extends Number {
 
-    private static final ObjectPool<Value> pool = new ObjectPool<>(() -> new Value(0), 100);
-    private double number; // the number to mutate    // Object pool to reuse instances
+    private static final Pool<Value> pool = new Pool<>(SupplierPoolFactory.of(Value::new), 100);   // Object pool to reuse instances
+    private double number; // the number to mutate
+
+    /**
+     * Constructs a new Value object with a default value of 0.
+     */
+    public Value() {
+        this(0);
+    }
 
     /**
      * Constructs a new Value object using a number to provide an initial value.

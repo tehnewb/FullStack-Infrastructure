@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import infrastructure.io.ObjectPool;
+import infrastructure.io.pool.Pool;
+import infrastructure.io.pool.SupplierPoolFactory;
 
 /**
  * The `Projectile` class represents a game entity that can be used for projectiles or bullets in a game.
@@ -14,7 +15,7 @@ import infrastructure.io.ObjectPool;
 public class Projectile extends Actor {
 
     // Object pool for reusing projectiles
-    private static final ObjectPool<Projectile> ProjectilePool = new ObjectPool<>(Projectile::new, 10);
+    private static final Pool<Projectile> ProjectilePool = new Pool<>(SupplierPoolFactory.of(Projectile::new), 10);
 
     // Index to identify this projectile within the entity list
     private int index;

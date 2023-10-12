@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'java-library'
     id 'maven-publish'
+    id 'me.champeau.jmh' version '0.6.8'
 }
 
 java {
@@ -49,6 +50,10 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+    implementation "org.openjdk.jmh:jmh-core:1.36"
+    implementation "org.openjdk.jmh:jmh-generator-annprocess:1.36"
+    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.36'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }

@@ -1,6 +1,6 @@
 package infrastructure.entity;
 
-import infrastructure.io.ObjectPool;
+import infrastructure.io.pool.Pool;
 
 import java.util.function.Predicate;
 
@@ -13,10 +13,7 @@ import java.util.function.Predicate;
  */
 public class Tick implements Entity {
     // A pool of `Tick` objects for efficient reuse.
-    private static final ObjectPool<Tick> TickPool = new ObjectPool<Tick>(Tick::new, 100);
-
-    // A list to keep track of all active `Tick` instances.
-    private static final EntityList<Tick> Ticks = new EntityList<>(100);
+    private static final Pool<Tick> TickPool = new Pool<Tick>(new TickFactory(), 100);
 
     // A predicate to determine if this `Tick` should stop executing.
     private Predicate<Tick> stopIf;
@@ -51,20 +48,8 @@ public class Tick implements Entity {
      * Private constructor for creating a new instance of `Tick`. Use the `of` method to obtain instances
      * from the object pool for efficient resource management.
      */
-    private Tick() {
+    Tick() {
         // Private constructor, use `of` method to create instances.
-    }
-
-    /**
-     * Updates all active ticks based on the specified delta.
-     *
-     * @param delta The game delta time.
-     */
-    public static void updateTicks(float delta) {
-        Ticks.forEach(t -> {
-            if (t != null)
-                t.update(delta);
-        });
     }
 
     /**
@@ -181,11 +166,7 @@ public class Tick implements Entity {
      * the `of` method.
      */
     public void stop() {
-        Ticks.remove(this);
         this.stopped = true;
-
-        // Reset the `Tick` before returning it to the pool.
-        reset();
         TickPool.returnObject(this);
     }
 
@@ -193,7 +174,7 @@ public class Tick implements Entity {
      * Adds this `Tick` to the list of active `Tick` instances for updates.
      */
     public void start() {
-        Ticks.add(this);
+        TickFactory.start(this);
     }
 
     /**

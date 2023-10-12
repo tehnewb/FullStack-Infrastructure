@@ -1,11 +1,6 @@
 package infrastructure.entity;
 
-import infrastructure.io.DynamicBitSet;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * The EntityList class represents a list that can store entities and manage their indices.
@@ -15,8 +10,8 @@ import java.util.NoSuchElementException;
  */
 @SuppressWarnings("unchecked")
 public class EntityList<T extends Entity> implements Collection<T> {
-    private final DynamicBitSet unusedIndices;
-    private Entity[] entities; // Internal array to store entities
+    private final BitSet unusedIndices;
+    private final Entity[] entities; // Internal array to store entities
     private int size;
 
     /**
@@ -29,19 +24,7 @@ public class EntityList<T extends Entity> implements Collection<T> {
         if (capacity <= 0)
             throw new IllegalArgumentException("Capacity must be greater than zero");
         this.entities = new Entity[capacity];
-        this.unusedIndices = new DynamicBitSet(capacity);
-    }
-
-    /**
-     * Ensures that the internal array can hold at least the specified number of entities.
-     *
-     * @param minCapacity the minimum capacity to ensure
-     */
-    private void ensureCapacity(int minCapacity) {
-        if (minCapacity > entities.length) {
-            int newCapacity = Math.max(entities.length * 2, minCapacity);
-            entities = Arrays.copyOf(entities, newCapacity);
-        }
+        this.unusedIndices = new BitSet(capacity);
     }
 
     /**
@@ -54,14 +37,8 @@ public class EntityList<T extends Entity> implements Collection<T> {
     @Override
     public boolean add(T entity) {
         int index = unusedIndices.nextClearBit(0);
-        if (index == -1 || size() >= entities.length) {
-            // If the list is full, resize the array to accommodate more entities.
-            ensureCapacity(entities.length * 2);
-            index = unusedIndices.nextClearBit(0);
-            if (index == -1)
-                throw new IllegalStateException("EntityList is full. Cannot add more entities.");
-        }
-        unusedIndices.set(index); // Mark the index as used
+        if (index == -1)
+            return false;
         entities[index] = entity;
         entity.setIndex(index);
         size++;
@@ -85,7 +62,7 @@ public class EntityList<T extends Entity> implements Collection<T> {
             int index = ((Entity) entity).getIndex();
             if (index >= 0 && index < entities.length && entities[index] == entity) {
                 entities[index] = null;
-                unusedIndices.clear(index); // Mark the index as unused
+                unusedIndices.set(index);
                 ((Entity) entity).setIndex(-1);
                 size--;
                 return true;
@@ -105,7 +82,7 @@ public class EntityList<T extends Entity> implements Collection<T> {
         Entity entity = entities[index];
         if (entity != null) {
             entities[index] = null;
-            unusedIndices.clear(index); // Mark the index as unused
+            unusedIndices.set(index);
             entity.setIndex(-1);
             size--;
         }
@@ -174,9 +151,9 @@ public class EntityList<T extends Entity> implements Collection<T> {
         boolean modified = false;
         for (int i = 0; i < entities.length; i++) {
             if (entities[i] != null && !c.contains(entities[i])) {
+                entities[i].setIndex(-1);
                 entities[i] = null;
-                unusedIndices.clear(i);
-                ((Entity) entities[i]).setIndex(-1);
+                unusedIndices.set(i);
                 modified = true;
                 size--;
             }

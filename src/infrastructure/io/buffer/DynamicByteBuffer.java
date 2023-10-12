@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
  *
  * @author Albert Beaupre
  */
-public class DynamicByteBuffer implements Serializable, AutoCloseable {
+public class DynamicByteBuffer implements Serializable, AutoCloseable, Cloneable {
     private static final int DEFAULT_CAPACITY = 128; // Default capacity of DynamicByteArray
     private static final long serialVersionUID = 1L;
     private boolean growing;
@@ -17,6 +17,9 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
     private int growSize;
     private int readPosition;
     private int writePosition;
+    private int bitBuffer;
+    private int bitPosition;
+
 
     /**
      * Constructs a DynamicByteArray with an initial capacity of 128 bytes.
@@ -110,43 +113,58 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
     }
 
     /**
-     * Retrieves the current read position.
+     * Writes a specified number of bits from the given integer value to the dynamic byte buffer.
+     * Bits are written from the least significant bit (LSB) to the most significant bit (MSB).
      *
-     * @return The current read position.
+     * @param value   The integer value from which to extract bits.
+     * @param numBits The number of bits to write. Must be between 1 and 32, inclusive.
+     * @throws IllegalArgumentException if the number of bits is not within the valid range.
      */
-    public int getReadPosition() {
-        return readPosition;
+    public void writeBits(int value, int numBits) {
+        if (numBits < 1 || numBits > 32)
+            throw new IllegalArgumentException("Invalid number of bits to write.");
+
+        for (int i = 0; i < numBits; i++) {
+            int bit = (value >> i) & 1;
+            bitBuffer |= (bit << bitPosition);
+            bitPosition++;
+
+            if (bitPosition == 32) {
+                // Bit buffer is full, write it to the byte array
+                writeInt(bitBuffer);
+                bitBuffer = 0;
+                bitPosition = 0;
+            }
+        }
     }
 
     /**
-     * Sets the read position to the specified index.
+     * Reads a specified number of bits from the dynamic byte buffer and returns them as an integer.
+     * Bits are read from the least significant bit (LSB) to the most significant bit (MSB).
      *
-     * @param index The index to set the read position to.
-     * @throws IndexOutOfBoundsException if the index is out of bounds.
+     * @param numBits The number of bits to read. Must be between 1 and 32, inclusive.
+     * @return The integer value represented by the read bits.
+     * @throws IllegalArgumentException if the number of bits is not within the valid range.
      */
-    public void setReadPosition(int index) {
-        checkIndexBounds(index, 0);
-        readPosition = index;
-    }
+    public int readBits(int numBits) {
+        if (numBits < 1 || numBits > 32)
+            throw new IllegalArgumentException("Invalid number of bits to read.");
 
-    /**
-     * Retrieves the current write position.
-     *
-     * @return The current write position.
-     */
-    public int getWritePosition() {
-        return writePosition;
-    }
+        int result = 0;
 
-    /**
-     * Sets the write position to the specified index.
-     *
-     * @param index The index to set the write position to.
-     * @throws IndexOutOfBoundsException if the index is out of bounds.
-     */
-    public void setWritePosition(int index) {
-        checkIndexBounds(index, 0);
-        writePosition = index;
+        for (int i = 0; i < numBits; i++) {
+            if (bitPosition == 0) {
+                // Bit buffer is empty, read the next integer value
+                bitBuffer = readInt();
+                bitPosition = 0;
+            }
+
+            int bit = (bitBuffer >> bitPosition) & 1;
+            result |= (bit << i);
+            bitPosition++;
+        }
+
+        return result;
     }
 
     /**
@@ -475,6 +493,47 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
         return byteArray;
     }
 
+
+    /**
+     * Retrieves the current read position.
+     *
+     * @return The current read position.
+     */
+    public int getReadPosition() {
+        return readPosition;
+    }
+
+    /**
+     * Sets the read position to the specified index.
+     *
+     * @param index The index to set the read position to.
+     * @throws IndexOutOfBoundsException if the index is out of bounds.
+     */
+    public void setReadPosition(int index) {
+        checkIndexBounds(index, 0);
+        readPosition = index;
+    }
+
+    /**
+     * Retrieves the current write position.
+     *
+     * @return The current write position.
+     */
+    public int getWritePosition() {
+        return writePosition;
+    }
+
+    /**
+     * Sets the write position to the specified index.
+     *
+     * @param index The index to set the write position to.
+     * @throws IndexOutOfBoundsException if the index is out of bounds.
+     */
+    public void setWritePosition(int index) {
+        checkIndexBounds(index, 0);
+        writePosition = index;
+    }
+
     /**
      * Skips the number of read bytes from the given value.
      *
@@ -609,4 +668,24 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable {
             data = null;
         }
     }
+
+    /**
+     * Creates a deep clone of the current DynamicByteBuffer instance,
+     * including its byte data and configuration settings.
+     *
+     * @return A new DynamicByteBuffer instance that is a deep clone of the current instance.
+     */
+    @Override
+    public DynamicByteBuffer clone() {
+        DynamicByteBuffer clonedBuffer = new DynamicByteBuffer(this.data.length, this.growing);
+        System.arraycopy(this.data, 0, clonedBuffer.data, 0, this.data.length);
+
+        clonedBuffer.size = this.size;
+        clonedBuffer.readPosition = this.readPosition;
+        clonedBuffer.writePosition = this.writePosition;
+        clonedBuffer.bitBuffer = this.bitBuffer;
+        clonedBuffer.bitPosition = this.bitPosition;
+        return clonedBuffer;
+    }
+
 }
