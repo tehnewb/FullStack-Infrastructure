@@ -1,20 +1,18 @@
 package infrastructure.util;
 
-import infrastructure.io.pool.Pool;
-import infrastructure.io.pool.SupplierPoolFactory;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
 
 /**
- * A utility class for manipulating and mutating numeric values.
+ * A utility class for manipulating and mutating a numeric value.
  *
  * @author Albert Beaupre
  */
 public class Value extends Number {
 
-    private static final Pool<Value> pool = new Pool<>(SupplierPoolFactory.of(Value::new), 100);   // Object pool to reuse instances
+    private static final DecimalFormat df = new DecimalFormat();
     private double number; // the number to mutate
 
     /**
@@ -40,7 +38,7 @@ public class Value extends Number {
      * @return A new Value object with the specified initial value.
      */
     public static Value of(double number) {
-        return pool.borrowObject().set(number);
+        return new Value(number);
     }
 
     /**
@@ -61,8 +59,7 @@ public class Value extends Number {
      * @return This Value object after the mutation.
      */
     public Value percent(double input) {
-        number = number * (input / 100D);
-        return this;
+        return new Value(number * (input / 100D));
     }
 
     /**
@@ -73,8 +70,7 @@ public class Value extends Number {
      * @return This Value object after the restriction.
      */
     public Value clamp(double min, double max) {
-        number = Math.min(Math.max(number, min), max);
-        return this;
+        return new Value(Math.min(Math.max(number, min), max));
     }
 
     /**
@@ -85,9 +81,7 @@ public class Value extends Number {
      * @return This Value object after the restriction.
      */
     public boolean within(double min, double max) {
-        boolean result = number >= min && number <= max;
-        pool.returnObject(this);
-        return result;
+        return number >= min && number <= max;
     }
 
     /**
@@ -97,8 +91,7 @@ public class Value extends Number {
      * @return This Value object after the addition.
      */
     public Value add(double value) {
-        number += value;
-        return this;
+        return new Value(this.number + value);
     }
 
     /**
@@ -107,9 +100,8 @@ public class Value extends Number {
      * @param value The value to subtract.
      * @return This Value object after the subtraction.
      */
-    public Value subtract(double value) {
-        number -= value;
-        return this;
+    public Value subtr(double value) {
+        return new Value(this.number - value);
     }
 
     /**
@@ -118,9 +110,8 @@ public class Value extends Number {
      * @param factor The factor by which to multiply the value.
      * @return This Value object after the multiplication.
      */
-    public Value multiply(double factor) {
-        number *= factor;
-        return this;
+    public Value mult(double factor) {
+        return new Value(this.number * factor);
     }
 
     /**
@@ -130,10 +121,7 @@ public class Value extends Number {
      * @return This Value object after the division.
      */
     public Value divide(double divisor) {
-        if (divisor != 0) {
-            number /= divisor;
-        }
-        return this;
+        return new Value(this.number / divisor);
     }
 
     /**
@@ -143,8 +131,7 @@ public class Value extends Number {
      * @return This Value object after the exponentiation.
      */
     public Value power(double exponent) {
-        number = Math.pow(number, exponent);
-        return this;
+        return new Value(Math.pow(number, exponent));
     }
 
     /**
@@ -167,8 +154,7 @@ public class Value extends Number {
     public Value round(int decimalPlaces, RoundingMode roundingMode) {
         BigDecimal bd = new BigDecimal(number);
         bd = bd.setScale(decimalPlaces, roundingMode);
-        number = bd.doubleValue();
-        return this;
+        return new Value(bd.doubleValue());
     }
 
     /**
@@ -177,8 +163,7 @@ public class Value extends Number {
      * @return This Value object with a positive value.
      */
     public Value abs() {
-        number = Math.abs(number);
-        return this;
+        return new Value(Math.abs(number));
     }
 
     /**
@@ -187,8 +172,7 @@ public class Value extends Number {
      * @return This Value object with the negated value.
      */
     public Value negate() {
-        number = -number;
-        return this;
+        return new Value(-number);
     }
 
     /**
@@ -199,8 +183,7 @@ public class Value extends Number {
      * @return This Value object with the random value.
      */
     public Value randomize(double min, double max) {
-        number = min + (Math.random() * (max - min));
-        return this;
+        return new Value(min + (Math.random() * (max - min)));
     }
 
     /**
@@ -210,9 +193,7 @@ public class Value extends Number {
      * @return true if the values are equal, false otherwise.
      */
     public boolean isEqualTo(double otherValue) {
-        boolean result = Double.compare(number, otherValue) == 0;
-        pool.returnObject(this);
-        return result;
+        return Double.compare(number, otherValue) == 0;
     }
 
     /**
@@ -222,9 +203,7 @@ public class Value extends Number {
      * @return true if the current value is greater, false otherwise.
      */
     public boolean isGreaterThan(double otherValue) {
-        boolean result = number > otherValue;
-        pool.returnObject(this);
-        return result;
+        return number > otherValue;
     }
 
     /**
@@ -234,9 +213,7 @@ public class Value extends Number {
      * @return true if the current value is less, false otherwise.
      */
     public boolean isLessThan(double otherValue) {
-        boolean result = number < otherValue;
-        pool.returnObject(this);
-        return result;
+        return number < otherValue;
     }
 
     /**
@@ -246,10 +223,8 @@ public class Value extends Number {
      * @return The formatted string representation of the current value.
      */
     public String format(String formatPattern) {
-        DecimalFormat df = new DecimalFormat(formatPattern);
-        String result = df.format(number);
-        pool.returnObject(this);
-        return result;
+        df.applyPattern(formatPattern);
+        return df.format(number);
     }
 
     /**
@@ -258,9 +233,7 @@ public class Value extends Number {
      * @return The integer representation of the current value.
      */
     public int intValue() {
-        int result = (int) number;
-        pool.returnObject(this);
-        return result;
+        return (int) number;
     }
 
     /**
@@ -269,9 +242,7 @@ public class Value extends Number {
      * @return The long representation of the current value.
      */
     public long longValue() {
-        long result = (long) number;
-        pool.returnObject(this);
-        return result;
+        return (long) number;
     }
 
     /**
@@ -280,9 +251,7 @@ public class Value extends Number {
      * @return The float representation of the current value.
      */
     public float floatValue() {
-        float result = (float) number;
-        pool.returnObject(this);
-        return result;
+        return (float) number;
     }
 
     /**
@@ -291,9 +260,7 @@ public class Value extends Number {
      * @return The double representation of the current value.
      */
     public double doubleValue() {
-        double result = number;
-        pool.returnObject(this);
-        return result;
+        return number;
     }
 
     /**
@@ -302,9 +269,7 @@ public class Value extends Number {
      * @return The fractional part of the current value.
      */
     public double getFractPart() {
-        double result = number - (int) number;
-        pool.returnObject(this);
-        return result;
+        return number - (int) number;
     }
 
     /**
@@ -314,8 +279,7 @@ public class Value extends Number {
      * @return This Value object after the increase.
      */
     public Value incrByPerc(double percentage) {
-        number *= (1 + (percentage / 100));
-        return this;
+        return new Value(number * (1 + (percentage / 100)));
     }
 
     /**
@@ -325,8 +289,7 @@ public class Value extends Number {
      * @return This Value object after the decrease.
      */
     public Value decrByPerc(double percentage) {
-        number *= (1 - (percentage / 100));
-        return this;
+        return new Value(number * (1 - (percentage / 100)));
     }
 
     /**
@@ -335,8 +298,7 @@ public class Value extends Number {
      * @return This Value object after truncation.
      */
     public Value truncate() {
-        number = (double) ((int) number);
-        return this;
+        return new Value((double) ((int) number));
     }
 
     /**
@@ -345,8 +307,7 @@ public class Value extends Number {
      * @return This Value object after rounding up.
      */
     public Value ceil() {
-        number = Math.ceil(number);
-        return this;
+        return new Value(Math.ceil(number));
     }
 
     /**
@@ -355,8 +316,7 @@ public class Value extends Number {
      * @return This Value object after rounding down.
      */
     public Value flr() {
-        number = Math.floor(number);
-        return this;
+        return new Value(Math.floor(number));
     }
 
     /**
@@ -365,9 +325,7 @@ public class Value extends Number {
      * @return 1 if the value is positive, 0 if it's zero, -1 if it's negative.
      */
     public int signum() {
-        int result = Double.compare(number, 0.0);
-        pool.returnObject(this);
-        return result;
+        return Double.compare(number, 0.0);
     }
 
     /**
@@ -379,9 +337,7 @@ public class Value extends Number {
     public double percDiff(double otherValue) {
         if (otherValue == 0)
             return Double.POSITIVE_INFINITY;
-        double result = (Math.abs(number - otherValue) / Math.abs(otherValue)) * 100.0;
-        pool.returnObject(this);
-        return result;
+        return (Math.abs(number - otherValue) / Math.abs(otherValue)) * 100.0;
     }
 
     /**
@@ -395,11 +351,10 @@ public class Value extends Number {
             for (int i = 1; i <= (int) number; i++) {
                 result *= i;
             }
-            number = result;
+            return new Value(result);
         } else {
             throw new ArithmeticException("Invalid Factorial Value: " + number);
         }
-        return this;
     }
 
     /**
@@ -408,8 +363,7 @@ public class Value extends Number {
      * @return This Value object after the exponentiation.
      */
     public Value exp() {
-        number = Math.exp(number);
-        return this;
+        return new Value(Math.exp(number));
     }
 
     /**
@@ -419,11 +373,10 @@ public class Value extends Number {
      */
     public Value log() {
         if (number > 0) {
-            number = Math.log(number);
+            return new Value(Math.log(number));
         } else {
             throw new ArithmeticException("Cannot calculate the natural logarithm for: " + number);
         }
-        return this;
     }
 
     /**
@@ -434,8 +387,7 @@ public class Value extends Number {
      */
     public Value roundToDecimalPlace(int decimalPlace) {
         double scale = Math.pow(10, decimalPlace);
-        number = Math.round(number * scale) / scale;
-        return this;
+        return new Value(Math.round(number * scale) / scale);
     }
 
     /**
@@ -444,8 +396,7 @@ public class Value extends Number {
      * @return This Value object after calculating the sine.
      */
     public Value sin() {
-        number = Math.sin(number);
-        return this;
+        return new Value(Math.sin(number));
     }
 
     /**
@@ -454,8 +405,7 @@ public class Value extends Number {
      * @return This Value object after calculating the cosine.
      */
     public Value cos() {
-        number = Math.cos(number);
-        return this;
+        return new Value(Math.cos(number));
     }
 
     /**
@@ -464,8 +414,7 @@ public class Value extends Number {
      * @return This Value object after calculating the tangent.
      */
     public Value tan() {
-        number = Math.tan(number);
-        return this;
+        return new Value(Math.tan(number));
     }
 
     /**
@@ -476,11 +425,10 @@ public class Value extends Number {
      */
     public Value sqrt() {
         if (number >= 0) {
-            number = Math.sqrt(number);
+            return new Value(Math.sqrt(number));
         } else {
             throw new ArithmeticException("Square root of a negative number is undefined.");
         }
-        return this;
     }
 
     /**
@@ -489,8 +437,7 @@ public class Value extends Number {
      * @return This Value object after the cube root calculation.
      */
     public Value cubeRoot() {
-        number = Math.cbrt(number);
-        return this;
+        return new Value(Math.cbrt(number));
     }
 
     /**
@@ -500,8 +447,7 @@ public class Value extends Number {
      * @return This Value object after the hypotenuse calculation.
      */
     public Value hypot(double otherSide) {
-        number = Math.hypot(number, otherSide);
-        return this;
+        return new Value(Math.hypot(number, otherSide));
     }
 
     /**
@@ -511,8 +457,7 @@ public class Value extends Number {
      * @return This Value object after the exponentiation.
      */
     public Value pow(double base) {
-        number = Math.pow(base, number);
-        return this;
+        return new Value(Math.pow(base, number));
     }
 
     /**
@@ -522,8 +467,7 @@ public class Value extends Number {
      * @return This Value object after the bitwise AND operation.
      */
     public Value bitAnd(int otherValue) {
-        number = (int) number & otherValue;
-        return this;
+        return new Value((int) number & otherValue);
     }
 
     /**
@@ -533,8 +477,7 @@ public class Value extends Number {
      * @return This Value object after the bitwise OR operation.
      */
     public Value bitOr(int otherValue) {
-        number = (int) number | otherValue;
-        return this;
+        return new Value((int) number | otherValue);
     }
 
     /**
@@ -544,8 +487,7 @@ public class Value extends Number {
      * @return This Value object after the bitwise XOR operation.
      */
     public Value bitXor(int otherValue) {
-        number = (int) number ^ otherValue;
-        return this;
+        return new Value((int) number ^ otherValue);
     }
 
     /**
@@ -557,11 +499,10 @@ public class Value extends Number {
      */
     public Value log(double base) {
         if (number > 0 && base > 0) {
-            number = Math.log(number) / Math.log(base);
+            return new Value(Math.log(number) / Math.log(base));
         } else {
             throw new ArithmeticException("Logarithm input must be positive.");
         }
-        return this;
     }
 
     /**
@@ -572,9 +513,7 @@ public class Value extends Number {
      * @return true if the values are approximately equal within the epsilon, false otherwise.
      */
     public boolean isApproxEqualTo(double otherValue, double epsilon) {
-        boolean result = Math.abs(number - otherValue) <= epsilon;
-        pool.returnObject(this);
-        return result;
+        return Math.abs(number - otherValue) <= epsilon;
     }
 
     /**
@@ -584,8 +523,7 @@ public class Value extends Number {
      * @return This Value object after rounding.
      */
     public Value roundToNearestMultiple(double multiple) {
-        number = Math.round(number / multiple) * multiple;
-        return this;
+        return new Value(Math.round(number / multiple) * multiple);
     }
 
     /**
@@ -596,11 +534,10 @@ public class Value extends Number {
      */
     public Value recip() {
         if (number != 0) {
-            number = 1 / number;
+            return new Value(1 / number);
         } else {
             throw new ArithmeticException("Reciprocal of zero is undefined.");
         }
-        return this;
     }
 
     /**
@@ -609,9 +546,7 @@ public class Value extends Number {
      * @return true if the current value is even, false otherwise.
      */
     public boolean isEven() {
-        boolean result = ((int) number) % 2 == 0;
-        pool.returnObject(this);
-        return result;
+        return ((int) number) % 2 == 0;
     }
 
     /**
@@ -620,9 +555,7 @@ public class Value extends Number {
      * @return true if the current value is odd, false otherwise.
      */
     public boolean isOdd() {
-        boolean result = ((int) number) % 2 != 0;
-        pool.returnObject(this);
-        return result;
+        return ((int) number) % 2 != 0;
     }
 
     /**
@@ -632,9 +565,18 @@ public class Value extends Number {
      * @return The absolute difference between the values.
      */
     public double absDiff(double otherValue) {
-        double result = Math.abs(number - otherValue);
-        pool.returnObject(this);
-        return result;
+        return Math.abs(number - otherValue);
+    }
+
+    /**
+     * Converts this Value to the specified TimeUnit based on the given TimeUnits.
+     *
+     * @param from The TimeUnit to convert from.
+     * @param to   The TimeUnit to convert to.
+     * @return The converted time in a long format.
+     */
+    public long convert(TimeUnit from, TimeUnit to) {
+        return from.convert((long) number, to);
     }
 
     /**

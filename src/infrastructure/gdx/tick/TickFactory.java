@@ -1,5 +1,6 @@
-package infrastructure.entity;
+package infrastructure.gdx.tick;
 
+import infrastructure.collections.index.IndexableList;
 import infrastructure.io.pool.PoolFactory;
 
 /**
@@ -10,7 +11,7 @@ import infrastructure.io.pool.PoolFactory;
 public class TickFactory implements PoolFactory<Tick> {
 
     // A list to keep track of all active `Tick` instances.
-    private static final EntityList<Tick> Ticks = new EntityList<>(100);
+    private static final IndexableList<Tick> Ticks = new IndexableList<>(100);
 
     /**
      * Updates all active ticks based on the specified delta.

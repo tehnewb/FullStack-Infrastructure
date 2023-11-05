@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * The EventObserver is placed over any method within a class that is used to
- * observe an event. The method must have 1 parameter, that being the event observed.
+ * observe an event.
+ * <p>
+ * The method must have one parameter: that being the event observed.
  *
  * @author Albert Beaupre
  * @see EventBus

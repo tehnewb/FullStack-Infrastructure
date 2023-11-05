@@ -1,6 +1,6 @@
 package infrastructure.io.pool;
 
-import java.util.LinkedList;
+import infrastructure.collections.faststack.FastStack;
 
 /**
  * A thread-safe generic object pool implementation that manages and recycles a limited number of objects.
@@ -9,7 +9,7 @@ import java.util.LinkedList;
  * @author Albert Beaupre
  */
 public class Pool<T> {
-    private final LinkedList<T> objects;
+    private final FastStack<T> objects;
     private final PoolFactory<T> factory;
 
     /**
@@ -22,8 +22,7 @@ public class Pool<T> {
         if (initialSize < 0)
             throw new IllegalArgumentException("Initial pool size cannot be negative.");
 
-
-        this.objects = new LinkedList<>();
+        this.objects = new FastStack<>();
         this.factory = factory;
         populatePool(initialSize);
     }
@@ -35,18 +34,16 @@ public class Pool<T> {
      * @return An object from the pool.
      */
     public T borrowObject() {
-        synchronized (objects) {
-            if (objects.isEmpty())
-                populatePool(10); // populate pool if it's empty
+        if (objects.isEmpty())
+            populatePool(10); // populate pool if it's empty
 
-            T obj = objects.pop(); // grab next pool object
-            if (factory.isStale(obj)) { // check if object is stale
-                factory.close(obj);
-                obj = factory.create();
-            }
-            factory.init(obj); // initialize object for use
-            return obj;
+        T obj = objects.pop(); // grab next pool object
+        if (factory.isStale(obj)) { // check if object is stale
+            factory.close(obj);
+            obj = factory.create();
         }
+        factory.init(obj); // initialize object for use
+        return obj;
     }
 
     /**
@@ -56,10 +53,8 @@ public class Pool<T> {
      */
     public void returnObject(T object) {
         if (object != null) {
-            synchronized (objects) {
-                factory.close(object);
-                objects.offer(object);
-            }
+            factory.close(object);
+            objects.push(object);
         }
     }
 
@@ -70,7 +65,7 @@ public class Pool<T> {
      */
     private void populatePool(int size) {
         for (int i = 0; i < size; i++) {
-            objects.offer(factory.create());
+            objects.push(factory.create());
         }
     }
 }

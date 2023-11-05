@@ -21,13 +21,13 @@ import java.util.concurrent.locks.ReentrantLock;
 public class AccountDatabase {
     private static final Logger logger = LoggerFactory.getLogger(AccountDatabase.class);
 
-    private ExecutorService executor = Executors.newFixedThreadPool(10); // Thread pool for asynchronous tasks
-    private Map<String, byte[]> cache = new ConcurrentHashMap<>(); // In-memory cache for account data
-    private AccountSerializationStrategy serializer; // Responsible for serializing/deserializing account data
-    private AccountOperationsStrategy operations; // Provides methods for loading and saving account data
+    private final ExecutorService executor = Executors.newFixedThreadPool(10); // Thread pool for asynchronous tasks
+    private final Map<String, byte[]> cache = new ConcurrentHashMap<>(); // In-memory cache for account data
+    private final AccountSerializationStrategy serializer; // Responsible for serializing/deserializing account data
+    private final AccountOperationsStrategy operations; // Provides methods for loading and saving account data
     private int maxCacheSize = 1000; // Maximum size of the cache
-    private Queue<String> cacheEvictionQueue = new ConcurrentLinkedQueue<>(); // Queue for cache eviction
-    private ReentrantLock cacheLock = new ReentrantLock(); // Lock for ensuring thread safety during cache updates
+    private final Queue<String> cacheEvictionQueue = new ConcurrentLinkedQueue<>(); // Queue for cache eviction
+    private final ReentrantLock cacheLock = new ReentrantLock(); // Lock for ensuring thread safety during cache updates
 
     /**
      * Constructs an `AccountWorker` object with given operations and serialization strategies used for saving and loading and serializing and deserializing.

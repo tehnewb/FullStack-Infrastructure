@@ -9,8 +9,7 @@ import java.lang.reflect.Method;
  *
  * @author Albert Beaupre
  */
-public class EventInvoker {
-
+class EventInvoker {
     private final Object object; // The object on which the method will be invoked.
     private final Method method; // The method to be invoked.
 

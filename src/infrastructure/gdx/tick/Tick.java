@@ -1,19 +1,16 @@
-package infrastructure.entity;
+package infrastructure.gdx.tick;
 
-import infrastructure.io.pool.Pool;
+import infrastructure.collections.index.Indexable;
 
 import java.util.function.Predicate;
 
 /**
  * The `Tick` class is designed for creating timed actions that can be executed at regular intervals.
  * It offers a mechanism to schedule and manage actions with a specified delay between executions.
- * Instances of this class are poolable, allowing for efficient resource management.
  *
  * @author Albert Beaupre
  */
-public class Tick implements Entity {
-    // A pool of `Tick` objects for efficient reuse.
-    private static final Pool<Tick> TickPool = new Pool<Tick>(new TickFactory(), 100);
+public class Tick implements Indexable {
 
     // A predicate to determine if this `Tick` should stop executing.
     private Predicate<Tick> stopIf;
@@ -60,7 +57,7 @@ public class Tick implements Entity {
      * @return A `Tick` instance.
      */
     public static Tick of(Runnable action) {
-        return TickPool.borrowObject().action(action);
+        return new Tick().action(action);
     }
 
     /**
@@ -167,7 +164,6 @@ public class Tick implements Entity {
      */
     public void stop() {
         this.stopped = true;
-        TickPool.returnObject(this);
     }
 
     /**

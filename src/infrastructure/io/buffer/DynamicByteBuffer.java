@@ -1,5 +1,6 @@
 package infrastructure.io.buffer;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
@@ -10,6 +11,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class DynamicByteBuffer implements Serializable, AutoCloseable, Cloneable {
     private static final int DEFAULT_CAPACITY = 128; // Default capacity of DynamicByteArray
+    @Serial
     private static final long serialVersionUID = 1L;
     private boolean growing;
     private byte[] data;

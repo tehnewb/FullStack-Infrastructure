@@ -1,6 +1,6 @@
 package infrastructure.cache;
 
-import infrastructure.entity.Entity;
+import infrastructure.collections.index.Indexable;
 
 /**
  * The CacheFile class represents a game file stored within a Cache Index. It is
@@ -16,7 +16,7 @@ import infrastructure.entity.Entity;
  *
  * @author Albert Beaupre
  */
-public class CacheFile implements Entity {
+public class CacheFile implements Indexable {
 
     /**
      * The index that uniquely identifies this CacheFile within a Cache Index.

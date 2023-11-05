@@ -13,18 +13,15 @@ import java.util.Map;
  */
 public class EventBus {
 
-    // Map to store event class -> List of invokers
-    private final Map<Class<?>, List<EventInvoker>> invokers = new HashMap<>();
-
-    // List of blocked event classes
-    private final List<Class<?>> blockedEventClasses = new ArrayList<>();
+    private final Map<Class<?>, List<EventInvoker>> invokers = new HashMap<>(); // Map to store event class -> List of invokers
+    private final List<Class<?>> blockedEventClasses = new ArrayList<>();  // List of blocked event classes
 
     /**
      * Posts an event to all registered observers for that event type.
      *
      * @param event The event to be posted.
      */
-    public void post(Object event) {
+    public synchronized void post(Object event) {
         Class<?> eventClass = event.getClass();
 
         List<EventInvoker> currentInvokers = invokers.get(eventClass);
@@ -49,7 +46,7 @@ public class EventBus {
      *
      * @param object The object to be registered as an observer.
      */
-    public void registerObserver(Object object) {
+    public synchronized void registerObserver(Object object) {
         if (object == null)
             throw new IllegalArgumentException("Observer object cannot be null.");
 
@@ -72,7 +69,7 @@ public class EventBus {
      * @param observer The observer object that should handle the event.
      * @param event    The event to be posted.
      */
-    public void postOnly(Object observer, Object event) {
+    public synchronized void postOnly(Object observer, Object event) {
         Class<?> clazz = observer.getClass();
         for (Method method : clazz.getMethods()) {
             method.setAccessible(true);
@@ -95,7 +92,7 @@ public class EventBus {
      *
      * @param object The observer object to be unregistered.
      */
-    public void unregisterObserver(Object object) {
+    public synchronized void unregisterObserver(Object object) {
         if (object == null)
             throw new IllegalArgumentException("Observer object cannot be null.");
 
@@ -108,7 +105,7 @@ public class EventBus {
      *
      * @param eventClass The class of events to be blocked.
      */
-    public void blockEvents(Class<?> eventClass) {
+    public synchronized void blockEvents(Class<?> eventClass) {
         if (eventClass != null && !blockedEventClasses.contains(eventClass)) {
             blockedEventClasses.add(eventClass);
         }
@@ -120,7 +117,7 @@ public class EventBus {
      * @param eventClass The class of events to check.
      * @return True if the class of events is blocked, false otherwise.
      */
-    private boolean isEventClassBlocked(Class<?> eventClass) {
+    private synchronized boolean isEventClassBlocked(Class<?> eventClass) {
         return blockedEventClasses.contains(eventClass);
     }
 }

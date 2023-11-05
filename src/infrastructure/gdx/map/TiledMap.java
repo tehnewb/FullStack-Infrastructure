@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -22,8 +23,8 @@ import java.util.HashMap;
 public class TiledMap {
 
     private final Element root;
-    private final HashMap<String, MapLayer> underlays;
-    private final HashMap<String, MapLayer> overlays;
+    private final ArrayList<MapLayer> underlays;
+    private final ArrayList<MapLayer> overlays;
     private final HashMap<String, MapObject> objects;
     private final int mapWidth;
     private final int mapHeight;
@@ -39,13 +40,14 @@ public class TiledMap {
      * @param tileSet The tileset data as a byte array.
      */
     public TiledMap(byte[] tmxData, byte[] tileSet) {
+
         // Initialize XML reader for parsing.
         XmlReader reader = new XmlReader();
 
         // Parse the TMX file data.
         this.root = reader.parse(new ByteArrayInputStream(tmxData));
-        this.underlays = new HashMap<>();
-        this.overlays = new HashMap<>();
+        this.underlays = new ArrayList<>();
+        this.overlays = new ArrayList<>();
         this.objects = new HashMap<>();
         this.mapWidth = root.getIntAttribute("width", 0);
         this.mapHeight = root.getIntAttribute("height", 0);
@@ -63,15 +65,16 @@ public class TiledMap {
      * @param batch The batch used for rendering.
      */
     public void renderUnderlays(Batch batch, int centerX, int centerY, int tileRadius) {
-        for (MapLayer layer : underlays.values()) {
+        for (MapLayer layer : underlays) {
             if (layer == null)
                 continue;
+
             for (int my = centerY - tileRadius; my < centerY + tileRadius; my++) {
                 for (int mx = centerX - tileRadius; mx < centerX + tileRadius; mx++) {
                     if (mx < 0 || my < 0 || mx >= mapWidth || my >= mapHeight)
                         continue;
                     int tileIndex = layer.getTileIndices()[my][mx] - 1;
-                    if (tileIndex <= 0)
+                    if (tileIndex < 0)
                         continue;
                     Texture texture = this.tiles[tileIndex];
 
@@ -88,7 +91,7 @@ public class TiledMap {
      * @param batch The batch used for rendering.
      */
     public void renderOverlays(Batch batch, int centerX, int centerY, int tileRadius) {
-        for (MapLayer layer : overlays.values()) {
+        for (MapLayer layer : overlays) {
             if (layer == null)
                 continue;
             for (int my = centerY - tileRadius; my < centerY + tileRadius; my++) {
@@ -96,7 +99,7 @@ public class TiledMap {
                     if (mx < 0 || my < 0 || mx >= mapWidth || my >= mapHeight)
                         continue;
                     int tileIndex = layer.getTileIndices()[my][mx] - 1;
-                    if (tileIndex <= 0)
+                    if (tileIndex < 0)
                         continue;
                     Texture texture = this.tiles[tileIndex];
 
@@ -176,12 +179,14 @@ public class TiledMap {
                 int[][] tileData = parseLayerIndices(layerData);
                 MapLayer mapLayer = new MapLayer(layerName, tileData, layerProperties);
                 if (layerProperties.containsKey("overlay")) {
-                    overlays.put(layerName, mapLayer);
+                    overlays.add(mapLayer);
                 } else {
-                    underlays.put(layerName, mapLayer);
+                    underlays.add(mapLayer);
                 }
             }
         }
+
+
     }
 
     /**
@@ -262,20 +267,20 @@ public class TiledMap {
     }
 
     /**
-     * Gets the map of map layers parsed from the TMX file that are rendered over the player.
+     * Gets the list of map layers parsed from the TMX file that are rendered over the player.
      *
      * @return A map of overlay layers.
      */
-    public HashMap<String, MapLayer> getOverlays() {
+    public ArrayList<MapLayer> getOverlays() {
         return overlays;
     }
 
     /**
-     * Gets the map of map layers parsed from the TMX file that are rendered under the player.
+     * Gets the list of map layers parsed from the TMX file that are rendered under the player.
      *
      * @return A map of underlay layers.
      */
-    public HashMap<String, MapLayer> getUnderlays() {
+    public ArrayList<MapLayer> getUnderlays() {
         return underlays;
     }
 

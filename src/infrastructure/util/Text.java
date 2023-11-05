@@ -1,8 +1,5 @@
 package infrastructure.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -13,7 +10,7 @@ import java.util.List;
  * The Text class provides utility methods for manipulating text strings.
  */
 public class Text {
-    private static final String[] VOWELS = {"a", "e", "i", "o", "u", "A", "E", "I", "O", "U"};
+    public static final String[] VOWELS = {"a", "e", "i", "o", "u", "A", "E", "I", "O", "U"};
 
     private String string;
 
@@ -63,9 +60,7 @@ public class Text {
                 }
             }
         }
-
-        string = wrappedText.toString().trim();
-        return this;
+        return new Text(wrappedText.toString().trim());
     }
 
     /**
@@ -77,12 +72,10 @@ public class Text {
     public Text withPrefix(String string) {
         for (String vowel : VOWELS) {
             if (string.startsWith(vowel)) {
-                string = "an " + string;
-                return this;
+                return new Text("an " + string);
             }
         }
-        string = "a " + string;
-        return this;
+        return new Text("a " + string);
     }
 
     /**
@@ -91,8 +84,7 @@ public class Text {
      * @return The modified Text object.
      */
     public Text upperFirst() {
-        string = string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
-        return this;
+        return new Text(string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase());
     }
 
     /**
@@ -102,8 +94,7 @@ public class Text {
      * @return The modified Text object.
      */
     public Text withSuffix(String suffix) {
-        string += " " + suffix;
-        return this;
+        return new Text(string + " " + suffix);
     }
 
     /**
@@ -114,8 +105,7 @@ public class Text {
      * @return The modified Text object.
      */
     public Text replaceAll(String target, String replacement) {
-        string = string.replaceAll(target, replacement);
-        return this;
+        return new Text(string.replaceAll(target, replacement));
     }
 
     /**
@@ -125,10 +115,7 @@ public class Text {
      * @return The modified Text object.
      */
     public Text truncate(int length) {
-        if (string.length() > length) {
-            string = string.substring(0, length);
-        }
-        return this;
+        return new Text(string.substring(0, length));
     }
 
     /**
@@ -152,8 +139,7 @@ public class Text {
         for (int i = words.length - 1; i >= 0; i--) {
             reversed.append(words[i]).append(" ");
         }
-        string = reversed.toString().trim();
-        return this;
+        return new Text(reversed.toString().trim());
     }
 
     /**
@@ -177,8 +163,7 @@ public class Text {
      * @return The modified Text object with non-alphanumeric characters removed.
      */
     public Text removeNonAlphaNumeric() {
-        string = string.replaceAll("[^a-zA-Z0-9\\s]", "");
-        return this;
+        return new Text(string.replaceAll("[^a-zA-Z0-9\\s]", ""));
     }
 
     /**
@@ -187,8 +172,7 @@ public class Text {
      * @return The modified Text object with reversed characters.
      */
     public Text reverse() {
-        string = new StringBuilder(string).reverse().toString();
-        return this;
+        return new Text(new StringBuilder(string).reverse().toString());
     }
 
     /**
@@ -207,8 +191,7 @@ public class Text {
      * @return The modified Text object with HTML tags removed.
      */
     public Text stripHtmlTags() {
-        string = string.replaceAll("\\<.*?\\>", "");
-        return this;
+        return new Text(string.replaceAll("\\<.*?\\>", ""));
     }
 
     /**
@@ -217,8 +200,7 @@ public class Text {
      * @return The modified Text object with words separated.
      */
     public Text camelCaseToWords() {
-        string = string.replaceAll("([a-z])([A-Z])", "$1 $2");
-        return this;
+        return new Text(string.replaceAll("([a-z])([A-Z])", "$1 $2"));
     }
 
     /**
@@ -227,8 +209,7 @@ public class Text {
      * @return The number of lines in the text.
      */
     public int countLines() {
-        String[] lines = string.split("\\r?\\n");
-        return lines.length;
+        return string.split("\\r?\\n").length;
     }
 
     /**
@@ -242,8 +223,7 @@ public class Text {
         for (String word : words) {
             result.append(word.substring(0, 1).toUpperCase()).append(word.substring(1)).append(" ");
         }
-        string = result.toString().trim();
-        return this;
+        return new Text(result.toString().trim());
     }
 
     /**
@@ -253,10 +233,7 @@ public class Text {
      * @return The modified Text object.
      */
     public Text abbreviate(int maxLength) {
-        if (string.length() > maxLength) {
-            string = string.substring(0, maxLength - 3) + "...";
-        }
-        return this;
+        return new Text(string.substring(0, maxLength - 3) + "...");
     }
 
     /**
@@ -275,8 +252,7 @@ public class Text {
         for (Character c : charList) {
             shuffled.append(c);
         }
-        string = shuffled.toString();
-        return this;
+        return new Text(shuffled.toString());
     }
 
     /**
@@ -309,30 +285,7 @@ public class Text {
         for (String str : strings) {
             builder.append(str);
         }
-        string = builder.toString();
-        return this;
-    }
-
-    /**
-     * URL encodes the text using UTF-8 encoding.
-     *
-     * @return The modified Text object with URL-encoded text.
-     * @throws UnsupportedEncodingException If the encoding is not supported.
-     */
-    public Text urlEncode() throws UnsupportedEncodingException {
-        string = URLEncoder.encode(string, StandardCharsets.UTF_8);
-        return this;
-    }
-
-    /**
-     * URL decodes the text using UTF-8 encoding.
-     *
-     * @return The modified Text object with URL-decoded text.
-     * @throws UnsupportedEncodingException If the encoding is not supported.
-     */
-    public Text urlDecode() throws UnsupportedEncodingException {
-        string = URLDecoder.decode(string, StandardCharsets.UTF_8);
-        return this;
+        return new Text(builder.toString());
     }
 
     /**
@@ -342,8 +295,7 @@ public class Text {
      */
     public Text base64Encode() {
         byte[] encodedBytes = Base64.getEncoder().encode(string.getBytes());
-        string = new String(encodedBytes, StandardCharsets.UTF_8);
-        return this;
+        return new Text(new String(encodedBytes, StandardCharsets.UTF_8));
     }
 
     /**
@@ -353,10 +305,19 @@ public class Text {
      */
     public Text base64Decode() {
         byte[] decodedBytes = Base64.getDecoder().decode(string);
-        string = new String(decodedBytes, StandardCharsets.UTF_8);
-        return this;
+        return new Text(new String(decodedBytes, StandardCharsets.UTF_8));
     }
 
+    /**
+     * Sets the string of this Text to the specified string.
+     *
+     * @param string The string to set.
+     * @return This instance for chaining.
+     */
+    public Text set(String string) {
+        this.string = string;
+        return this;
+    }
 
     /**
      * Retrieves the byte array tied to the internal string.

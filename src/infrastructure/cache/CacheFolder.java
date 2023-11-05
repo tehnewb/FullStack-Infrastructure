@@ -1,6 +1,6 @@
 package infrastructure.cache;
 
-import infrastructure.entity.EntityList;
+import infrastructure.collections.index.IndexableList;
 
 /**
  * A CacheFolder is responsible for storing and managing multiple Cache Files. It is
@@ -11,7 +11,7 @@ import infrastructure.entity.EntityList;
  */
 public class CacheFolder {
     private static final int INITIAL_CAPACITY = 10; // Initial capacity of the cacheFiles array
-    private final EntityList<CacheFile> files; // Array to store Cache Files.
+    private final IndexableList<CacheFile> files; // Array to store Cache Files.
     private final int index;           // The unique identifier for this CacheFolder.
     private final String name; // The name of the folder
 
@@ -23,7 +23,7 @@ public class CacheFolder {
     public CacheFolder(int index, String name) {
         this.index = index;
         this.name = name;
-        this.files = new EntityList<>(INITIAL_CAPACITY);
+        this.files = new IndexableList<>(INITIAL_CAPACITY);
     }
 
     /**

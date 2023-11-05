@@ -7,8 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.CRC32;
 
 /**
  * The Cache class is used to manage a cache of data in the form of CacheFolder objects. It provides methods to add and remove
@@ -20,10 +18,12 @@ import java.util.zip.CRC32;
 public class Cache {
 
     private final Map<Integer, CacheFolder> cache = new HashMap<>(); // used for folders without a loader
-    private final Map<Integer, CacheLoadStrategy> loaders = new HashMap<>(); // used for folders with a loader
-    private final Map<String, Object> loadedFiles = new HashMap<>(); // used for files loaded with a loader
-    private final AtomicInteger decompressionProgress = new AtomicInteger(); // tracks the progress of bytes written while decompressing the cache
-    private final AtomicInteger compressionProgress = new AtomicInteger(); // tracks the progress of bytes written while compressing the cache
+    private int decompressionProgress; // tracks the progress of bytes written while decompressing the cache
+    private int compressionProgress; // tracks the progress of bytes written while compressing the cache
+
+    public static void main(String[] args) throws Exception {
+        new Cache().decompress(CompressionStrategy.GZIP, Files.readAllBytes(Paths.get("./cache.bin")));
+    }
 
     /**
      * Decodes the given data and creates a Cache instance based on the folders and files within the decoded data.
@@ -38,8 +38,7 @@ public class Cache {
                 int folderIndex = in.readByte();
                 int folderSize = in.readShort();
                 String folderName = in.readString();
-                CacheLoadStrategy loader = loaders.get(folderIndex);
-                CacheFolder folder = loader != null ? null : new CacheFolder(folderIndex, folderName);
+                CacheFolder folder = new CacheFolder(folderIndex, folderName);
                 for (int j = 0; j < folderSize; j++) {
                     short cacheFileIndex = in.readShort();
                     if (cacheFileIndex == -1) // unused index
@@ -49,19 +48,12 @@ public class Cache {
                     String fileName = in.readString();
                     int cacheFileSize = in.readInt();
                     byte[] cacheFileData = in.readBytes(cacheFileSize);
-                    if (loader != null) {
-                        loadedFiles.put(fileName, loader.load(cacheFileData));
-                        System.out.println(loader);
-                    } else {
-                        CacheFile file = new CacheFile(cacheFileIndex, version, type, fileName, cacheFileData);
-                        folder.add(file);
-                    }
-                    decompressionProgress.set((int) ((in.getReadPosition() / (float) in.size()) * 100));
+                    folder.add(new CacheFile(cacheFileIndex, version, type, fileName, cacheFileData));
+                    decompressionProgress = (int) ((in.getReadPosition() / (float) in.size()) * 100);
                 }
-                if (folder != null)
-                    addFolder(folder);
+                addFolder(folder);
             }
-            decompressionProgress.set(100);
+            decompressionProgress = 100;
         } catch (Exception e) {
             throw new RuntimeException("Could not decode cache", e);
         }
@@ -95,9 +87,9 @@ public class Cache {
                     out.writeInt(file.getData().length);
                     out.writeBytes(file.getData());
                 }
-                compressionProgress.set((int) ((out.getWritePosition() / (float) bufferSize) * 100));
+                compressionProgress = (int) ((out.getWritePosition() / (float) bufferSize) * 100);
             }
-            compressionProgress.set(100);
+            compressionProgress = 100;
             return strategy.compress(out.toArray());
         } catch (Exception e) {
             throw new RuntimeException("Could not encode cache", e);
@@ -133,42 +125,12 @@ public class Cache {
 
 
     /**
-     * Calculates a CRC32 checksum for the entire Cache instance.
-     *
-     * @return A CRC32 checksum value as a long.
-     */
-    public long calculateChecksum() {
-        CRC32 crc32 = new CRC32();
-
-        // Iterate through CacheFolders and their CacheFiles
-        for (CacheFolder folder : cache.values()) {
-            crc32.update(folder.getIndex());
-            crc32.update(folder.getName().getBytes());
-
-            for (int i = 0; i < folder.getSize(); i++) {
-                CacheFile file = folder.get(i);
-                if (file == null) { // unused index
-                    crc32.update(0);
-                    continue;
-                }
-                crc32.update(file.getIndex());
-                crc32.update(file.getVersion());
-                crc32.update(file.getType());
-                crc32.update(file.getName().getBytes());
-                crc32.update(file.getData());
-            }
-        }
-
-        return crc32.getValue();
-    }
-
-    /**
      * Adds a CacheFolder to the cache with the specified index ID.
      *
-     * @param CacheFolder The CacheFolder to be added to the cache.
+     * @param folder The CacheFolder to be added to the cache.
      */
-    public void addFolder(CacheFolder CacheFolder) {
-        cache.put(CacheFolder.getIndex(), CacheFolder);
+    public void addFolder(CacheFolder folder) {
+        cache.put(folder.getIndex(), folder);
     }
 
     /**
@@ -188,29 +150,6 @@ public class Cache {
      */
     public CacheFolder getFolder(int index) {
         return cache.get(index);
-    }
-
-    /**
-     * Retrieves a file loaded from a CacheLoadStrategy which corresponds to a specific CacheFolder.
-     *
-     * @param name  The name corresponding to the file.
-     * @param clazz The class to cast the file type as.
-     * @param <T>   The type of file it has been loaded as/
-     * @return The file loaded.
-     */
-    public <T> T getLoadedFile(String name, Class<T> clazz) {
-        return clazz.cast(loadedFiles.get(name));
-    }
-
-    /**
-     * Sets the loader for a specific CacheFolder.
-     *
-     * @param folderIndex The index of the CacheFolder.
-     * @param loader      The loader to set for the specified CacheFolder.
-     * @param <T>         The type of data loaded by the loader.
-     */
-    public <T> void setLoader(int folderIndex, CacheLoadStrategy<T> loader) {
-        this.loaders.put(folderIndex, loader);
     }
 
     /**
@@ -235,7 +174,7 @@ public class Cache {
      * @return An integer representing the progress percentage of cache decompression.
      */
     public int getDecompressionProgress() {
-        return decompressionProgress.get();
+        return decompressionProgress;
     }
 
     /**
@@ -244,7 +183,7 @@ public class Cache {
      * @return An integer representing the progress percentage of cache compression.
      */
     public int getCompressionProgress() {
-        return compressionProgress.get();
+        return compressionProgress;
     }
 
 }
