@@ -13,15 +13,15 @@
   <b><h3>Current Modules</h3></b>
 </div>
 
-- **[In/Out](./modules/IO)**
+- **[In/Out](./IO)**
     - Contains systems used for In/Out operations
-- **[Event](./modules/Event)**
+- **[Event](./Event)**
     - Designed for Event-based systems
-- **[Benchmark](./modules/Benchmark)**
+- **[Benchmark](./Benchmark)**
     - Used for Benchmarking code
-- **[Collections](./modules/Collections)**
+- **[Collections](./Collections)**
     - Contains many different collections
-- **[Entity Component System](./modules/ECS)**
+- **[Entity Component System](./ECS)**
     - Designed for projects using entities and components
 
 ---
