@@ -22,17 +22,6 @@ public class GDXSplitPane extends SplitPane {
     }
 
     /**
-     * Sets the style of the split pane.
-     *
-     * @param style The `SplitPaneStyle` object defining the visual style of the split pane.
-     * @return The `GDXSplitPane` instance, enabling method chaining.
-     */
-    public GDXSplitPane style(GDXSplitPaneStyle style) {
-        this.setStyle(style);
-        return this;
-    }
-
-    /**
      * Creates a new `GDXSplitPane` instance with the specified first and second widgets, orientation, and uses the default style.
      *
      * @param firstWidget  The widget displayed on the first side of the split pane.
@@ -42,5 +31,16 @@ public class GDXSplitPane extends SplitPane {
      */
     public static GDXSplitPane of(Actor firstWidget, Actor secondWidget, boolean vertical) {
         return new GDXSplitPane(firstWidget, secondWidget, vertical);
+    }
+
+    /**
+     * Sets the style of the split pane.
+     *
+     * @param style The `SplitPaneStyle` object defining the visual style of the split pane.
+     * @return The `GDXSplitPane` instance, enabling method chaining.
+     */
+    public GDXSplitPane style(GDXSplitPaneStyle style) {
+        this.setStyle(style);
+        return this;
     }
 }

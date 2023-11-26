@@ -4,6 +4,13 @@ import java.util.Arrays;
 
 /**
  * A simple queue data structure designed for managing integer indices.
+ * Pushing indices to this IndexQueue that have not been popped will cause some indices to never be used.
+ * <p>
+ * For example, if you have never popped any indices from this IndexQueue, but you push(17),
+ * then the dequeue value will increase to 18 so that the next pop() value will be 18 and any
+ * index less than that will never be popped. The purpose of this is to increase operational speed
+ * by avoiding a loop to search the internal array for unused indices.
+ * </p>
  *
  * @author Albert Beaupre
  */
@@ -31,6 +38,12 @@ public class IndexQueue {
 
     /**
      * Pushes an index onto the queue.
+     * If an index is greater than the previously dequeued value,
+     * the dequeue then becomes 1 index greater than the index just pushed.
+     *
+     * <p>
+     * For example: if you push(17), then the next number you dequeue will be 18.
+     * </p>
      *
      * @param index The index to be enqueued.
      */
@@ -47,6 +60,12 @@ public class IndexQueue {
         queue[enqueue++] = index;
     }
 
+    /**
+     * Gets the value at a specific index in the queue.
+     *
+     * @param index The index in the queue.
+     * @return The value at the specified index.
+     */
     public int get(int index) {
         return queue[index];
     }
@@ -76,6 +95,11 @@ public class IndexQueue {
         queue = new int[this.queue.length];
     }
 
+    /**
+     * Gets the number of indices currently in the queue.
+     *
+     * @return The number of indices in the queue.
+     */
     public int size() {
         return enqueue;
     }

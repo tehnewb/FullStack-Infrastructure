@@ -7,7 +7,7 @@ import java.util.Objects;
 
 /**
  * The ResourceMetrics class is responsible for tracking and maintaining various statistics related to a resource,
- * including load count, access count, load time, and exceptions encountered during resource operations.
+ * including load count, access count, load time, save count, save time, and exceptions encountered during resource operations.
  *
  * @author Albert Beaupre
  */
@@ -19,14 +19,20 @@ public class ResourceMetrics {
     // Count of resource loading operations.
     private long loadCount;
 
-    // Size of the resource.
-    private long size;
+    // Count of resource access operations.
+    private long accessCount;
 
     // Total time taken to load the resource (in seconds).
     private double loadTime;
 
-    // Count of resource access operations.
-    private long accessCount;
+    // Count of resource saving operations.
+    private long saveCount;
+
+    // Total time taken to save the resource (in seconds).
+    private double saveTime;
+
+    // Size of the resource.
+    private long size;
 
     /**
      * Get the size of the resource.
@@ -94,6 +100,40 @@ public class ResourceMetrics {
      */
     protected void setLoadTime(double loadTime) {
         this.loadTime = loadTime;
+    }
+
+    /**
+     * Get the count of resource saving operations.
+     *
+     * @return The count of resource saving operations.
+     */
+    public long getSaveCount() {
+        return saveCount;
+    }
+
+    /**
+     * Increase the count of resource saving operations by 1.
+     */
+    public void increaseSaveCount() {
+        this.saveCount++;
+    }
+
+    /**
+     * Get the total time taken to save the resource (in seconds).
+     *
+     * @return The total time taken to save the resource in seconds.
+     */
+    public double getSaveTime() {
+        return saveTime;
+    }
+
+    /**
+     * Set the total time taken to save the resource (in seconds).
+     *
+     * @param saveTime The total time taken to save the resource in seconds.
+     */
+    protected void setSaveTime(double saveTime) {
+        this.saveTime = saveTime;
     }
 
     /**

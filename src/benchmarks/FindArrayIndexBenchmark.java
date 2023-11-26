@@ -1,6 +1,7 @@
 package benchmarks;
 
-import infrastructure.collections.BitList;
+import com.artemis.utils.BitVector;
+import infrastructure.collections.Bits;
 import infrastructure.collections.faststack.FastStack;
 import infrastructure.collections.index.IndexQueue;
 import org.openjdk.jmh.annotations.*;
@@ -15,13 +16,14 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
 @Fork(value = 1)
-@Warmup(iterations = 3, timeUnit = TimeUnit.MILLISECONDS, time = 1000)
+@Warmup(iterations = 5, timeUnit = TimeUnit.MILLISECONDS, time = 1000)
 @Measurement(iterations = 5, timeUnit = TimeUnit.MILLISECONDS, time = 1000)
 public class FindArrayIndexBenchmark {
 
     private final int SIZE = 1_000_000;
     private final long[] array = new long[SIZE];
-    private final BitList bits = new BitList(SIZE);
+    private final Bits bits = new Bits(SIZE);
+    private final BitVector bitVector = new BitVector(SIZE);
     private final FastStack<Integer> list = new FastStack<>();
     private IndexQueue queue = new IndexQueue(SIZE);
 
@@ -34,24 +36,20 @@ public class FindArrayIndexBenchmark {
 
     @Setup
     public void setup() {
-        for (int i = 0; i < array.length; i++) {
-            if (Math.random() < .5) {
-                array[i] = -1;
-                bits.set(i);
-                list.push(i);
-            }
+        for (int i = 0; i < SIZE - 1; i++) {
+            bits.set(i);
+            bitVector.set(i);
         }
     }
 
     @Benchmark
-    public void testList(Blackhole blackhole) {
-        blackhole.consume(list.pop());
+    public int testVector(Blackhole blackhole) {
+        return bitVector.nextClearBit(0);
     }
 
     @Benchmark
-    public Object testQueue(Blackhole blackhole) {
-        blackhole.consume(queue.pop());
-        return queue;
+    public int testBits(Blackhole blackhole) {
+        return bits.nextClearBit(0);
     }
 
 

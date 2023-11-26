@@ -16,7 +16,6 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable, Cloneable
     private boolean growing;
     private byte[] data;
     private int size;
-    private int growSize;
     private int readPosition;
     private int writePosition;
     private int bitBuffer;
@@ -40,24 +39,6 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable, Cloneable
         if (initialCapacity <= 0) {
             throw new IllegalArgumentException("Initial capacity must be positive.");
         }
-        data = new byte[initialCapacity];
-        size = 0;
-        readPosition = 0;
-        writePosition = 0;
-    }
-
-    /**
-     * Constructs a DynamicByteArray with the specified initial capacity.
-     *
-     * @param initialCapacity The initial capacity of the byte array.
-     * @param growSize        The size in which the internal array should grow when reaching its limit.
-     * @throws IllegalArgumentException if initial capacity is non-positive.
-     */
-    public DynamicByteBuffer(int initialCapacity, int growSize) {
-        if (initialCapacity <= 0) {
-            throw new IllegalArgumentException("Initial capacity must be positive.");
-        }
-        this.growSize = growSize;
         data = new byte[initialCapacity];
         size = 0;
         readPosition = 0;
@@ -104,8 +85,7 @@ public class DynamicByteBuffer implements Serializable, AutoCloseable, Cloneable
     private void ensureCapacity(int additionalBytes) {
         if (size + additionalBytes > data.length) {
             if (growing) {
-                int newCapacity = Math.max(data.length + growSize, size + additionalBytes);
-                byte[] newData = new byte[newCapacity];
+                byte[] newData = new byte[data.length * 2];
                 System.arraycopy(data, 0, newData, 0, size);
                 data = newData;
             } else {

@@ -15,11 +15,9 @@ import java.util.jar.JarFile;
  */
 public class PluginLoader {
 
-    // The folder where plugin JAR files are located
-    private final File folder;
+    private final File folder; // The folder where plugin JAR files are located
 
-    // ExecutorService for managing plugin loading tasks
-    private final ExecutorService executor;
+    private final ExecutorService executor; // ExecutorService for managing plugin loading tasks
 
     /**
      * Constructs a PluginLoader with the specified folder as the plugin directory.
@@ -28,8 +26,7 @@ public class PluginLoader {
      */
     public PluginLoader(File folder) {
         this.folder = folder;
-        // Create a cached thread pool for loading plugins concurrently
-        this.executor = Executors.newCachedThreadPool();
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     /**

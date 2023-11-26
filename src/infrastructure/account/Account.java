@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @see AccountDatabase
  */
 public class Account {
-    // A HashMap to store the account's data, where variable names are keys and values are associated data.
+    // A IntHashMap to store the account's data, where variable names are keys and values are associated data.
     private final Map<String, Object> data = new HashMap<>();
 
     // A ReadWriteLock to ensure safe concurrent access to the accountData map.

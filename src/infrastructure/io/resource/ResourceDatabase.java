@@ -8,7 +8,8 @@ import java.util.concurrent.*;
 /**
  * ResourceDatabase is a generic class that manages the loading, caching, and accessing of resources
  * using a specified resource loading strategy. It allows for asynchronous loading of resources and
- * keeps track of various resource statistics like load times, access counts, and exceptions.
+ * keeps track of various resource statistics like load times, access counts, save counts, save times,
+ * and exceptions.
  *
  * @param <K> The type of the resource key.
  * @param <R> The type of the resource.
@@ -18,7 +19,8 @@ import java.util.concurrent.*;
 public class ResourceDatabase<K, R, P> {
 
     private final ExecutorService service;
-    private final SynchronousQueue<ParameterWrapper<K, P>> prepared;
+    private final ConcurrentLinkedQueue<ParameterWrapper<K, P>> preparedToLoad;
+    private final ConcurrentLinkedQueue<K> preparedToSave;
     private final ResourceStrategy<K, R, P> strategy;
     private final ConcurrentHashMap<K, ResourceMetrics> monitors;
 
@@ -31,7 +33,8 @@ public class ResourceDatabase<K, R, P> {
     public ResourceDatabase(ResourceStrategy<K, R, P> strategy) {
         this.service = Executors.newCachedThreadPool();
         this.strategy = Objects.requireNonNull(strategy, "Cannot construct database with null strategy");
-        this.prepared = new SynchronousQueue<>();
+        this.preparedToLoad = new ConcurrentLinkedQueue<>();
+        this.preparedToSave = new ConcurrentLinkedQueue<>();
         this.monitors = new ConcurrentHashMap<>();
     }
 
@@ -42,19 +45,39 @@ public class ResourceDatabase<K, R, P> {
      * @param parameter The parameter required for loading the resource.
      * @throws NullPointerException if the parameter is null.
      */
-    public final void prepare(K key, P parameter) {
-        Objects.requireNonNull(key, "Cannot prepare null resource key");
-        Objects.requireNonNull(parameter, "Cannot prepare null resource parameter");
-        this.prepared.offer(new ParameterWrapper<>(key, parameter));
+    public final void prepareToLoad(K key, P parameter) {
+        Objects.requireNonNull(key, "Cannot prepare to load null resource key");
+        Objects.requireNonNull(parameter, "Cannot prepare to load null resource parameter");
+        this.preparedToLoad.offer(new ParameterWrapper<>(key, parameter));
     }
 
     /**
-     * Loads all resources that have been prepared in the prepared queue.
+     * Asynchronously prepares a resource for saving by adding its key to the prepared queue.
+     *
+     * @param key The key of the resource to save.
+     * @throws NullPointerException if the key is null.
+     */
+    public final void prepareToSave(K key) {
+        Objects.requireNonNull(key, "Cannot prepare to save null resource key");
+        this.preparedToSave.offer(key);
+    }
+
+    /**
+     * Loads all resources that have been prepared in the load queue.
      */
     public final void loadPreparedResources() {
-        while (!prepared.isEmpty()) {
-            ParameterWrapper<K, P> wrapper = prepared.poll();
+        while (!preparedToLoad.isEmpty()) {
+            ParameterWrapper<K, P> wrapper = preparedToLoad.poll();
             load(wrapper.key, wrapper.parameter());
+        }
+    }
+
+    /**
+     * Saves all resources that have been prepared in the save queue.
+     */
+    public final void savePreparedResources() {
+        while (!preparedToSave.isEmpty()) {
+            save(preparedToSave.poll());
         }
     }
 
@@ -82,6 +105,30 @@ public class ResourceDatabase<K, R, P> {
                 monitor.trackException(e);
                 return null;
             }
+        }, service);
+    }
+
+    /**
+     * Asynchronously saves a resource using the specified strategy.
+     *
+     * @param key The key of the resource to save.
+     * @return A CompletableFuture representing the saved resource.
+     * @throws NullPointerException if the key is null.
+     */
+    public CompletableFuture<Void> save(K key) {
+        Objects.requireNonNull(key, "Cannot save resource with null key");
+        return CompletableFuture.supplyAsync(() -> {
+            ResourceMetrics monitor = monitors.computeIfAbsent(key, v -> new ResourceMetrics()); // corresponding monitor
+            try {
+                Instant begin = Instant.now(); // start save time
+                strategy.save(strategy.get(key));
+                monitor.setSaveTime(Duration.between(begin, Instant.now()).toMillis() / 1000D); // Set save time
+                monitor.increaseSaveCount(); // increase save count
+            } catch (Exception e) {
+                e.printStackTrace();
+                monitor.trackException(e);
+            }
+            return null;
         }, service);
     }
 
@@ -142,6 +189,6 @@ public class ResourceDatabase<K, R, P> {
      * @param <K> The type of the resource key.
      * @param <P> The type of the resource parameter.
      */
-    record ParameterWrapper<K, P>(K key, P parameter) {
+    private record ParameterWrapper<K, P>(K key, P parameter) {
     }
 }

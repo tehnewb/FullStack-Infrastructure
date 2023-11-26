@@ -14,7 +14,6 @@ import java.util.Map;
  *
  * @author Albert Beaupre
  */
-@SuppressWarnings("rawtypes")
 public class Cache {
 
     private final Map<Integer, CacheFolder> cache = new HashMap<>(); // used for folders without a loader
