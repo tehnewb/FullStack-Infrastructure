@@ -101,10 +101,7 @@ public class SwapOnRemoveFloatArray {
      * @return an array containing the elements in this collection
      */
     public float[] getData() {
-        float[] copy = new float[size];
-        for (int i = 0; i < size; i++)
-            copy[i] = data[i];
-        return copy;
+        return data;
     }
 
     /**

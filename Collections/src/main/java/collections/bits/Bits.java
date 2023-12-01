@@ -93,6 +93,8 @@ public class Bits {
      * @param index The index of the bit to clear.
      */
     public void clear(int index) {
+        if (index >> 6 >= words.length)
+            return;
         long word = words[index >> 6];
         long mask = 1L << index;
 

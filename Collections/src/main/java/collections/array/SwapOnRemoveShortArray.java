@@ -101,10 +101,7 @@ public class SwapOnRemoveShortArray {
      * @return an array containing the elements in this collection
      */
     public short[] getData() {
-        short[] copy = new short[size];
-        for (int i = 0; i < size; i++)
-            copy[i] = data[i];
-        return copy;
+        return data;
     }
 
     /**

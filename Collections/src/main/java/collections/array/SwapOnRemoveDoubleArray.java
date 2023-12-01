@@ -101,10 +101,7 @@ public class SwapOnRemoveDoubleArray {
      * @return an array containing the elements in this collection
      */
     public double[] getData() {
-        double[] copy = new double[size];
-        for (int i = 0; i < size; i++)
-            copy[i] = data[i];
-        return copy;
+        return data;
     }
 
     /**

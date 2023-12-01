@@ -101,10 +101,7 @@ public class SwapOnRemoveCharArray {
      * @return an array containing the elements in this collection
      */
     public char[] getData() {
-        char[] copy = new char[size];
-        for (int i = 0; i < size; i++)
-            copy[i] = data[i];
-        return copy;
+        return data;
     }
 
     /**

@@ -29,7 +29,7 @@ public abstract class EntitySystem {
     private static final HashMap<String, HashSet<EntitySystem>> systems = new HashMap<>();
 
     /**
-     * A set of active entity indices processed by this system.
+     * A set of active and disabled entity indices processed by this system.
      */
     private final Bits active;
 
@@ -63,7 +63,6 @@ public abstract class EntitySystem {
         // Initialize component mappers and associate systems with component classes
         for (var c : classes) {
             mappers.put(c.getName(), new ComponentMapper(c));
-
             HashSet<EntitySystem> arr = systems.computeIfAbsent(c.getName(), v -> new HashSet<>());
             arr.add(this);
         }
@@ -114,6 +113,7 @@ public abstract class EntitySystem {
     public void add(int entityID) {
         if (active.get(entityID))
             return;
+        active.set(entityID);
         entities.add(entityID);
     }
 

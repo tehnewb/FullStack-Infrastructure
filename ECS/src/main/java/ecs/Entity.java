@@ -13,24 +13,13 @@ import collections.bits.LongBits;
 public class Entity {
 
     /**
+     * Bit flags representing the presence of components attached to this entity.
+     */
+    private final LongBits componentFlags = new LongBits();
+    /**
      * The unique index assigned to this entity within the ECS.
      */
     private int index;
-
-    /**
-     * Bit flags representing the presence of components attached to this entity.
-     */
-    private LongBits componentFlags;
-
-    /**
-     * Constructs a new `Entity` instance with the specified index.
-     *
-     * @param index The unique index assigned to the entity.
-     */
-    public Entity(int index) {
-        this.index = index;
-        this.componentFlags = new LongBits();
-    }
 
     /**
      * Retrieves the unique index of this entity.
@@ -39,6 +28,15 @@ public class Entity {
      */
     public int getIndex() {
         return index;
+    }
+
+    /**
+     * Sets the specific index of this Entity.
+     *
+     * @param index the index to set.
+     */
+    protected void setIndex(int index) {
+        this.index = index;
     }
 
     /**

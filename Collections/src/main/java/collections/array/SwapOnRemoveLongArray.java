@@ -101,10 +101,7 @@ public class SwapOnRemoveLongArray {
      * @return an array containing the elements in this collection
      */
     public long[] getData() {
-        long[] copy = new long[size];
-        for (int i = 0; i < size; i++)
-            copy[i] = data[i];
-        return copy;
+        return data;
     }
 
     /**

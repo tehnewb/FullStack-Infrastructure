@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'org.example'
+group = 'infrastructure.collections'
 version = '1.0'
 
 repositories {

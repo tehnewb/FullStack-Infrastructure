@@ -1,13 +1,7 @@
 plugins {
-    id 'java'
     id 'idea'
     id 'java-library'
     id 'maven-publish'
-    id 'me.champeau.jmh' version '0.6.8'
-}
-
-java {
-    withSourcesJar()
 }
 
 publishing {
@@ -22,65 +16,8 @@ publishing {
     }
 }
 
-project.ext.assetsDir = new File("../assets")
-
-ext {
-    gdxVersion = '1.12.0'
-}
-
-group 'infrastructure'
-version '1.0'
-
-repositories {
-    mavenCentral()
-}
-
-
-dependencies {
-    implementation 'io.netty:netty-all:4.1.86.Final'
-    implementation 'org.slf4j:slf4j-log4j12:1.7.29'
-
-    /**
-     * libGDX
-     */
-    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
-
-    implementation "net.java.dev.jna:jna:5.13.0"
-
-    implementation "net.onedaybeard.artemis:artemis-odb:2.3.0"
-    implementation "dev.dominion.ecs:dominion-ecs-engine:0.9.0"
-
-    implementation "org.openjdk.jmh:jmh-core:1.36"
-    implementation "org.openjdk.jmh:jmh-generator-annprocess:1.36"
-    implementation 'org.jetbrains:annotations:24.0.0'
-    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.36'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-}
-
 // Java version compatibility
 java {
     sourceCompatibility = JavaVersion.VERSION_16
     targetCompatibility = JavaVersion.VERSION_16
-}
-
-// IntelliJ IDEA specific configurations
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-    }
-
-    test {
-        java {
-            srcDirs = ['test']
-        }
-    }
 }

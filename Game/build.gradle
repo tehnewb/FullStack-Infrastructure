@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'infrastructure.event'
+group = 'infrastructure.game'
 version = '1.0'
 
 repositories {

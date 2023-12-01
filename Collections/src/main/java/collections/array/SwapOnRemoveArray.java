@@ -162,10 +162,7 @@ public class SwapOnRemoveArray<E> {
      * @return an array containing the elements in this collection
      */
     public E[] getData() {
-        E[] copy = (E[]) new Object[size];
-        for (int i = 0; i < size; i++)
-            copy[i] = data[i];
-        return copy;
+        return data;
     }
 
     /**

@@ -6,6 +6,7 @@ build/
 .idea/
 out/
 test/
+/src/
 
 # Eclipse files
 .classpath

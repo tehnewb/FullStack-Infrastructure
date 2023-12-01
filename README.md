@@ -15,14 +15,22 @@
 
 - **[In/Out](./IO)**
     - Contains systems used for In/Out operations
-- **[Event](./Event)**
-    - Designed for Event-based systems
-- **[Benchmark](./Benchmark)**
-    - Used for Benchmarking code
-- **[Collections](./Collections)**
-    - Contains many different collections
 - **[Entity Component System](./ECS)**
     - Designed for projects using entities and components
+- **[Game](./Game)**
+    - Designed for game development
+- **[Event](./Event)**
+    - Designed for Event-based systems
+- **[Benchmarking](./Benchmarking)**
+    - Used for Benchmarking code
+- **[Network](./Network)**
+    - Designed for Network-based applications
+- **[Collections](./Collections)**
+    - Holds various collection designs
+- **[Math](./Math)**
+    - Holds various Math functions
+- **[Utility](./Utilities)**
+    - Holds various utility functions
 
 ---
 

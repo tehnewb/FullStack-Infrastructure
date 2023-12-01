@@ -20,17 +20,14 @@ public class ECS {
      * Queue of available entity indices, used for recycling and reusing entity slots.
      */
     private final EntityIndexQueue indicies;
-
     /**
      * Array of systems that process entities with specific component configurations.
      */
     private final EntitySystem[] systems;
-
     /**
      * Resizable array containing all entities in the ECS, indexed by their unique entity indices.
      */
     private final ResizingArray<Entity> entities;
-
     /**
      * Stack of recycled entities for efficient entity creation and removal.
      */
@@ -52,8 +49,8 @@ public class ECS {
      * Processes all systems, allowing them to update and operate on entities.
      */
     public void process() {
-        for (int systemID = 0; systemID < systems.length; systemID++) {
-            systems[systemID].process();
+        for (int i = 0; i < systems.length; i++) {
+            systems[i].process();
         }
     }
 
@@ -64,7 +61,8 @@ public class ECS {
      */
     public Entity create() {
         int index = indicies.pop();
-        Entity entity = !pool.isEmpty() ? pool.pop() : new Entity(index);
+        Entity entity = !pool.isEmpty() ? pool.pop() : new Entity();
+        entity.setIndex(index);
         entities.set(index, entity);
         return entity;
     }
