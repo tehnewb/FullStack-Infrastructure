@@ -140,18 +140,17 @@ public class Whirlpool {
     }
 
     public static byte[] whirlpool(byte[] data, int off, int len) {
-        byte source[];
+        byte[] source;
         if (off <= 0) {
             source = data;
         } else {
             source = new byte[len];
-            for (int i = 0; i < len; i++)
-                source[i] = data[off + i];
+            System.arraycopy(data, off, source, 0, len);
         }
         Whirlpool whirlpool = new Whirlpool();
         whirlpool.NESSIEinit();
-        whirlpool.NESSIEadd(source, len * 8);
-        byte digest[] = new byte[64];
+        whirlpool.NESSIEadd(source, len * 8L);
+        byte[] digest = new byte[64];
         whirlpool.NESSIEfinalize(digest);
         return digest;
     }
@@ -251,9 +250,9 @@ public class Whirlpool {
         while (sourceBits > 8) { // at least source[sourcePos] and source[sourcePos+1] contain data.
             // take a byte from the source:
             b = ((source[sourcePos] << sourceGap) & 0xff) | ((source[sourcePos + 1] & 0xff) >>> (8 - sourceGap));
-            if (b < 0 || b >= 256) {
+            if (b < 0 || b >= 256)
                 throw new RuntimeException("LOGIC ERROR");
-            }
+
             // process this byte:
             buffer[bufferPos++] |= b >>> bufferRem;
             bufferBits += 8 - bufferRem; // bufferBits = 8*bufferPos;

@@ -7,20 +7,7 @@ import java.security.*;
  * This class represents an implementation of the EncryptionStrategy interface using the RSA encryption algorithm.
  * RSA (Rivest-Shamir-Adleman) is a widely used public-key cryptosystem for secure data transmission.
  */
-public class RSA implements EncryptionStrategy {
-    private final PublicKey publicKey;
-    private final PrivateKey privateKey;
-
-    /**
-     * Constructs an RSA encryption strategy with the given public and private keys.
-     *
-     * @param publicKey  The public key used for encryption.
-     * @param privateKey The private key used for decryption.
-     */
-    public RSA(PublicKey publicKey, PrivateKey privateKey) {
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
-    }
+public record RSA(PublicKey publicKey, PrivateKey privateKey) implements EncryptionStrategy {
 
     /**
      * Generates an RSA key pair with the specified key size.
@@ -80,7 +67,8 @@ public class RSA implements EncryptionStrategy {
      *
      * @return The public key used for encryption.
      */
-    public PublicKey getPublicKey() {
+    @Override
+    public PublicKey publicKey() {
         return publicKey;
     }
 
@@ -89,7 +77,8 @@ public class RSA implements EncryptionStrategy {
      *
      * @return The private key used for decryption.
      */
-    public PrivateKey getPrivateKey() {
+    @Override
+    public PrivateKey privateKey() {
         return privateKey;
     }
 }

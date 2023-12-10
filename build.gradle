@@ -1,20 +1,27 @@
 plugins {
+    id 'java'
     id 'idea'
     id 'java-library'
     id 'maven-publish'
 }
 
+java {
+    withSourcesJar()
+}
+
 publishing {
     publications {
+
         mavenJava(MavenPublication) {
             from components.java
 
             groupId = 'infrastructure' as Publication
-            artifactId = 'gdx' as Publication
+            artifactId = 'all' as Publication
             version = "1.0" as Publication
         }
     }
 }
+
 
 // Java version compatibility
 java {

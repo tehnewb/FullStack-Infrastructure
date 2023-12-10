@@ -33,6 +33,7 @@ public class Benchmark {
     private Execution warmups, measurement;
     private BenchmarkMode mode;
     private TimeUnit output;
+
     private Benchmark() {
         this.mode = BenchmarkMode.Throughput;
         this.warmups = new Execution(TimeUnit.SECONDS, 5, 1);
@@ -77,9 +78,12 @@ public class Benchmark {
         System.out.println();
 
         tasks.forEach((k, v) -> service.submit(() -> {
+            System.out.println("Running Benchmark: " + k);
             execute(k, v, warmups);
             execute(k, v, measurement);
         }));
+
+        service.shutdown();
     }
 
     // Private method to execute a task with specified parameters and display results
@@ -234,7 +238,6 @@ public class Benchmark {
         return this;
     }
 
-    // Private record for encapsulating execution parameters
     private record Execution(TimeUnit unit, int iterations, long duration) {
     }
 }

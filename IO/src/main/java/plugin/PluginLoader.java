@@ -38,9 +38,8 @@ public class PluginLoader {
     public void load() {
         // List all files in the folder that have a .jar extension
         File[] jarFiles = folder.listFiles(file -> file.isFile() && file.getName().endsWith(".jar"));
-        if (jarFiles == null) {
+        if (jarFiles == null)
             return;
-        }
 
         // Submit a task to load each plugin JAR file
         for (File file : jarFiles) {

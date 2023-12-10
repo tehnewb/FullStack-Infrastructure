@@ -32,7 +32,7 @@ public class ServiceLoader<T> implements Iterable<T> {
      * @param type        The interface or base class type that loaded classes should implement or extend.
      */
     public static <T> ServiceLoader<T> load(String packageName, Class<T> type) {
-        ServiceLoader<T> services = new ServiceLoader<T>();
+        ServiceLoader<T> services = new ServiceLoader<>();
         try {
             String packagePath = packageName.replace('.', '/');
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -49,8 +49,7 @@ public class ServiceLoader<T> implements Iterable<T> {
                         if (type.isAssignableFrom(clazz) && !clazz.isInterface()) {
                             // Attempt to create an instance of the class using its default constructor.
                             Constructor<?> constructor = clazz.getDeclaredConstructor();
-                            T serviceInstance = type.cast(constructor.newInstance());
-                            services.serviceInstances.add(serviceInstance);
+                            services.serviceInstances.add(type.cast(constructor.newInstance()));
                         }
                     }
                 }

@@ -27,3 +27,4 @@ gradlew
 
 # Local configuration file (gradle.properties) - Remove if you don't use it
 gradle.properties
+/gradle/

@@ -12,8 +12,8 @@ import collections.stack.FastStack;
  */
 public class Pool<E> {
     private final PoolFactory<E> factory;
-    private final int allocationSize;
     private final FastStack<E> pool;
+    private final int allocationSize;
 
     /**
      * Constructs a new object pool with the specified factory and allocation size.

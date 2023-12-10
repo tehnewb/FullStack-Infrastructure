@@ -62,6 +62,7 @@ public abstract class EntitySystem {
 
         // Initialize component mappers and associate systems with component classes
         for (var c : classes) {
+            componentFlags.set(Component.getComponentIndex(c));
             mappers.put(c.getName(), new ComponentMapper(c));
             HashSet<EntitySystem> arr = systems.computeIfAbsent(c.getName(), v -> new HashSet<>());
             arr.add(this);
