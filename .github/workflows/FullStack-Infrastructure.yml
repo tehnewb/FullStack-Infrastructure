@@ -2,7 +2,7 @@ name: Publish package to GitHub Packages
 on: push
 jobs:
   publish:
-    runs-on: windows
+    runs-on: ubuntu-latest
     permissions: 
       contents: read
       packages: write 
