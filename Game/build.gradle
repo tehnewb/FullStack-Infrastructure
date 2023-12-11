@@ -1,11 +1,5 @@
-plugins {
-    id 'java'
-}
-
-group = 'infrastructure.game'
-version = '1.0'
-
 ext {
+    name = 'Game'
     lwjglVersion = '3.3.3'
     imguiVersion = "1.86.11"
 }
@@ -25,9 +19,4 @@ dependencies {
     implementation "io.github.spair:imgui-java-binding:$imguiVersion"
     implementation "io.github.spair:imgui-java-lwjgl3:$imguiVersion"
     implementation "io.github.spair:imgui-java-natives-windows:$imguiVersion"
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 }

@@ -1,16 +1,5 @@
-plugins {
-    id 'java'
-}
-
-group = 'infrastructure.utilities'
-version = '1.0'
+project.ext.name = 'Utilities'
 
 repositories {
     mavenCentral()
-}
-
-// Java version compatibility
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 }

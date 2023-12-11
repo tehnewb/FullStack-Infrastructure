@@ -1,23 +1,7 @@
-plugins {
-    id 'java'
-    id 'idea'
-    id 'java-library'
-}
-
-group = 'infrastructure.ecs'
-version = '1.0'
-
-repositories {
-    mavenCentral()
-}
+project.ext.name = 'ECS'
 
 dependencies {
     implementation project(path: ':Collections')
     implementation project(path: ':Math')
     implementation project(path: ':Benchmarking')
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 }

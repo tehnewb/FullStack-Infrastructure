@@ -1,15 +1,5 @@
-plugins {
-    id 'java'
-}
-
-group = 'infrastructure.network'
-version = '1.0'
+project.ext.name = 'Network'
 
 repositories {
     mavenCentral()
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 }

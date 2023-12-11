@@ -1,21 +1,7 @@
-plugins {
-    id 'java'
-}
+project.ext.name = 'IO'
 
-group = 'infrastructure.io'
-version = '1.0'
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     implementation project(path: ':Collections')
     implementation project(path: ':Utilities')
-}
-
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 }

@@ -1,15 +1,5 @@
-plugins {
-    id 'java'
-}
-
-group = 'infrastructure.collections'
-version = '1.0'
+project.ext.name = 'Collections'
 
 repositories {
     mavenCentral()
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
 }
