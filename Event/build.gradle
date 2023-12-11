@@ -1,6 +1,0 @@
-plugins {
-    id 'java'
-}
-
-group = 'infrastructure.event'
-version = '1.0'
