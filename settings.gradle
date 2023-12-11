@@ -7,5 +7,4 @@ include 'Math'
 include 'Benchmarking'
 include 'Game'
 include 'Network'
-include 'ExampleProject'
 
