@@ -4,7 +4,3 @@ plugins {
 
 group = 'infrastructure.event'
 version = '1.0'
-
-repositories {
-    mavenCentral()
-}

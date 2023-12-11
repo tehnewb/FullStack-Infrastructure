@@ -1,4 +1,4 @@
-project.ext.name = 'ECS'
+ext.name = 'ECS'
 
 dependencies {
     implementation project(path: ':Collections')

@@ -1,32 +1,21 @@
-allprojects {
 
+
+allprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
-    group = {$ext.name}
+
+    group = 'com.github.tehnewb'
     version = '1.0'
 
     java {
         withSourcesJar()
     }
 
-    publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/tehnewb/FullStack-Infrastructure")
-                credentials {
-                    username = project.findProperty("gpr.user") ?: "Tehnewb"
-                    password = project.findProperty("gpr.key") ?: "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"
-                }
-            }
-        }
-    }
-
-    repositories {
-        mavenCentral()
-    }
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    dependencies {
     }
 }

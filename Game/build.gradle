@@ -4,10 +4,6 @@ ext {
     imguiVersion = "1.86.11"
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 

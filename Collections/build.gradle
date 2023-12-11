@@ -1,5 +1,1 @@
 project.ext.name = 'Collections'
-
-repositories {
-    mavenCentral()
-}
