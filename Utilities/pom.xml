@@ -1,0 +1,10 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.tehnewb</groupId>
+        <artifactId>FullStack-Infrastructure</artifactId>
+        <version>1</version>
+    </parent>
+    <artifactId>ECS</artifactId>
+    <version>1</version>
+</project>
