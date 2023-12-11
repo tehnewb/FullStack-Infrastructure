@@ -2,5 +2,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.tehnewb</groupId>
     <artifactId>FullStack-Infrastructure</artifactId>
-    <version>1</version>
+    <version>1.0</version>
+    <modules>
+        <module>Benchmarking</module>
+        <module>Collections</module>
+        <module>ECS</module>
+        <module>Event</module>
+        <module>Game</module>
+        <module>IO</module>
+        <module>Math</module>
+        <module>Network</module>
+        <module>Utilities</module>
+    </modules>
 </project>

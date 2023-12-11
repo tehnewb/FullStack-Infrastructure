@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.github.tehnewb'
-    version = '1'
+    version = '1.0'
 
     java {
         withSourcesJar()
@@ -27,7 +27,7 @@ allprojects {
             maven(MavenPublication) {
                 from components.java
 
-                artifactId = 'all'
+                artifactId = project.name
             }
         }
     }
