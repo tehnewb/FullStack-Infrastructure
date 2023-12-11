@@ -9,7 +9,6 @@ allprojects {
 
     java {
         withSourcesJar()
-        withJavadocJar()
     }
 
     java {
@@ -18,7 +17,6 @@ allprojects {
     }
 
     dependencies {
-
     }
 
     publishing {
