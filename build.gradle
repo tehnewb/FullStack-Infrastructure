@@ -14,14 +14,20 @@ allprojects {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' } // <- here we go
+    }
+
     dependencies {
-        implementation 'com.github.tehnewb:FullStack-Infrastructure:-SNAPSHOT'
     }
 
     publishing {
         publications {
             maven(MavenPublication) {
                 from components.java
+
+                artifactId = 'all'
             }
         }
     }
