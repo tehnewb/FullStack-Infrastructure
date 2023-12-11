@@ -27,6 +27,7 @@ dependencies {
     implementation "io.github.spair:imgui-java-natives-windows:$imguiVersion"
 }
 
-test {
-    useJUnitPlatform()
+java {
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
 }

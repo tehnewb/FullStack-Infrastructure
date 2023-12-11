@@ -6,4 +6,5 @@ module IO {
     exports plugin;
     exports service;
     requires Collections;
+    requires Utilities;
 }

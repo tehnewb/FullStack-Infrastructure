@@ -17,25 +17,13 @@ import java.util.jar.JarFile;
  */
 public class PluginLoader {
 
-    private final File folder; // The folder where plugin JAR files are located
-
-    private final ExecutorService executor; // ExecutorService for managing plugin loading tasks
-
-    /**
-     * Constructs a PluginLoader with the specified folder as the plugin directory.
-     *
-     * @param folder The folder where plugin JAR files are located.
-     */
-    public PluginLoader(File folder) {
-        this.folder = folder;
-        this.executor = Executors.newSingleThreadExecutor();
-    }
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor(); // ExecutorService for managing plugin loading tasks
 
     /**
      * Loads all plugin JAR files found in the specified folder.
      * Each plugin is loaded in a separate thread using the executor.
      */
-    public void load() {
+    public static void loadFromFolder(File folder) {
         // List all files in the folder that have a .jar extension
         File[] jarFiles = folder.listFiles(file -> file.isFile() && file.getName().endsWith(".jar"));
         if (jarFiles == null)
@@ -43,7 +31,7 @@ public class PluginLoader {
 
         // Submit a task to load each plugin JAR file
         for (File file : jarFiles) {
-            executor.submit(() -> loadPlugin(file));
+            loadFromFile(file);
         }
 
         // Shutdown the executor after all tasks are submitted
@@ -55,25 +43,27 @@ public class PluginLoader {
      *
      * @param file The plugin JAR file to load.
      */
-    private void loadPlugin(File file) {
-        try (URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()}, ClassLoader.getSystemClassLoader())) {
-            try (JarFile jar = new JarFile(file)) {
-                // Iterate through all entries in the JAR file
-                jar.stream()
-                        .filter(entry -> entry.getName().endsWith(".class"))
-                        .map(entry -> entry.getName().replace("/", ".").replace(".class", ""))
-                        .forEach(className -> {
-                            try {
-                                // Load each class using the plugin's class loader
-                                classLoader.loadClass(className);
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        });
+    public static void loadFromFile(File file) {
+        executor.submit(() -> {
+            try (URLClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()}, ClassLoader.getSystemClassLoader())) {
+                try (JarFile jar = new JarFile(file)) {
+                    // Iterate through all entries in the JAR file
+                    jar.stream()
+                            .filter(entry -> entry.getName().endsWith(".class"))
+                            .map(entry -> entry.getName().replace("/", ".").replace(".class", ""))
+                            .forEach(className -> {
+                                try {
+                                    // Load each class using the plugin's class loader
+                                    classLoader.loadClass(className);
+                                } catch (ClassNotFoundException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                }
+            } catch (Exception e) {
+                // Handle exceptions that may occur during plugin loading
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            // Handle exceptions that may occur during plugin loading
-            e.printStackTrace();
-        }
+        });
     }
 }

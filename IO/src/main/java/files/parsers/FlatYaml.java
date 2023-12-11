@@ -30,10 +30,62 @@ public class FlatYaml extends HashMap<String, Object> {
      * Constructs a FlatYaml object by parsing the content of the provided file.
      *
      * @param file The file containing the markup to be parsed.
-     * @throws IOException If an I/O error occurs while reading the file.
      */
-    public FlatYaml(File file) throws IOException {
-        this(Files.readString(Paths.get(file.toURI())));
+    public FlatYaml(File file) {
+        try {
+            parseString(Files.readString(Paths.get(file.toURI())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Retrieves the String value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved.
+     * @return The String value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type String.
+     * @throws NullPointerException If the specified key is null.
+     */
+    public String getString(String key) {
+        return (String) get(key);
+    }
+
+    /**
+     * Retrieves the integer value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved.
+     * @return The integer value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type Integer.
+     * @throws NullPointerException If the specified key is null.
+     */
+    public int getInt(String key) {
+        return (int) get(key);
+    }
+
+    /**
+     * Retrieves the double value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved.
+     * @return The double value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type Double.
+     * @throws NullPointerException If the specified key is null.
+     */
+    public double getDouble(String key) {
+        return (double) get(key);
+    }
+
+    /**
+     * Retrieves the HashMap<String, Object> value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved.
+     * @return The HashMap<String, Object> value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type HashMap<String, Object>.
+     * @throws NullPointerException If the specified key is null.
+     */
+    @SuppressWarnings("unchecked")
+    public HashMap<String, Object> getMap(String key) {
+        return (HashMap<String, Object>) get(key);
     }
 
     /**
@@ -96,7 +148,20 @@ public class FlatYaml extends HashMap<String, Object> {
                     throw new FlatYamlParseException("Cannot parse array object at line " + line);
                 }
             }
-            default -> value;
+
+            default -> {
+                try {
+                    if (value.matches("-?\\d+(\\.\\d+)?")) {
+                        if (value.contains(".")) {
+                            yield Double.parseDouble(value);
+                        } else {
+                            yield Integer.parseInt(value);
+                        }
+                    } else yield value;
+                } catch (Exception e) {
+                    yield value;
+                }
+            }
         };
     }
 
