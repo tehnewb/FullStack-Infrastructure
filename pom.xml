@@ -2,5 +2,5 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.tehnewb</groupId>
     <artifactId>FullStack-Infrastructure</artifactId>
-    <version>-SNAPSHOT</version>
+    <version>1</version>
 </project>

@@ -16,11 +16,10 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url 'https://jitpack.io' } // <- here we go
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
-        implementation 'com.github.tehnewb:FullStack-Infrastructure:-SNAPSHOT'
     }
 
     publishing {
