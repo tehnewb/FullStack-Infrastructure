@@ -2,9 +2,6 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
-    group = 'com.github.tehnewb'
-    version = '1.0'
-
     java {
         withSourcesJar()
     }
@@ -24,10 +21,12 @@ allprojects {
 
     publishing {
         publications {
-            maven(MavenPublication) {
-                from components.java
-
+            mavenJava(MavenPublication) {
+                groupId = 'org.github.tehnewb'
                 artifactId = project.name
+                version = '1.0'
+
+                from components.java
             }
         }
     }
