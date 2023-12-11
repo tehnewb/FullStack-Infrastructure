@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'maven-publish'
 
     group = 'com.github.tehnewb'
-    version = '-SNAPSHOT'
+    version = '1'
 
     java {
         withSourcesJar()
@@ -20,6 +20,7 @@ allprojects {
     }
 
     dependencies {
+        implementation 'com.github.tehnewb:FullStack-Infrastructure:-SNAPSHOT'
     }
 
     publishing {
