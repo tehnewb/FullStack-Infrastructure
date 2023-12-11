@@ -1,5 +1,4 @@
 # Gradle files
-.gradle/
 build/
 
 # IntelliJ IDEA files
@@ -20,4 +19,3 @@ test/
 *.swp
 
 # Local configuration file (gradle.properties) - Remove if you don't use it
-gradle.properties
