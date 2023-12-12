@@ -16,10 +16,6 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    dependencies {
-
-    }
-
     publishing {
         publications {
             mavenJava(MavenPublication) {
@@ -33,6 +29,7 @@ allprojects {
     }
 
     dependencies {
+        implementation 'com.github.tehnewb:FullStack-Infrastructure:-SNAPSHOT'
     }
 
     jar {
