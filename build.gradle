@@ -29,7 +29,6 @@ allprojects {
     }
 
     dependencies {
-        implementation 'com.github.tehnewb:FullStack-Infrastructure:-SNAPSHOT'
     }
 
     jar {
