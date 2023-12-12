@@ -16,6 +16,10 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
+    dependencies {
+
+    }
+
     publishing {
         publications {
             mavenJava(MavenPublication) {

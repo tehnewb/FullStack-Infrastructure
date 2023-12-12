@@ -17,7 +17,6 @@
         <module>Game</module>
         <module>IO</module>
         <module>Math</module>
-        <module>Network</module>
         <module>Utilities</module>
     </modules>
 </project>
