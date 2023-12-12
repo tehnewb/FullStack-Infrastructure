@@ -28,6 +28,13 @@ allprojects {
         }
     }
 
+    jar {
+        into("META-INF/") {
+            from { generatePomFileForMavenJavaPublication }
+            rename ".*", "pom.xml"
+        }
+    }
+
     wrapper {
         gradleVersion = "8.5"
         distributionType = Wrapper.DistributionType.ALL
