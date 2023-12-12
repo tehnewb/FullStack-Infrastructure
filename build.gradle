@@ -32,8 +32,11 @@ allprojects {
         }
     }
 
+    dependencies {
+    }
+
     jar {
-        into("META-INF/") {
+        into("/") {
             from { generatePomFileForMavenJavaPublication }
             rename ".*", "pom.xml"
         }
