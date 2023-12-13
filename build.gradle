@@ -25,7 +25,6 @@ allprojects {
 
 
     dependencies {
-        implementation 'com.github.tehnewb:FullStack-Infrastructure:master-SNAPSHOT'
 
     }
 
