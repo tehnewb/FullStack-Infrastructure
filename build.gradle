@@ -14,7 +14,7 @@ apply plugin: 'com.vanniktech.maven.publish'
 
 def projectName = 'FullStack-Infrastructure'
 version "1.0"
-group 'com.squidpony'
+group 'com.github.tehnewb'
 
 
 allprojects {
@@ -26,6 +26,8 @@ allprojects {
         withSourcesJar()
     }
 
+    dependencies {
+    }
     wrapper {
         gradleVersion = "8.5"
         distributionType = Wrapper.DistributionType.ALL

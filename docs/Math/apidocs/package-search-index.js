@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"Math","l":"math"},{"m":"Math","l":"math.geometry"}];updateSearchResults();

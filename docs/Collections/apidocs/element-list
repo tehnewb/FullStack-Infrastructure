@@ -1,0 +1,5 @@
+module:Collections
+collections.array
+collections.bits
+collections.stack
+collections.tree
