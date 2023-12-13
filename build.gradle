@@ -1,53 +1,40 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    }
-    dependencies {
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.25.3'
-    }
-}
-
-apply plugin: 'java-library'
-apply plugin: 'com.vanniktech.maven.publish'
-
-def projectName = 'FullStack-Infrastructure'
-version "1.0"
-group 'com.github.tehnewb'
-
-
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'idea'
-    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+    apply plugin: 'maven-publish'
 
     java {
         withSourcesJar()
     }
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId = 'com.github.tehnewb'
+                artifactId = project.name
+                version = '1.0'
+
+                from components.java
+            }
+        }
+    }
+
     dependencies {
     }
+
+    jar {
+        into("/META-INF/") {
+            from { generatePomFileForMavenJavaPublication }
+            rename ".*", "pom.xml"
+        }
+    }
+
     wrapper {
         gradleVersion = "8.5"
         distributionType = Wrapper.DistributionType.ALL
     }
-}
-
-configure(subprojects) {
-    apply plugin: 'java-library'
-    apply plugin: 'com.vanniktech.maven.publish'
-    sourceCompatibility = 17
-    targetCompatibility = 17
-    compileJava {
-        options.incremental = true
-    }
-}
-
-subprojects {
-    version = "$parent.version"
-    group = parent.group
-    ext.projectName = 'FullStack-Infrastructure'
-    javadoc.options.source("17")
-    javadoc.destinationDir = file("../docs/$name/apidocs")
 }
