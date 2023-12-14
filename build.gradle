@@ -22,7 +22,7 @@ allprojects {
             }
         }
     }
-
+    
     jar {
         into("/META-INF/") {
             from { generatePomFileForMavenJavaPublication }
