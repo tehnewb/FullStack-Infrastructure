@@ -50,4 +50,18 @@ public class ResizingCharArray {
     public char get(int index) {
         return array[index];
     }
+
+    /**
+     * @return The length of elements within this ResizingArray.
+     */
+    public int length() {
+        return array.length;
+    }
+
+    /**
+     * @return The elements within this ResizingArray.
+     */
+    public char[] getElements() {
+        return array;
+    }
 }

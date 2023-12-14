@@ -108,4 +108,21 @@ public class ECS {
             system.getMapper(component.getClass()).set(entity.getIndex(), null);
         });
     }
+
+    /**
+     * Returns the entity corresponding to the specified ID.
+     *
+     * @param ID the entity ID
+     * @return the entity.
+     */
+    public Entity get(int ID) {
+        return entities.get(ID);
+    }
+
+    /**
+     * @return The entity elements.
+     */
+    public Entity[] getEntities() {
+        return entities.getElements();
+    }
 }

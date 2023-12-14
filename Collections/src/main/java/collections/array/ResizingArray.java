@@ -55,7 +55,17 @@ public class ResizingArray<T> {
         return array[index];
     }
 
+    /**
+     * @return The length of elements within this ResizingArray.
+     */
     public int length() {
         return array.length;
+    }
+
+    /**
+     * @return The elements within this ResizingArray.
+     */
+    public T[] getElements() {
+        return array;
     }
 }
