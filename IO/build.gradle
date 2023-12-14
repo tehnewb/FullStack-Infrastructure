@@ -4,4 +4,5 @@ project.ext.name = 'IO'
 dependencies {
     implementation project(path: ':Collections')
     implementation project(path: ':Utilities')
+    implementation project(path: ':Math')
 }

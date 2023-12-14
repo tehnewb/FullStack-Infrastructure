@@ -16,6 +16,30 @@ public class DiscreteMath {
         return number + 1;
     }
 
+    public static boolean between(byte value, byte min, byte max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean between(short value, short min, short max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean between(int value, int min, int max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean between(long value, long min, long max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean between(float value, float min, float max) {
+        return value >= min && value <= max;
+    }
+
+    public static boolean between(double value, double min, double max) {
+        return value >= min && value <= max;
+    }
+
     public static int clamp(int value, int minValue, int maxValue) {
         return (value < minValue) ? minValue : (value > maxValue) ? maxValue : value;
     }

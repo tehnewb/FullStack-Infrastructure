@@ -1,5 +1,7 @@
 package files.parsers;
 
+import math.DiscreteMath;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -300,19 +302,19 @@ public class FlatYaml extends HashMap<String, Object> {
             default -> {
                 if (value.matches("-?\\d+")) { // it is a number
                     if (value.contains(".")) { // it has a decimal
-                        if (value.length() > 7) {
+                        double doubleValue = Double.parseDouble(value);
+                        if (DiscreteMath.between(doubleValue, Float.MIN_VALUE, Float.MAX_VALUE)) {
                             yield Float.parseFloat(value);
-                        } else {
-                            yield Double.parseDouble(value);
-                        }
+                        } else yield doubleValue;
                     } else { // it's an integer type
-                        if (value.length() < 4) {
+                        long longValue = Long.parseLong(value);
+                        if (DiscreteMath.between(longValue, Byte.MIN_VALUE, Byte.MAX_VALUE)) {
                             yield Byte.parseByte(value);
-                        } else if (value.length() > 10) {
-                            yield Long.parseLong(value);
-                        } else {
+                        } else if (DiscreteMath.between(longValue, Short.MIN_VALUE, Short.MAX_VALUE)) {
+                            yield Short.parseShort(value);
+                        } else if (DiscreteMath.between(longValue, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
                             yield Integer.parseInt(value);
-                        }
+                        } else yield longValue;
                     }
                 } else {
                     yield switch (value.toLowerCase().trim()) {
