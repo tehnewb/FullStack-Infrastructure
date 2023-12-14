@@ -137,7 +137,7 @@ public class FlatYaml extends HashMap<String, Object> {
      * @throws ClassCastException   If the value associated with the key is not of type Short.
      * @throws NullPointerException If the specified key is null.
      */
-    public int getShort(String key) {
+    public short getShort(String key) {
         return (short) get(key);
     }
 

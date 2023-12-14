@@ -2,6 +2,7 @@ package service;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,9 +39,13 @@ public class ServiceLoader<T> implements Iterable<T> {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
             // Locate the directory containing class files for the specified package.
-            File packageDirectory = new File(Objects.requireNonNull(classLoader.getResource(packagePath)).toURI());
+            URL resource = classLoader.getResource(packagePath);
+            Objects.requireNonNull(resource, "Resource " + packagePath + " does not exist");
+            File packageDirectory = new File(resource.toURI());
             if (packageDirectory.isDirectory()) {
-                for (File file : Objects.requireNonNull(packageDirectory.listFiles())) {
+                File[] files = packageDirectory.listFiles();
+                Objects.requireNonNull(files, "Package does not contain any files");
+                for (File file : files) {
                     // Check if the file is a class file.
                     if (file.isFile() && file.getName().endsWith(".class")) {
                         // Build the fully qualified class name and load the class.
