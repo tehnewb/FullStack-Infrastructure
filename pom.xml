@@ -19,9 +19,4 @@
         <module>Math</module>
         <module>Utilities</module>
     </modules>
-    <server>
-        <id>${server}</id>
-        <username>8ZDWefqb</username>
-        <password>s0ePeXe0HdCeTCCLMoF7G3eXJqi7W+qfbnkzwNkpauKh</password>
-    </server>
 </project>
