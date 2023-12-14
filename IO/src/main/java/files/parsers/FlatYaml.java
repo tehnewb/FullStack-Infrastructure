@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -20,6 +21,13 @@ import java.util.HashMap;
  * @since 1.0
  */
 public class FlatYaml extends HashMap<String, Object> {
+
+    /**
+     * Constructs an empty FlatYaml object.
+     */
+    public FlatYaml() {
+
+    }
 
     /**
      * Constructs a FlatYaml object by parsing the provided markup string.
@@ -44,6 +52,60 @@ public class FlatYaml extends HashMap<String, Object> {
     }
 
     /**
+     * Saves the current content of the FlatYaml object to a file. The content is exported in a markup format,
+     * and the file is overwritten if it already exists.
+     *
+     * @param file The file where the FlatYaml content will be saved.
+     * @throws RuntimeException If an error occurs during the writing process.
+     */
+    public void save(File file) {
+        try {
+            Files.writeString(Paths.get(file.toURI()), export());
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to write to " + file);
+        }
+    }
+
+    /**
+     * Exports the current content of the FlatYaml object to a markup string.
+     *
+     * @return A markup string representing the key-value pairs in the FlatYaml object.
+     */
+    public String export() {
+        StringBuilder builder = new StringBuilder();
+        for (Entry<String, Object> entry : this.entrySet()) {
+            Object value = entry.getValue();
+            builder.append(entry.getKey()).append(": ");
+            if (value.getClass().isArray()) {
+                if (value instanceof Object[]) {
+                    builder.append(Arrays.toString((Object[]) value));
+                } else if (value instanceof int[]) {
+                    builder.append(Arrays.toString((int[]) value));
+                } else if (value instanceof byte[]) {
+                    builder.append(Arrays.toString((byte[]) value));
+                } else if (value instanceof short[]) {
+                    builder.append(Arrays.toString((short[]) value));
+                } else if (value instanceof long[]) {
+                    builder.append(Arrays.toString((long[]) value));
+                } else if (value instanceof double[]) {
+                    builder.append(Arrays.toString((double[]) value));
+                } else if (value instanceof float[]) {
+                    builder.append(Arrays.toString((float[]) value));
+                } else {
+                    throw new UnsupportedOperationException("Unsupported array type: " + value.getClass().getComponentType());
+                }
+            } else if (value instanceof Map) {
+                builder.append(value.toString().replace("=", ": "));
+            } else {
+                builder.append(value);
+            }
+            builder.append('\n');
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * Retrieves the String value associated with the specified key.
      *
      * @param key The key whose associated value is to be retrieved.
@@ -65,6 +127,18 @@ public class FlatYaml extends HashMap<String, Object> {
      */
     public int getByte(String key) {
         return (byte) get(key);
+    }
+
+    /**
+     * Retrieves the short value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved.
+     * @return The short value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type Short.
+     * @throws NullPointerException If the specified key is null.
+     */
+    public int getShort(String key) {
+        return (short) get(key);
     }
 
     /**
