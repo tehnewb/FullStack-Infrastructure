@@ -61,6 +61,13 @@ public class ServiceLoader<T> implements Iterable<T> {
     }
 
     /**
+     * @return The number of services loaded.
+     */
+    public int size() {
+        return serviceInstances.size();
+    }
+
+    /**
      * Provides an iterator for iterating over loaded service instances.
      *
      * @return An iterator for the loaded service instances.
