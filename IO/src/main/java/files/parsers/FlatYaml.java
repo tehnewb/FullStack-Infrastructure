@@ -190,6 +190,18 @@ public class FlatYaml extends HashMap<String, Object> {
     }
 
     /**
+     * Retrieves the boolean value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved.
+     * @return The boolean value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type Boolean.
+     * @throws NullPointerException If the specified key is null.
+     */
+    public boolean getBoolean(String key) {
+        return (boolean) get(key);
+    }
+
+    /**
      * Retrieves a byte array value associated with the specified key.
      *
      * @param key The key whose associated value is to be retrieved as a byte array.
