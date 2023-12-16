@@ -14,7 +14,7 @@ import collections.stack.FastStack;
  * @version 1.0
  * @since 1.0
  */
-public class ECS {
+public class ECS<E extends Entity> {
 
     /**
      * Queue of available entity indices, used for recycling and reusing entity slots.
@@ -27,20 +27,25 @@ public class ECS {
     /**
      * Resizable array containing all entities in the ECS, indexed by their unique entity indices.
      */
-    private final ResizingArray<Entity> entities;
+    private final ResizingArray<E> entities;
     /**
      * Stack of recycled entities for efficient entity creation and removal.
      */
-    private final FastStack<Entity> pool;
+    private final FastStack<E> pool;
+    /**
+     * EntityFactory used to handle the creation and destruction of entities.
+     */
+    private final EntityFactory<E> factory;
 
     /**
      * Constructs an ECS instance with the specified systems.
      *
      * @param systems The systems responsible for processing entities based on their components.
      */
-    public ECS(EntitySystem... systems) {
+    public ECS(EntityFactory<E> factory, Class<E> type, EntitySystem... systems) {
+        this.factory = factory;
         this.systems = systems;
-        this.entities = new ResizingArray<>(Entity.class, Long.SIZE);
+        this.entities = new ResizingArray<>(type, Long.SIZE);
         this.indicies = new EntityIndexQueue();
         this.pool = new FastStack<>();
     }
@@ -61,7 +66,7 @@ public class ECS {
      */
     public Entity create() {
         int index = indicies.pop();
-        Entity entity = !pool.isEmpty() ? pool.pop() : new Entity();
+        E entity = !pool.isEmpty() ? pool.pop() : factory.create();
         entity.setIndex(index);
         entities.set(index, entity);
         return entity;
@@ -72,11 +77,12 @@ public class ECS {
      *
      * @param entity The entity to be removed.
      */
-    public void remove(Entity entity) {
+    public void remove(E entity) {
         indicies.push(entity.getIndex());
         pool.push(entity);
         entity.getComponentFlags().clearAll();
         entities.set(entity.getIndex(), null);
+        factory.destroy(entity);
     }
 
     /**
@@ -85,11 +91,13 @@ public class ECS {
      * @param entity    The entity to which the component will be added.
      * @param component The component to be added.
      */
-    public void addComponent(Entity entity, Component component) {
+    public void addComponent(E entity, Component component) {
         entity.getComponentFlags().set(component.getIndex());
         EntitySystem.getSystems(component.getClass()).forEach(system -> {
             system.add(entity.getIndex());
             system.getMapper(component.getClass()).set(entity.getIndex(), component);
+
+            factory.onAddComponent(entity, component);
         });
     }
 
@@ -99,13 +107,14 @@ public class ECS {
      * @param entity    The entity from which the component will be removed.
      * @param component The component to be removed.
      */
-    public void removeComponent(Entity entity, Component component) {
+    public void removeComponent(E entity, Component component) {
         entity.getComponentFlags().clear(component.getIndex());
         EntitySystem.getSystems(component.getClass()).forEach(system -> {
             if (!system.canStay(entity))
                 system.remove(entity.getIndex());
 
             system.getMapper(component.getClass()).set(entity.getIndex(), null);
+            factory.onRemoveComponent(entity, component);
         });
     }
 
@@ -115,14 +124,14 @@ public class ECS {
      * @param ID the entity ID
      * @return the entity.
      */
-    public Entity get(int ID) {
+    public E get(int ID) {
         return entities.get(ID);
     }
 
     /**
      * @return The entity elements.
      */
-    public Entity[] getEntities() {
+    public E[] getEntities() {
         return entities.getElements();
     }
 }
