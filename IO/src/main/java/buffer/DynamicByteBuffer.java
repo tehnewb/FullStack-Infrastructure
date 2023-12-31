@@ -103,6 +103,21 @@ public class DynamicByteBuffer implements AutoCloseable, Cloneable {
     }
 
     /**
+     * Starts bit access by resetting the bit buffer and position.
+     */
+    public void beginBitAccess() {
+        bitPosition = writePosition * Byte.SIZE;
+    }
+
+    /**
+     * Finishes bit access by writing any remaining bits to the byte array.
+     * If the bit buffer is not empty, it is written to the byte array.
+     */
+    public void finishBitAccess() {
+        writePosition = (bitPosition + 7) / Byte.SIZE;
+    }
+
+    /**
      * Writes a specified number of bits from the given integer value to the dynamic byte buffer.
      * Bits are written from the least significant bit (LSB) to the most significant bit (MSB).
      *
