@@ -15,5 +15,4 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-include 'Database'
 
