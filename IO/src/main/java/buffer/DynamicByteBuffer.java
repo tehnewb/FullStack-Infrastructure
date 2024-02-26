@@ -1,11 +1,8 @@
 package buffer;
 
 import java.nio.charset.StandardCharsets;
-<<<<<<< HEAD
 import java.util.Arrays;
-=======
 import java.util.function.Function;
->>>>>>> eb6a7bc3d4cd70a554e0c008b6d897e664826c49
 
 /**
  * A dynamic byte array that provides methods to store and retrieve various data types with a growing internal array.
