@@ -1,7 +1,11 @@
 package buffer;
 
 import java.nio.charset.StandardCharsets;
+<<<<<<< HEAD
 import java.util.Arrays;
+=======
+import java.util.function.Function;
+>>>>>>> eb6a7bc3d4cd70a554e0c008b6d897e664826c49
 
 /**
  * A dynamic byte array that provides methods to store and retrieve various data types with a growing internal array.
@@ -107,6 +111,21 @@ public class DynamicByteBuffer implements Cloneable {
     }
 
     /**
+     * Starts bit access by resetting the bit buffer and position.
+     */
+    public void beginBitAccess() {
+        bitPosition = writePosition * Byte.SIZE;
+    }
+
+    /**
+     * Finishes bit access by writing any remaining bits to the byte array.
+     * If the bit buffer is not empty, it is written to the byte array.
+     */
+    public void finishBitAccess() {
+        writePosition = (bitPosition + 7) / Byte.SIZE;
+    }
+
+    /**
      * Writes a specified number of bits from the given integer value to the dynamic byte buffer.
      * Bits are written from the least significant bit (LSB) to the most significant bit (MSB).
      *
@@ -118,47 +137,49 @@ public class DynamicByteBuffer implements Cloneable {
         if (numBits < 1 || numBits > 32)
             throw new IllegalArgumentException("Invalid number of bits to write.");
 
-        for (int i = 0; i < numBits; i++) {
-            int bit = (value >> i) & 1;
-            bitBuffer |= (bit << bitPosition);
-            bitPosition++;
+        Function<Integer, Integer> bitMask = index -> (1 << index) - 1;
 
-            if (bitPosition == 32) {
-                // Bit buffer is full, write it to the byte array
-                writeInt(bitBuffer);
-                bitBuffer = 0;
-                bitPosition = 0;
-            }
+        int bytePos = bitPosition >> 3;
+        int bitOffset = 8 - (bitPosition & 7);
+
+        bitPosition += numBits;
+        writePosition = (bitPosition + 7) / Byte.SIZE;
+
+        byte b;
+        for (; numBits > bitOffset; bitOffset = Byte.SIZE) {
+            b = getByte(bytePos);
+            setByte(bytePos, (byte) (b & ~bitMask.apply(bitOffset)));
+            setByte(bytePos++, (byte) (b | (value >> (numBits - bitOffset)) & bitMask.apply(bitOffset)));
+            numBits -= bitOffset;
+        }
+        b = getByte(bytePos);
+        if (numBits == bitOffset) {
+            setByte(bytePos, (byte) (b & ~bitMask.apply(bitOffset)));
+            setByte(bytePos, (byte) (b | value & bitMask.apply(bitOffset)));
+        } else {
+            setByte(bytePos, (byte) (b & ~(bitMask.apply(numBits) << (bitOffset - numBits))));
+            setByte(bytePos, (byte) (b | (value & bitMask.apply(numBits)) << (bitOffset - numBits)));
         }
     }
 
     /**
-     * Reads a specified number of bits from the dynamic byte buffer and returns them as an integer.
-     * Bits are read from the least significant bit (LSB) to the most significant bit (MSB).
+     * Sets the specified byte value at the given index.
      *
-     * @param numBits The number of bits to read. Must be between 1 and 32, inclusive.
-     * @return The integer value represented by the read bits.
-     * @throws IllegalArgumentException if the number of bits is not within the valid range.
+     * @param index The index to set the value at.
+     * @param value The byte value to set.
      */
-    public int readBits(int numBits) {
-        if (numBits < 1 || numBits > 32)
-            throw new IllegalArgumentException("Invalid number of bits to read.");
+    public void setByte(int index, byte value) {
+        this.data[index] = value;
+    }
 
-        int result = 0;
-
-        for (int i = 0; i < numBits; i++) {
-            if (bitPosition == 0) {
-                // Bit buffer is empty, read the next integer value
-                bitBuffer = readInt();
-                bitPosition = 0;
-            }
-
-            int bit = (bitBuffer >> bitPosition) & 1;
-            result |= (bit << i);
-            bitPosition++;
-        }
-
-        return result;
+    /**
+     * Retrieves the byte value at the specified index.
+     *
+     * @param index The index of the byte value.
+     * @return the byte value.
+     */
+    public byte getByte(int index) {
+        return data[index];
     }
 
     /**
