@@ -28,6 +28,78 @@ public class Text {
     }
 
     /**
+     * Constructs a Text object converting the given byte to a string.
+     *
+     * @param b The byte to convert.
+     */
+    public Text(byte b) {
+        this.string = String.valueOf(b);
+    }
+
+    /**
+     * Constructs a Text object converting the given character to a string.
+     *
+     * @param c The character to convert.
+     */
+    public Text(char c) {
+        this.string = String.valueOf(c);
+    }
+
+    /**
+     * Constructs a Text object converting the given boolean to a string.
+     *
+     * @param b The boolean to convert.
+     */
+    public Text(boolean b) {
+        this.string = String.valueOf(b);
+    }
+
+    /**
+     * Constructs a Text object converting the given float to a string.
+     *
+     * @param f The intfloateger to convert.
+     */
+    public Text(float f) {
+        this.string = String.valueOf(f);
+    }
+
+    /**
+     * Constructs a Text object converting the given short to a string.
+     *
+     * @param s The short to convert.
+     */
+    public Text(short s) {
+        this.string = String.valueOf(s);
+    }
+
+    /**
+     * Constructs a Text object converting the given integer to a string.
+     *
+     * @param integer The integer to convert.
+     */
+    public Text(int integer) {
+        this.string = String.valueOf(integer);
+    }
+
+    /**
+     * Constructs a Text object converting the given double to a string.
+     *
+     * @param d The double to convert.
+     */
+    public Text(double d) {
+        this.string = String.valueOf(d);
+    }
+
+    /**
+     * Constructs a Text object converting the given long to a string.
+     *
+     * @param l The long to convert.
+     */
+    public Text(long l) {
+        this.string = String.valueOf(l);
+    }
+
+    /**
      * Wraps the text to fit within the specified line length.
      *
      * @param lineLength The maximum line length.
@@ -150,6 +222,32 @@ public class Text {
         }
         return true;
     }
+
+    /**
+     * Formats the internal string to be represented as a storage unit.
+     * <p>
+     * For example, 1024 bytes is equal to 1 kilobyte, so it would look like: "1KB"
+     * </p>
+     *
+     * @return the formatted string.
+     */
+    public String formatStorageUnits() {
+        long bytes = Long.parseLong(this.string);
+        final long KILOBYTE = 1024L;
+        final long MEGABYTE = KILOBYTE * 1024L;
+        final long GIGABYTE = MEGABYTE * 1024L;
+
+        if (bytes >= GIGABYTE) {
+            return String.format("%.2f GB", bytes / (double) GIGABYTE);
+        } else if (bytes >= MEGABYTE) {
+            return String.format("%.2f MB", bytes / (double) MEGABYTE);
+        } else if (bytes >= KILOBYTE) {
+            return String.format("%.2f KB", bytes / (double) KILOBYTE);
+        } else {
+            return bytes + " B";
+        }
+    }
+
 
     /**
      * Removes all non-alphanumeric characters from the text.

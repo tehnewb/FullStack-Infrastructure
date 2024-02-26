@@ -23,8 +23,8 @@
     - Designed for Event-based systems
 - **[Benchmarking](./Benchmarking)**
     - Used for Benchmarking code
-- **[Network](./Network)**
-    - Designed for Network-based applications
+- **[Database](./Database)**
+    - Runs a server to handle database operations and storage
 - **[Collections](./Collections)**
     - Holds various collection designs
 - **[Math](./Math)**

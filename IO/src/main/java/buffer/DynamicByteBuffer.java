@@ -1,13 +1,14 @@
 package buffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * A dynamic byte array that provides methods to store and retrieve various data types with a growing internal array.
  *
  * @author Albert Beaupre
  */
-public class DynamicByteBuffer implements AutoCloseable, Cloneable {
+public class DynamicByteBuffer implements Cloneable {
     private static final int DEFAULT_CAPACITY = 128; // Default capacity of DynamicByteArray
     private boolean growing;
     private byte[] data;
@@ -32,12 +33,7 @@ public class DynamicByteBuffer implements AutoCloseable, Cloneable {
      * @throws IllegalArgumentException if initial capacity is non-positive.
      */
     public DynamicByteBuffer(int initialCapacity) {
-        if (initialCapacity <= 0)
-            throw new IllegalArgumentException("Initial capacity must be positive.");
-        data = new byte[initialCapacity];
-        size = 0;
-        readPosition = 0;
-        writePosition = 0;
+        this(initialCapacity, true);
     }
 
     /**
@@ -87,6 +83,14 @@ public class DynamicByteBuffer implements AutoCloseable, Cloneable {
                 throw new RuntimeException("DynamicByteBuffer not set to grow and has reached its limit");
             }
         }
+    }
+
+
+    /**
+     * This method is used to trim off any excess bytes not being used within the internal array.
+     */
+    public void trim() {
+        this.data = Arrays.copyOfRange(data, readPosition, writePosition);
     }
 
     /**
@@ -561,14 +565,30 @@ public class DynamicByteBuffer implements AutoCloseable, Cloneable {
     }
 
     /**
-     * Converts the dynamic byte array to a regular byte array of the current size.
+     * @return True if there are no available bytes; False otherwise
+     */
+    public boolean isEmpty() {
+        return getRemainingToRead() == 0;
+    }
+
+    /**
+     * Converts the dynamic byte array to a regular byte array of the current size with
+     * trailing bytes on the end.
      *
      * @return A byte array containing the data stored in the dynamic byte array.
      */
     public byte[] toArray() {
-        byte[] result = new byte[size];
-        System.arraycopy(data, 0, result, 0, size);
-        return result;
+        return data;
+    }
+
+    /**
+     * Converts the dynamic byte array to a regular byte array with no trailing bytes.
+     *
+     * @return A byte array containing the data stored in the dynamic byte array.
+     */
+    public byte[] toTrimmedArray() {
+        trim();
+        return data;
     }
 
     /**
@@ -617,33 +637,6 @@ public class DynamicByteBuffer implements AutoCloseable, Cloneable {
         }
         sb.append("]");
         return sb.toString();
-    }
-
-    /**
-     * Closes this resource, releasing any associated resources or performing cleanup actions.
-     *
-     * <p>
-     * This method is called when the resource is no longer needed and should be used to perform
-     * any necessary cleanup operations, such as releasing file handles, network connections, or
-     * freeing up resources. Subclasses should override this method to implement their own
-     * cleanup logic.
-     * </p>
-     *
-     * <p>
-     * If an exception is thrown during the cleanup process, it should be caught and properly
-     * handled to ensure that the resource is still closed correctly. Any exception thrown by
-     * this method will be propagated up and should be handled by the caller.
-     * </p>
-     *
-     * @throws Exception if an error occurs while closing the resource
-     */
-    @Override
-    public void close() throws Exception {
-        if (data == null) {
-            throw new IllegalStateException("DynamicByteBuffer is already closed");
-        } else {
-            data = null;
-        }
     }
 
     /**

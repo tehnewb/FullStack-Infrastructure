@@ -3,4 +3,5 @@ module Collections {
     exports collections.array;
     exports collections.tree;
     exports collections.bits;
+    exports collections.queue;
 }

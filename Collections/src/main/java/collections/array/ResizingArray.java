@@ -22,6 +22,15 @@ public class ResizingArray<T> {
     /**
      * Constructs a ResizingArray with the specified type and initial size.
      *
+     * @param size the initial size of the array.
+     */
+    public ResizingArray(int size) {
+        this.array = (T[]) new Object[size];
+    }
+
+    /**
+     * Constructs a ResizingArray with the specified type and initial size.
+     *
      * @param type the class object representing the type of elements to be stored.
      * @param size the initial size of the array.
      */

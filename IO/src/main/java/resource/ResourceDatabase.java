@@ -103,7 +103,6 @@ public class ResourceDatabase<K, R, P> {
                 monitor.increaseLoadCount(); // increase load count
                 return resource;
             } catch (Exception e) {
-                e.printStackTrace();
                 monitor.trackException(e);
                 return null;
             }
@@ -127,7 +126,6 @@ public class ResourceDatabase<K, R, P> {
                 monitor.setSaveTime(Duration.between(begin, Instant.now()).toMillis() / 1000D); // Set save time
                 monitor.increaseSaveCount(); // increase save count
             } catch (Exception e) {
-                e.printStackTrace();
                 monitor.trackException(e);
             }
             return null;
@@ -149,7 +147,6 @@ public class ResourceDatabase<K, R, P> {
             monitor.increaseAccessCount();
             return resource;
         } catch (Exception e) {
-            e.printStackTrace();
             monitor.trackException(e);
             return null;
         }

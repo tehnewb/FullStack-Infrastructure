@@ -8,4 +8,5 @@ module IO {
     requires Collections;
     requires Math;
     requires Utilities;
+    requires java.desktop;
 }

@@ -106,18 +106,15 @@ public interface CompressionStrategy {
         public byte[] compress(byte[] data) {
             deflater.setInput(data);
 
-            try (DynamicByteBuffer compressed = new DynamicByteBuffer(data.length / 2)) { // we will assume compression to be 50%
-                byte[] buffer = new byte[1024];
-                while (!deflater.finished()) {
-                    int compressedBytes = deflater.deflate(buffer);
-                    compressed.writeBytes(buffer, 0, compressedBytes);
-                }
-                deflater.end();
-
-                return compressed.toArray();
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to compress using Deflate algorithm", e);
+            DynamicByteBuffer compressed = new DynamicByteBuffer(data.length / 2); // we will assume compression to be 50%
+            byte[] buffer = new byte[1024];
+            while (!deflater.finished()) {
+                int compressedBytes = deflater.deflate(buffer);
+                compressed.writeBytes(buffer, 0, compressedBytes);
             }
+            deflater.end();
+
+            return compressed.toArray();
         }
 
         /**
@@ -131,7 +128,8 @@ public interface CompressionStrategy {
         public byte[] decompress(byte[] data) {
             inflater.setInput(data);
 
-            try (DynamicByteBuffer decompressed = new DynamicByteBuffer(data.length * 2)) { // we will assume decompression to be 200%
+            try {
+                DynamicByteBuffer decompressed = new DynamicByteBuffer(data.length * 2); // we will assume decompression to be 200%
                 byte[] buffer = new byte[1024];
                 while (!inflater.finished()) {
                     int decompressedBytes = inflater.inflate(buffer);

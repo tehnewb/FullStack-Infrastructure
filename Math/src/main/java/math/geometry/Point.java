@@ -31,6 +31,46 @@ public class Point implements Cloneable {
         return (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public Point set(float x, float y) {
         this.x = x;
         this.y = y;

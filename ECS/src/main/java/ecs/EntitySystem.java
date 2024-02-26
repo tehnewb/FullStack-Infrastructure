@@ -1,5 +1,6 @@
 package ecs;
 
+import collections.array.SwapOnRemoveArray;
 import collections.array.SwapOnRemoveIntArray;
 import collections.bits.Bits;
 import collections.bits.LongBits;
@@ -143,8 +144,8 @@ public abstract class EntitySystem {
     /**
      * Processes all active entities, invoking the specific logic implemented in the subclass.
      */
-    protected void process() {
-        for (int i = 0; i < entities.size(); i++) {
+    public final void process() {
+        for (int i = 0, s = entities.size(); s > i; i++) {
             process(entities.get(i));
         }
     }

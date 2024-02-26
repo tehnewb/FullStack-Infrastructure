@@ -134,4 +134,8 @@ public class ECS<E extends Entity> {
     public E[] getEntities() {
         return entities.getElements();
     }
+
+    public EntitySystem[] getSystems() {
+        return systems;
+    }
 }

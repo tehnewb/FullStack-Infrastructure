@@ -17,7 +17,6 @@ package encryption;
  *
  * @author Bob Jenkins
  */
-
 public class IsaacCipher {
 
 	/**

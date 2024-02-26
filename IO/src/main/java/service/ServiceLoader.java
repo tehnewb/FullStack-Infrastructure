@@ -3,10 +3,7 @@ package service;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A generic service loader for dynamically loading and instantiating classes from a specified package
@@ -70,6 +67,13 @@ public class ServiceLoader<T> implements Iterable<T> {
      */
     public int size() {
         return serviceInstances.size();
+    }
+
+    /**
+     * @return The services within a list.
+     */
+    public List<T> getServices() {
+        return Collections.unmodifiableList(this.serviceInstances);
     }
 
     /**
