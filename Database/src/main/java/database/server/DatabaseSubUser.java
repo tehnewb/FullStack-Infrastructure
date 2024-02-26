@@ -1,4 +1,4 @@
-package database;
+package database.server;
 
 /**
  * @author Albert Beaupre

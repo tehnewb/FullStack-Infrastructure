@@ -1,5 +1,7 @@
 package database;
 
+import database.server.DatabaseServer;
+
 public class Tester {
 
     public static void start() {

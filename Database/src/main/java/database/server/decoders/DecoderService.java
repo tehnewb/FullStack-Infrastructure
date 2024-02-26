@@ -1,4 +1,4 @@
-package database.decoders;
+package database.server.decoders;
 
 import buffer.DynamicByteBuffer;
 import io.netty.channel.Channel;

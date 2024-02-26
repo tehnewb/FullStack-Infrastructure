@@ -1,16 +1,10 @@
-package database;
+package database.client;
 
 import buffer.DynamicByteBuffer;
-import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -20,7 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 
-public class DatabaseClient extends ChannelInboundHandlerAdapter {
+public class DatabaseClientHandler extends ChannelInboundHandlerAdapter {
     private static final Cipher CIPHER;
     private static final KeyFactory FACTORY;
     private static final KeyPairGenerator GENERATOR;
@@ -35,39 +29,11 @@ public class DatabaseClient extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private final String token;
-    private final String username;
+    private final DatabaseClient client;
     private PublicKey publicKey;
 
-    public DatabaseClient(String username, String token) {
-        this.username = username;
-        this.token = token;
-    }
-
-    public static void main(String[] args) throws Exception {
-        DatabaseClient client = new DatabaseClient("TEST_USERNAME", "TEST_TOKEN");
-        client.start("localhost", 8888);
-    }
-
-    public void start(String host, int port) {
-        EventLoopGroup group = new NioEventLoopGroup();
-        try {
-            Bootstrap b = new Bootstrap();
-            b.group(group)
-                    .channel(NioSocketChannel.class)
-                    .remoteAddress(host, port)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) {
-                            ch.pipeline().addLast(DatabaseClient.this);
-                        }
-                    })
-                    .connect().sync().channel().closeFuture().sync();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            group.shutdownGracefully();
-        }
+    public DatabaseClientHandler(DatabaseClient client) {
+        this.client = client;
     }
 
     @Override
@@ -80,8 +46,8 @@ public class DatabaseClient extends ChannelInboundHandlerAdapter {
 
             // The client immediately returns the token to access the server functionality
             DynamicByteBuffer encryptedBuffer = new DynamicByteBuffer();
-            encryptedBuffer.writeString(token);
-            encryptedBuffer.writeString(username);
+            encryptedBuffer.writeString(client.getToken());
+            encryptedBuffer.writeString(client.getUsername());
 
             CIPHER.init(Cipher.ENCRYPT_MODE, publicKey);
             ctx.channel().writeAndFlush(Unpooled.wrappedBuffer(CIPHER.doFinal(encryptedBuffer.toTrimmedArray())));

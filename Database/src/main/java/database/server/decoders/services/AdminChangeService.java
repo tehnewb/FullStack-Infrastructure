@@ -1,8 +1,9 @@
-package database.decoders.server.services;
+package database.server.decoders.services;
 
 import buffer.DynamicByteBuffer;
-import database.DatabaseServer;
-import database.decoders.DecoderService;
+import database.server.DatabaseServer;
+import database.server.DatabaseServerHandler;
+import database.server.decoders.DecoderService;
 import io.netty.channel.Channel;
 
 public class AdminChangeService implements DecoderService {

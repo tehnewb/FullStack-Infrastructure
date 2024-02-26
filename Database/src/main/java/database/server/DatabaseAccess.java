@@ -1,4 +1,4 @@
-package database;
+package database.server;
 
 /**
  * The DatabaseAccess interface defines a set of constants representing different
