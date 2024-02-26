@@ -217,7 +217,7 @@ public class DatabaseServer extends ChannelInboundHandlerAdapter {
             String username = decryptedBuffer.readString();
 
             if (administrator == DatabaseAdministrator.INVALID) {
-                System.out.println("Attempt to breach administrator access from " + ctx.channel().remoteAddress());
+                System.err.println("Attempt to breach administrator access from " + ctx.channel().remoteAddress());
                 return;
             }
 
@@ -229,7 +229,7 @@ public class DatabaseServer extends ChannelInboundHandlerAdapter {
                 ctx.channel().pipeline().addFirst(new DatabaseServerDecoder());
             } else {
                 ctx.close();
-                System.out.println("Possible breach or missing packet information from " + ctx.channel().remoteAddress());
+                System.err.println("Possible breach or missing packet information from " + ctx.channel().remoteAddress());
             }
         }
     }
