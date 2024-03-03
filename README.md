@@ -24,7 +24,7 @@
 - **[Benchmarking](./Benchmarking)**
     - Used for Benchmarking code
 - **[Database](./Database)**
-    - Runs a server to handle database operations and storage
+    - Contains systems for a database
 - **[Collections](./Collections)**
     - Holds various collection designs
 - **[Math](./Math)**
