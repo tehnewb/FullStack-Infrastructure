@@ -1,31 +1,30 @@
-package resource;
+package database.resource;
 
 /**
  * The ResourceStrategy interface defines the contract for strategies used to load, save, get, and release resources.
  *
- * @param <K> The type of the resource key.
- * @param <R> The type of the resource.
- * @param <P> The type of the resource parameter used for loading.
+ * @param <K> The type of key used to retrieve the resource
+ * @param <R> The type of the resource object
  * @author Albert Beaupre
  * @version 1.0
  * @since 1.0
  */
-public interface ResourceStrategy<K, R, P> {
+public interface ResourceStrategy<K, R> {
 
     /**
-     * Load a resource based on the provided parameter.
+     * Load a resource based on the provided key.
      *
-     * @param parameter The parameter required for loading the resource.
+     * @param key The key of the resource to load.
      * @return The loaded resource.
      */
-    R load(P parameter);
+    R load(K key);
 
     /**
-     * Save a resource for future use or caching, if applicable.
+     * Save a resource based on the provided key.
      *
-     * @param resource The resource to be saved.
+     * @param key The key of the resource to save.
      */
-    void save(R resource);
+    void save(K key);
 
     /**
      * Get a resource by its key.

@@ -1,4 +1,4 @@
-package resource;
+package database.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -148,6 +148,21 @@ public class ResourceMetrics {
             this.exceptions = new ArrayList<>();
 
         this.exceptions.add(exception);
+    }
+
+    @Override
+    public String toString() {
+        return """
+                ResourceMetrics{
+                exceptions=%s,
+                accessCount=%s,
+                loadCount=%s,
+                loadTime=%ss,
+                saveCount=%s,
+                saveTime=%ss,
+                size=%s
+                }
+                """.formatted(exceptions, accessCount, loadCount, loadTime, saveCount, saveTime, size);
     }
 
     /**
