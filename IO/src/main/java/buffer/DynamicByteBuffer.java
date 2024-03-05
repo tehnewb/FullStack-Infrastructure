@@ -5,12 +5,13 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 /**
- * A dynamic byte array that provides methods to store and retrieve various data types with a growing internal array.
+ * A dynamic byte buffer that provides methods to store and retrieve
+ * various data types with a growing internal array.
  *
  * @author Albert Beaupre
  */
 public class DynamicByteBuffer implements Cloneable {
-    private static final int DEFAULT_CAPACITY = 128; // Default capacity of DynamicByteArray
+    private static final int DEFAULT_CAPACITY = 128; // Default capacity of DynamicByteBuffer
     private boolean growing;
     private byte[] data;
     private int size;
@@ -19,16 +20,31 @@ public class DynamicByteBuffer implements Cloneable {
     private int bitBuffer;
     private int bitPosition;
 
+    /**
+     * Constructs a DynamicByteBuffer that copies everything from the provided
+     * DynamicByteBuffer.
+     *
+     * @param buffer The buffer to copy everything from.
+     */
+    public DynamicByteBuffer(DynamicByteBuffer buffer) {
+        this.data = buffer.data;
+        this.readPosition = buffer.readPosition;
+        this.writePosition = buffer.writePosition;
+        this.bitBuffer = buffer.bitBuffer;
+        this.bitPosition = buffer.bitPosition;
+        this.size = buffer.size;
+        this.growing = buffer.growing;
+    }
 
     /**
-     * Constructs a DynamicByteArray with an initial capacity of 128 bytes.
+     * Constructs a DynamicByteBuffer with an initial capacity of 128 bytes.
      */
     public DynamicByteBuffer() {
         this(DEFAULT_CAPACITY);
     }
 
     /**
-     * Constructs a DynamicByteArray with the specified initial capacity.
+     * Constructs a DynamicByteBuffer with the specified initial capacity.
      *
      * @param initialCapacity The initial capacity of the byte array.
      * @throws IllegalArgumentException if initial capacity is non-positive.
@@ -38,7 +54,7 @@ public class DynamicByteBuffer implements Cloneable {
     }
 
     /**
-     * Constructs a DynamicByteArray with the specified initial capacity.
+     * Constructs a DynamicByteBuffer with the specified initial capacity.
      *
      * @param initialCapacity The initial capacity of the byte array.
      * @param growing         The flag to determine if the internal byte array should grow when reaching its limit.
@@ -56,7 +72,7 @@ public class DynamicByteBuffer implements Cloneable {
     }
 
     /**
-     * Constructs a DynamicByteArray with the specified data byte array.
+     * Constructs a DynamicByteBuffer with the specified data byte array.
      *
      * @param data The byte array to fill as the internal array.
      */
@@ -560,7 +576,7 @@ public class DynamicByteBuffer implements Cloneable {
      *
      * @return available bytes to read.
      */
-    public int getRemainingToRead() {
+    public int readableBytes() {
         return size() - readPosition;
     }
 
@@ -586,7 +602,7 @@ public class DynamicByteBuffer implements Cloneable {
      * @return True if there are no available bytes; False otherwise
      */
     public boolean isEmpty() {
-        return getRemainingToRead() == 0;
+        return readableBytes() == 0;
     }
 
     /**
@@ -610,10 +626,10 @@ public class DynamicByteBuffer implements Cloneable {
     }
 
     /**
-     * Compares this DynamicByteArray to another object for equality.
+     * Compares this DynamicByteBuffer to another object for equality.
      *
-     * @param o The object to compare to this DynamicByteArray.
-     * @return True if the provided object is equal to this DynamicByteArray, false otherwise.
+     * @param o The object to compare to this DynamicByteBuffer.
+     * @return True if the provided object is equal to this DynamicByteBuffer, false otherwise.
      */
     @Override
     public boolean equals(Object o) {
@@ -628,7 +644,7 @@ public class DynamicByteBuffer implements Cloneable {
     }
 
     /**
-     * Generates a hash code for this DynamicByteArray.
+     * Generates a hash code for this DynamicByteBuffer.
      *
      * @return A hash code value for this object.
      */
@@ -642,14 +658,14 @@ public class DynamicByteBuffer implements Cloneable {
     }
 
     /**
-     * Returns a string representation of this DynamicByteArray.
+     * Returns a string representation of this DynamicByteBuffer.
      *
-     * @return A string containing the size and content of the DynamicByteArray.
+     * @return A string containing the size and content of the DynamicByteBuffer.
      */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("DynamicByteArray [size=").append(size).append(", data=");
+        sb.append("DynamicByteBuffer [size=").append(size).append(", data=");
         for (int i = 0; i < size; i++) {
             sb.append(data[i]).append(" ");
         }

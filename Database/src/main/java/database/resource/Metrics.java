@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * The ResourceMetrics class is responsible for tracking and maintaining various statistics related to a resource,
+ * The Metrics class is responsible for tracking and maintaining various statistics related to a resource,
  * including load count, access count, load time, save count, save time, and exceptions encountered during resource operations.
  *
  * @author Albert Beaupre
  * @version 1.0
  * @since 1.0
  */
-public class ResourceMetrics {
+public class Metrics {
 
     // A list to store exceptions that may occur during resource operations.
     private List<Exception> exceptions;

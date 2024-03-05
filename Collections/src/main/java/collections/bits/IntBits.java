@@ -13,6 +13,16 @@ public class IntBits {
     private int bits;
 
     /**
+     * Gets the value of the bit at the specified index.
+     *
+     * @param index The index of the bit to retrieve.
+     * @return The value of the bit at the specified index (0 or 1).
+     */
+    public int get(int index) {
+        return (bits >> index) & 1;
+    }
+
+    /**
      * Sets the bit at the specified index to 1.
      *
      * @param index The index of the bit to set.

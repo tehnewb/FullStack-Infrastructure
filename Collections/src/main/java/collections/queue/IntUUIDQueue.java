@@ -5,34 +5,34 @@ import java.util.Arrays;
 /**
  * A class that manages a unique index queue, allowing for the retrieval of unused
  * and reinsertion of used indices. This class is designed to manage a sequence of unique
- * long indexes efficiently, reusing them when possible. It provides methods to pop an
+ * int indexes efficiently, reusing them when possible. It provides methods to pop an
  * index from the queue and push an index back into it, automatically handling the queue's
  * capacity and ensures uniqueness and sequential order of indexes.
  *
  * @author Albert Beaupre
  */
-public class UniqueIndexQueue {
+public class IntUUIDQueue {
 
     // The array used to store the queue of indexes. The capacity of the queue can expand as needed.
-    long[] queue;
+    int[] queue = new int[16];
     // The index to be dequeued next if the queue is empty. This ensures unique and sequential index generation.
-    long dequeue;
+    int dequeue;
     // The current position for enqueueing a new index. This also represents the number of elements in the queue.
     int enqueue;
 
     /**
-     * Pops an index from the queue, returning a unique long index.
+     * Pops an index from the queue, returning a unique int index.
      * If the queue is empty, it generates a new index sequentially.
      * This method ensures that indexes are reused when possible, and new indexes are generated only when necessary.
      *
      * @return The next available unique index. If the queue is not empty, it returns and removes the oldest index in the queue.
      * If the queue is empty, it generates and returns a new sequential index.
      */
-    public long pop() {
+    public int pop() {
         if (enqueue > 0) {
             // Calculate the index within the queue array to pop, taking into account the circular nature of the queue.
             int index = (enqueue % this.queue.length) - 1;
-            long oldIndex = this.queue[index];
+            int oldIndex = this.queue[index];
             // Clear the old index to prevent memory leaks and decrement the enqueue index to remove the element from the queue.
             this.queue[--enqueue] = 0;
             return oldIndex;
@@ -49,14 +49,14 @@ public class UniqueIndexQueue {
      *
      * @param index The index to be pushed back into the queue.
      */
-    public void push(long index) {
+    public void push(int index) {
         // Ignore indexes that are not valid for reuse (i.e., greater than the current dequeue index).
         if (index > dequeue)
             return;
 
         // If the queue is full, double its size and copy the existing elements.
         if (enqueue >= queue.length) {
-            long[] newArray = new long[queue.length * 2];
+            int[] newArray = new int[queue.length * 2];
             System.arraycopy(queue, 0, newArray, 0, queue.length);
             queue = newArray;
         }
@@ -76,7 +76,7 @@ public class UniqueIndexQueue {
      *
      * @return a new, compacted array containing all valid indices from the queue.
      */
-    public long[] getCompactQueue() {
+    public int[] getCompactQueue() {
         return Arrays.copyOf(queue, enqueue);
     }
 

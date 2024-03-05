@@ -332,7 +332,8 @@ public class FlatYaml extends HashMap<String, Object> {
      * @param string The markup string to be parsed.
      * @throws RuntimeException If an error occurs during the parsing process.
      */
-    private void parseString(String string) {
+    public void parseString(String string) {
+        clear();
         String[] lines = string.split("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];

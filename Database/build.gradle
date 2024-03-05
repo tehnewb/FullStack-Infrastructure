@@ -1,0 +1,9 @@
+ext.name = 'Database'
+
+dependencies {
+    implementation project(path: ':Collections')
+    implementation project(path: ':IO')
+
+    // https://mvnrepository.com/artifact/io.netty/netty-all
+    implementation 'io.netty:netty-all:4.1.107.Final'
+}
