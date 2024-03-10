@@ -17,14 +17,15 @@ import java.util.concurrent.ExecutorService;
  *
  * @param <K> The type of key used to retrieve the resource
  * @param <R> The type of the resource object
+ * @param <P> The type of parameters required to construct the resource.
  * @author Albert Beaupre
  * @version 1.0
  */
-public class Database<K, R> {
+public class Database<K, R, P> {
 
-    private DatabaseStrategy<K, R> strategy;
     private final ConcurrentHashMap<K, Metrics> monitors;
     private final ExecutorService service;
+    private DatabaseStrategy<K, R, P> strategy;
 
     /**
      * Constructs a Database with the specified resource loading strategy.
@@ -32,7 +33,7 @@ public class Database<K, R> {
      * @param strategy The resource loading strategy to be used.
      * @throws NullPointerException if the strategy is null.
      */
-    public Database(DatabaseStrategy<K, R> strategy) {
+    public Database(DatabaseStrategy<K, R, P> strategy) {
         this.service = new TaskDrivenExecutor();
         this.strategy = Objects.requireNonNull(strategy, "Cannot construct database with null strategy");
         this.monitors = new ConcurrentHashMap<>();
@@ -79,6 +80,27 @@ public class Database<K, R> {
                 strategy.save(key);
                 monitor.setSaveTime(Duration.between(begin, Instant.now()).toMillis() / 1000D); // Set save time
                 monitor.increaseSaveCount(); // increase save count
+            } catch (Exception e) {
+                monitor.trackException(e);
+            }
+            return null;
+        }, service);
+    }
+
+    /**
+     * Asynchronously creates a resource using the specified parameters.
+     *
+     * @param key        The key of the resource.
+     * @param parameters The parameters required to create the resource.
+     * @return A CompletableFuture representing the saved resource.
+     * @throws NullPointerException if the parameter is null.
+     */
+    public CompletableFuture<Void> create(K key, P parameters) {
+        Objects.requireNonNull(parameters, "Cannot create a resource with null parameters");
+        return CompletableFuture.supplyAsync(() -> {
+            Metrics monitor = monitors.computeIfAbsent(key, v -> new Metrics()); // corresponding monitor
+            try {
+                strategy.create(key, parameters);
             } catch (Exception e) {
                 monitor.trackException(e);
             }
