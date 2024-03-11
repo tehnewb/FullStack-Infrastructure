@@ -202,6 +202,18 @@ public class FlatYaml extends HashMap<String, Object> {
     }
 
     /**
+     * Retrieves a String array value associated with the specified key.
+     *
+     * @param key The key whose associated value is to be retrieved as a String array.
+     * @return The String array value associated with the key.
+     * @throws ClassCastException   If the value associated with the key is not of type String[].
+     * @throws NullPointerException If the specified key is null.
+     */
+    public String[] getStringArray(String key) {
+        return (String[]) get(key);
+    }
+
+    /**
      * Retrieves a byte array value associated with the specified key.
      *
      * @param key The key whose associated value is to be retrieved as a byte array.
