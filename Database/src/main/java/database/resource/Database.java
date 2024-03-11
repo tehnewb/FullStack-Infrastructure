@@ -40,6 +40,26 @@ public class Database<K, R, P> {
     }
 
     /**
+     * Retrieves the resource if it is cached to the strategy. If it is not, then it is loaded.
+     *
+     * @param key The key of the resource.
+     * @return A CompletableFuture representing the loaded resource.
+     * @throws NullPointerException if the parameter is null.
+     */
+    public R getOrLoad(K key) {
+        Objects.requireNonNull(key, "Cannot load resource with null key");
+        R resource = get(key);
+        if (resource == null) {
+            try {
+                return load(key).get();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return resource;
+    }
+
+    /**
      * Asynchronously loads a resource using the specified strategy.
      *
      * @param key The key of the resource.
@@ -121,14 +141,15 @@ public class Database<K, R, P> {
      */
     public synchronized R get(K key) {
         Objects.requireNonNull(key, "Cannot get resource with null key");
-        Metrics monitor = this.monitors.get(key);
+        Metrics monitor = this.monitors.computeIfAbsent(key, v -> new Metrics());
         try {
             R resource = strategy.get(key);
+            if (resource == null)
+                this.monitors.remove(key);
             monitor.increaseAccessCount();
             return resource;
         } catch (Exception e) {
-            if (monitor != null)
-                monitor.trackException(e);
+            monitor.trackException(e);
             return null;
         }
     }
