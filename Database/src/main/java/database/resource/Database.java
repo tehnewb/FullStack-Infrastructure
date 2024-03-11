@@ -54,6 +54,10 @@ public class Database<K, R, P> {
             try {
                 Instant begin = Instant.now(); // start load time
                 R resource = strategy.load(key); // load resource
+                if (resource == null) {
+                    monitors.remove(key);
+                    return null;
+                }
                 monitor.setLoadTime(Duration.between(begin, Instant.now()).toMillis() / 1000D); // Set load time
                 monitor.increaseLoadCount(); // increase load count
                 return resource;
