@@ -127,7 +127,8 @@ public class Database<K, R, P> {
             monitor.increaseAccessCount();
             return resource;
         } catch (Exception e) {
-            monitor.trackException(e);
+            if (monitor != null)
+                monitor.trackException(e);
             return null;
         }
     }
