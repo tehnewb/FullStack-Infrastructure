@@ -18,5 +18,6 @@
         <module>IO</module>
         <module>Math</module>
         <module>Utilities</module>
+        <module>Database</module>
     </modules>
 </project>

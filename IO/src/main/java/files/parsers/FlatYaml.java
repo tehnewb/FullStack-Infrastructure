@@ -393,7 +393,10 @@ public class FlatYaml extends HashMap<String, Object> {
             }
             case '[' -> {
                 try {
-                    yield value.replaceAll("[\\[\\] ]", "").split(",");
+                    String s = value.replaceAll("[\\[\\] ]", "");
+                    if (s.isEmpty() || s.isBlank())
+                        yield new String[0];
+                    yield s.split(",");
                 } catch (Exception e) {
                     throw new FlatYamlParseException("Cannot parse array object at line " + line);
                 }
